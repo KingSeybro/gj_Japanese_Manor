@@ -41,11 +41,10 @@ export class OverWorldScene extends Phaser.Scene {
         this.layer1 = this.map.createDynamicLayer(1, this.tiles, 0, 0);
         this.layer2 = this.map.createDynamicLayer(2, this.tiles, 0, 0);
 
+
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-
         this.player = this.physics.add.sprite(400, 300, 'player');
-        this.player.setOrigin(0.5, 0.5).setDisplaySize(32, 32).setCollideWorldBounds(true).setDrag(500, 500);
-
+        this.player.setOrigin(0.5, 0.5).setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE).setCollideWorldBounds(true).setDrag(500, 500);
         this.initializeInput();
     }
 
@@ -71,6 +70,7 @@ export class OverWorldScene extends Phaser.Scene {
 
     private initializeInput() {
         let player = this.player;
+        let camera = this.cameras.main;
 
         // Creates object for input with WASD kets
         this.moveKeys = this.input.keyboard.addKeys({
@@ -110,6 +110,12 @@ export class OverWorldScene extends Phaser.Scene {
         this.input.keyboard.on('keyup_D', function (event) {
             if (moveKeys['left'].isUp)
                 player.setAccelerationX(0);
+        });
+        this.input.keyboard.on('keydown_Z', function (event) {
+            camera.setZoom(camera.zoom + 0.01);
+        });
+        this.input.keyboard.on('keydown_T', function (event) {
+            camera.setZoom(camera.zoom - 0.01);
         });
     }
 
