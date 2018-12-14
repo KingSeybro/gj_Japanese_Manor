@@ -18,7 +18,6 @@ export class OverWorldScene extends Phaser.Scene {
     private player: Phaser.Physics.Arcade.Sprite;
 
 
-
     constructor() {
         super({
             key: "OverWorldScene"
@@ -41,15 +40,29 @@ export class OverWorldScene extends Phaser.Scene {
         this.layer1 = this.map.createDynamicLayer(1, this.tiles, 0, 0);
         this.layer2 = this.map.createDynamicLayer(2, this.tiles, 0, 0);
 
-
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+
         this.player = this.physics.add.sprite(400, 300, 'player');
         this.player.setOrigin(0.5, 0.5).setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE).setCollideWorldBounds(true).setDrag(500, 500);
+
+        this.layer2.setCollisionByProperty({collides: true});
+        this.physics.add.collider(this.player, this.layer2);
+
         this.initializeInput();
+        this.cameras.main.setZoom(2);
+
+        if (Constants.DEBUG_ON) {
+            const debugGraphics = this.add.graphics().setAlpha(0.75);
+            this.layer2.renderDebug(debugGraphics, {
+                tileColor: null, // Color of non-colliding tiles
+                collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+                faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+            });
+        }
     }
 
-    constrainVelocity(sprite, maxVelocity)
-    {
+
+    constrainVelocity(sprite, maxVelocity) {
         if (!sprite || !sprite.body)
             return;
 
@@ -58,8 +71,7 @@ export class OverWorldScene extends Phaser.Scene {
         vy = sprite.body.velocity.y;
         currVelocitySqr = vx * vx + vy * vy;
 
-        if (currVelocitySqr > maxVelocity * maxVelocity)
-        {
+        if (currVelocitySqr > maxVelocity * maxVelocity) {
             angle = Math.atan2(vy, vx);
             vx = Math.cos(angle) * maxVelocity;
             vy = Math.sin(angle) * maxVelocity;
@@ -113,10 +125,10 @@ export class OverWorldScene extends Phaser.Scene {
                 player.setAccelerationX(0);
         });
         this.input.keyboard.on('keydown_Z', function (event) {
-            camera.setZoom(camera.zoom + 0.01);
+            camera.setZoom(camera.zoom + 0.1);
         });
         this.input.keyboard.on('keydown_T', function (event) {
-            camera.setZoom(camera.zoom - 0.01);
+            camera.setZoom(camera.zoom - 0.1);
         });
 
         this.input.keyboard.on('keydown_B', function (event) {
