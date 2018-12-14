@@ -72,7 +72,7 @@ export class OverWorldScene extends Phaser.Scene {
             'right': Phaser.Input.Keyboard.KeyCodes.D
         });
         let moveKeys = this.moveKeys;
-        
+
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_W', function (event) {
             player.setAccelerationY(-400);
