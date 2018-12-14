@@ -41,9 +41,29 @@ export class OverWorldScene extends Phaser.Scene {
         this.initializeInput();
     }
 
+    constrainVelocity(sprite, maxVelocity)
+    {
+        if (!sprite || !sprite.body)
+            return;
+
+        var angle, currVelocitySqr, vx, vy;
+        vx = sprite.body.velocity.x;
+        vy = sprite.body.velocity.y;
+        currVelocitySqr = vx * vx + vy * vy;
+
+        if (currVelocitySqr > maxVelocity * maxVelocity)
+        {
+            angle = Math.atan2(vy, vx);
+            vx = Math.cos(angle) * maxVelocity;
+            vy = Math.sin(angle) * maxVelocity;
+            sprite.body.velocity.x = vx;
+            sprite.body.velocity.y = vy;
+        }
+    }
 
     private initializeInput() {
-        const self = this;
+        let player = this.player;
+
         // Creates object for input with WASD kets
         this.moveKeys = this.input.keyboard.addKeys({
             'up': Phaser.Input.Keyboard.KeyCodes.W,
@@ -51,35 +71,37 @@ export class OverWorldScene extends Phaser.Scene {
             'left': Phaser.Input.Keyboard.KeyCodes.A,
             'right': Phaser.Input.Keyboard.KeyCodes.D
         });
+        let moveKeys = this.moveKeys;
+        
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_W', function (event) {
-            self.player.setAccelerationY(-400);
+            player.setAccelerationY(-400);
         });
         this.input.keyboard.on('keydown_S', function (event) {
-            self.player.setAccelerationY(400);
+            player.setAccelerationY(400);
         });
         this.input.keyboard.on('keydown_A', function (event) {
-            self.player.setAccelerationX(-400);
+            player.setAccelerationX(-400);
         });
         this.input.keyboard.on('keydown_D', function (event) {
-            self.player.setAccelerationX(400);
+            player.setAccelerationX(400);
         });
         // Stops player acceleration on uppress of WASD keys
         this.input.keyboard.on('keyup_W', function (event) {
-            if (self.moveKeys['down'].isUp)
-                self.player.setAccelerationY(0);
+            if (moveKeys['down'].isUp)
+                player.setAccelerationY(0);
         });
         this.input.keyboard.on('keyup_S', function (event) {
-            if (self.moveKeys['up'].isUp)
-                self.player.setAccelerationY(0);
+            if (moveKeys['up'].isUp)
+                player.setAccelerationY(0);
         });
         this.input.keyboard.on('keyup_A', function (event) {
-            if (self.moveKeys['right'].isUp)
-                self.player.setAccelerationX(0);
+            if (moveKeys['right'].isUp)
+                player.setAccelerationX(0);
         });
         this.input.keyboard.on('keyup_D', function (event) {
-            if (self.moveKeys['left'].isUp)
-                self.player.setAccelerationX(0);
+            if (moveKeys['left'].isUp)
+                player.setAccelerationX(0);
         });
     }
 
@@ -87,5 +109,6 @@ export class OverWorldScene extends Phaser.Scene {
         super.update(time, delta);
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
+        this.constrainVelocity(this.player,200);
     }
 }
