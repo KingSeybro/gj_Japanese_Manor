@@ -28,7 +28,7 @@ export class OverWorldScene extends Phaser.Scene {
     preload(): void {
         this.load.image(Assets.TILES_OVERWORLD_IMAGE, Assets.url('Overworld_Tileset.png'));
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('Scenes.json'));
-        this.load.image('player', './assets/boilerplate/player.png');
+        this.load.image('player', './assets/boilerplate/phaser.png');
         this.physics.world.setBounds(0, 0, 9001, 9001);
     }
 
@@ -54,7 +54,7 @@ export class OverWorldScene extends Phaser.Scene {
         if (!sprite || !sprite.body)
             return;
 
-        var angle, currVelocitySqr, vx, vy;
+        let angle, currVelocitySqr, vx, vy;
         vx = sprite.body.velocity.x;
         vy = sprite.body.velocity.y;
         currVelocitySqr = vx * vx + vy * vy;
@@ -118,5 +118,10 @@ export class OverWorldScene extends Phaser.Scene {
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
         this.constrainVelocity(this.player,200);
+        let y = this.player.body.velocity.y*100;
+        let x = this.player.body.velocity.x*100;
+        if(x!=0&&y!=0){
+            this.player.rotation =  Math.atan2(y, x);
+        }
     }
 }
