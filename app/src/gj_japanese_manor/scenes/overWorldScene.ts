@@ -4,16 +4,18 @@
  * @license      Digitsensitive
  */
 import {Assets} from "../assets";
+import {Constants} from "../constants";
 
 export class OverWorldScene extends Phaser.Scene {
 
     public static readonly TILESET_NAME = 'Overworld_Tileset';
     private map: Phaser.Tilemaps.Tilemap;
-    private layer: Phaser.Tilemaps.StaticTilemapLayer;
+    private layer0: Phaser.Tilemaps.StaticTilemapLayer;
+    private layer1: Phaser.Tilemaps.DynamicTilemapLayer;
+    private layer2: Phaser.Tilemaps.DynamicTilemapLayer;
     private tiles: Phaser.Tilemaps.Tileset;
     private moveKeys: object;
     private player: Phaser.Physics.Arcade.Sprite;
-
 
 
     constructor() {
@@ -25,34 +27,51 @@ export class OverWorldScene extends Phaser.Scene {
     preload(): void {
         this.load.image(Assets.TILES_OVERWORLD_IMAGE, Assets.url('Overworld_Tileset.png'));
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('Scenes.json'));
-        this.load.image('player', './assets/boilerplate/player.png');
+        this.load.image('player', './assets/boilerplate/phaser.png');
         this.physics.world.setBounds(0, 0, 9001, 9001);
     }
 
     create(): void {
-        this.map = this.make.tilemap({'key': Assets.TILES_OVERWORLD_MAP});
+        this.map = this.make.tilemap({
+            key: Assets.TILES_OVERWORLD_MAP
+        });
         this.tiles = this.map.addTilesetImage(OverWorldScene.TILESET_NAME, Assets.TILES_OVERWORLD_IMAGE);
-        this.layer = this.map.createStaticLayer(0, this.tiles, 0, 0);
-        this.cameras.main.setBounds(0, 0, 10, 10);
+        this.layer0 = this.map.createStaticLayer(0, this.tiles, 0, 0);
+        this.layer1 = this.map.createDynamicLayer(1, this.tiles, 0, 0);
+        this.layer2 = this.map.createDynamicLayer(2, this.tiles, 0, 0);
+
+        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         this.player = this.physics.add.sprite(400, 300, 'player');
-        this.player.setOrigin(0.5, 0.5).setDisplaySize(32, 32).setCollideWorldBounds(true).setDrag(500, 500);
+        this.player.setOrigin(0.5, 0.5).setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE).setCollideWorldBounds(true).setDrag(500, 500);
+
+        this.layer2.setCollisionByProperty({collides: true});
+        this.physics.add.collider(this.player, this.layer2);
 
         this.initializeInput();
+        this.cameras.main.setZoom(2);
+
+        if (Constants.DEBUG_ON) {
+            const debugGraphics = this.add.graphics().setAlpha(0.75);
+            this.layer2.renderDebug(debugGraphics, {
+                tileColor: null, // Color of non-colliding tiles
+                collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+                faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+            });
+        }
     }
 
-    constrainVelocity(sprite, maxVelocity)
-    {
+
+    constrainVelocity(sprite, maxVelocity) {
         if (!sprite || !sprite.body)
             return;
 
-        var angle, currVelocitySqr, vx, vy;
+        let angle, currVelocitySqr, vx, vy;
         vx = sprite.body.velocity.x;
         vy = sprite.body.velocity.y;
         currVelocitySqr = vx * vx + vy * vy;
 
-        if (currVelocitySqr > maxVelocity * maxVelocity)
-        {
+        if (currVelocitySqr > maxVelocity * maxVelocity) {
             angle = Math.atan2(vy, vx);
             vx = Math.cos(angle) * maxVelocity;
             vy = Math.sin(angle) * maxVelocity;
@@ -63,6 +82,8 @@ export class OverWorldScene extends Phaser.Scene {
 
     private initializeInput() {
         let player = this.player;
+        let camera = this.cameras.main;
+        let scene = this.scene;
 
         // Creates object for input with WASD kets
         this.moveKeys = this.input.keyboard.addKeys({
@@ -72,7 +93,7 @@ export class OverWorldScene extends Phaser.Scene {
             'right': Phaser.Input.Keyboard.KeyCodes.D
         });
         let moveKeys = this.moveKeys;
-        
+
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_W', function (event) {
             player.setAccelerationY(-400);
@@ -103,12 +124,29 @@ export class OverWorldScene extends Phaser.Scene {
             if (moveKeys['left'].isUp)
                 player.setAccelerationX(0);
         });
+        this.input.keyboard.on('keydown_Z', function (event) {
+            camera.setZoom(camera.zoom + 0.1);
+        });
+        this.input.keyboard.on('keydown_T', function (event) {
+            camera.setZoom(camera.zoom - 0.1);
+        });
+
+        this.input.keyboard.on('keydown_B', function (event) {
+            player.setAcceleration(0,0);
+            player.setVelocity(0,0);
+            scene.switch('BattleScene'); // Start the battle scene
+        });
     }
 
     update(time: number, delta: number): void {
         super.update(time, delta);
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
-        this.constrainVelocity(this.player,200);
+        this.constrainVelocity(this.player,100);
+        let y = this.player.body.velocity.y*100;
+        let x = this.player.body.velocity.x*100;
+        if(x!=0 && y!=0){
+            this.player.rotation =  Math.atan2(y, x);
+        }
     }
 }
