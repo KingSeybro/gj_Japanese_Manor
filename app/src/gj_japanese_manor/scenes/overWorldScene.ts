@@ -5,6 +5,7 @@
  */
 import {Assets} from "../assets";
 import {Constants} from "../constants";
+import * as socketIo from "socket.io-client";
 
 export class OverWorldScene extends Phaser.Scene {
 
@@ -21,6 +22,7 @@ export class OverWorldScene extends Phaser.Scene {
     private tiles2: Phaser.Tilemaps.Tileset;
     private tiles3: Phaser.Tilemaps.Tileset;
     private layer3: Phaser.Tilemaps.StaticTilemapLayer;
+    private io: SocketIOClient.Socket;
 
 
     constructor() {
@@ -42,6 +44,11 @@ export class OverWorldScene extends Phaser.Scene {
     }
 
     create(): void {
+        this.io = socketIo(Constants.SERVER_URL);
+        this.io.connect();
+        if (this.io.connected) {
+            console.log("Connected to server " + Constants.SERVER_URL);
+        }
         this.map = this.make.tilemap({ key: Assets.TILES_OVERWORLD_MAP });
         this.tiles = this.map.addTilesetImage("Overworld_Tileset (2)", "overworld");
         this.tiles1 = this.map.addTilesetImage("Inside_A4", "Inside_A4");
@@ -69,6 +76,7 @@ export class OverWorldScene extends Phaser.Scene {
             const debugGraphics = this.add.graphics().setAlpha(0.75);
 
         }
+
     }
 
 
@@ -142,8 +150,8 @@ export class OverWorldScene extends Phaser.Scene {
         });
 
         this.input.keyboard.on('keydown_B', function (event) {
-            player.setAcceleration(0,0);
-            player.setVelocity(0,0);
+            player.setAcceleration(0, 0);
+            player.setVelocity(0, 0);
             scene.switch('BattleScene'); // Start the battle scene
         });
     }
@@ -152,11 +160,11 @@ export class OverWorldScene extends Phaser.Scene {
         super.update(time, delta);
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
-        this.constrainVelocity(this.player,100);
-        let y = this.player.body.velocity.y*100;
-        let x = this.player.body.velocity.x*100;
-        if(x!=0 && y!=0){
-            this.player.rotation =  Math.atan2(y, x);
+        this.constrainVelocity(this.player, 100);
+        let y = this.player.body.velocity.y * 100;
+        let x = this.player.body.velocity.x * 100;
+        if (x != 0 && y != 0) {
+            this.player.rotation = Math.atan2(y, x);
         }
     }
 }
