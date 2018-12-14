@@ -41,12 +41,21 @@
  "nextobjectid":1,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.2.1",
+ "tiledversion":"2018.11.29",
  "tileheight":16,
  "tilesets":[
         {
+         "columns":40,
          "firstgid":1,
-         "source":"./assets/Overworld_Tileset.png"
+         "image":"Overworld_Tileset.png",
+         "imageheight":608,
+         "imagewidth":640,
+         "margin":0,
+         "name":"Overworld_Tileset",
+         "spacing":0,
+         "tilecount":1520,
+         "tileheight":16,
+         "tilewidth":16
         }],
  "tilewidth":16,
  "type":"map",
