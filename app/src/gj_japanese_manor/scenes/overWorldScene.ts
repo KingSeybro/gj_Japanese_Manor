@@ -71,6 +71,7 @@ export class OverWorldScene extends Phaser.Scene {
     private initializeInput() {
         let player = this.player;
         let camera = this.cameras.main;
+        let scene = this.scene;
 
         // Creates object for input with WASD kets
         this.moveKeys = this.input.keyboard.addKeys({
@@ -117,13 +118,17 @@ export class OverWorldScene extends Phaser.Scene {
         this.input.keyboard.on('keydown_T', function (event) {
             camera.setZoom(camera.zoom - 0.01);
         });
+
+        this.input.keyboard.on('keydown_B', function (event) {
+            scene.switch('BattleScene'); // Start the battle scene
+        });
     }
 
     update(time: number, delta: number): void {
         super.update(time, delta);
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
-        this.constrainVelocity(this.player,200);
+        this.constrainVelocity(this.player,100);
         let y = this.player.body.velocity.y*100;
         let x = this.player.body.velocity.x*100;
         if(x!=0&&y!=0){
