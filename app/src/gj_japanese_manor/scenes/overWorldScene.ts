@@ -140,6 +140,8 @@ export class OverWorldScene extends Phaser.Scene {
         });
 
         this.input.keyboard.on('keydown_B', function (event) {
+            player.setAcceleration(0, 0);
+            player.setVelocity(0, 0);
             scene.switch('BattleScene'); // Start the battle scene
         });
     }

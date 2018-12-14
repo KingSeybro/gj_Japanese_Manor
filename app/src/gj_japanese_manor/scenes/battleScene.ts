@@ -19,7 +19,7 @@ export class BattleScene extends Phaser.Scene {
         let scene = this.scene;
         this.input.keyboard.on('keydown_B', function (event) {
             console.log("now!");
-            scene.start('OverWorldScene'); // Start the main scene
+            scene.switch('OverWorldScene'); // Start the main scene
         });
     }
 
