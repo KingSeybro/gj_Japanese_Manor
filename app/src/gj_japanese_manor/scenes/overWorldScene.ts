@@ -35,14 +35,6 @@ export class OverWorldScene extends Phaser.Scene {
         this.layer = this.map.createStaticLayer(0, this.tiles, 0, 0);
         this.cameras.main.setBounds(0, 0, 10, 10);
 
-        // Creates object for input with WASD kets
-        this.moveKeys = this.input.keyboard.addKeys({
-            'up': Phaser.Input.Keyboard.KeyCodes.W,
-            'down': Phaser.Input.Keyboard.KeyCodes.S,
-            'left': Phaser.Input.Keyboard.KeyCodes.A,
-            'right': Phaser.Input.Keyboard.KeyCodes.D
-        });
-
         this.player = this.physics.add.sprite(400, 300, 'player');
         this.player.setOrigin(0.5, 0.5).setDisplaySize(32, 32).setCollideWorldBounds(true).setDrag(500, 500);
 
@@ -52,6 +44,13 @@ export class OverWorldScene extends Phaser.Scene {
 
     private initializeInput() {
         const self = this;
+        // Creates object for input with WASD kets
+        this.moveKeys = this.input.keyboard.addKeys({
+            'up': Phaser.Input.Keyboard.KeyCodes.W,
+            'down': Phaser.Input.Keyboard.KeyCodes.S,
+            'left': Phaser.Input.Keyboard.KeyCodes.A,
+            'right': Phaser.Input.Keyboard.KeyCodes.D
+        });
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_W', function (event) {
             self.player.setAccelerationY(-400);
