@@ -3,4 +3,6 @@ export class Constants {
 
     public static readonly DEBUG_ON = true;
 
+    public static readonly SERVER_URL = 'http://localhost:3000'
+
 }
