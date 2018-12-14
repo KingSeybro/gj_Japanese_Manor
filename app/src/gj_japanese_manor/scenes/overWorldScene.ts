@@ -48,6 +48,8 @@ export class OverWorldScene extends Phaser.Scene {
         this.io.connect();
         if (this.io.connected) {
             console.log("Connected to server " + Constants.SERVER_URL);
+        } else {
+            console.log("Could not connect to server " + Constants.SERVER_URL);
         }
         this.map = this.make.tilemap({ key: Assets.TILES_OVERWORLD_MAP });
         this.tiles = this.map.addTilesetImage("Overworld_Tileset (2)", "overworld");
