@@ -7,7 +7,6 @@
 /// <reference path="../phaser.d.ts"/>
 
 import "phaser";
-import { MainScene } from "./scenes/mainScene";
 import {OverWorldScene} from "./scenes/overWorldScene";
 
 // main game configuration
