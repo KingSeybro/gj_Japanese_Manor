@@ -53,7 +53,8 @@ export class OverWorldScene extends BaseTileMapScene {
             .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
             .setCollideWorldBounds(true)
             .setDrag(500, 500);
-        this.player.body.allowRotation = true;
+
+        this.player.body.stopVelocityOnCollide = true;
 
         this.setUpCollisionLayer([1, 2], this.player);
 
@@ -83,7 +84,11 @@ export class OverWorldScene extends BaseTileMapScene {
                 // console.log("player update" + JSON.stringify(p));
                 if (!self.otherPlayers.get(p.id)) {
                     let otherPlayer = this.physics.add.sprite(p.x, p.y, 'player');
-                    otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE);
+                    otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
+                        .setCollideWorldBounds(true)
+                        .setDrag(500, 500);
+                        otherPlayer.body.stopVelocityOnCollide=true;
+                    self.physics.add.collider(otherPlayer, self.player);
                     self.otherPlayers.set(p.id, otherPlayer);
                 } else {
                     // console.log("update " + p.id);
