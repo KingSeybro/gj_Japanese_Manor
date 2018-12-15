@@ -89,7 +89,6 @@ export class PlayerCombat {
             if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm) {
                 enemyPlayer.finalSocialStanding = this.finalSocialStanding - (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
                 finalDamageDone = (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
-                console.log("dd: "+finalDamageDone);
             } else {
                 //NO Damage is DONE
             }

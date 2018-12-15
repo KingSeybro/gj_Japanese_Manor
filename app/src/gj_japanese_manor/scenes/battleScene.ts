@@ -5,6 +5,7 @@ import {Globals} from "../globals";
 import {SharedConstants} from "../../shared/sharedConstants";
 import {CombatWrapper} from "../combatWrapper";
 import {
+    AttackFile,
     createPlayerCombatFromStructure,
     PlayerCombat,
     The_Fool,
@@ -22,12 +23,14 @@ export class BattleScene extends Phaser.Scene {
     public text: Phaser.GameObjects.Text;
     public dbox: DialogBox;
     public hudText: Map<String, Phaser.GameObjects.Text>;
+    private selection: Map<String, AttackFile>;
     constructor() {
         //TODO SET PLAYER OBJECTS
         super({
             key: "BattleScene"
         });
         this.hudText = new Map<String, Phaser.GameObjects.Text>();
+        this.selection = new Map<String, AttackFile>();
     }
 
     preload(): void {
@@ -54,40 +57,71 @@ export class BattleScene extends Phaser.Scene {
         this.lock = false;
         let scene = this.scene;
         const self = this;
-        this.input.keyboard.on('keydown_F', function (event) {
+        let myturn = Globals.data.combat.attackerObject.id === Websocket.io.id;
+        let attackChooseText = "Choose attack:\n";
+        let attacker = createPlayerCombatFromStructure(Globals.data.combat.attackerObject);
+        let defender = createPlayerCombatFromStructure(Globals.data.combat.defenderObject);
+        this.selection = new Map<String, AttackFile>();
+        let options = ["A","B","C","D","E"];
+        if(myturn){
+            for (let i = 0; i < attacker.attacksAndSpells.length; i++) {
+                let attackFile1 = attacker.attacksAndSpells[i];
+                let disabledString="";
+                if(attackFile1.attackCost > attacker.currentFocus){
+                    disabledString = " (disabled)";
+                    this.selection.set(options[i],null);
+                }else{
+                    this.selection.set(options[i],attackFile1);
+                }
+                attackChooseText +=options[i]+") "+attackFile1.name+" ("+attackFile1.attackCost+")"+disabledString+" - "+attackFile1.descriptionOfAttack+"\n";
+            }
+            this.renderActionText(attackChooseText);
+
+        }else {
+            this.renderActionText("Wait for your opponents turn.");
+
+        }
+        this.input.keyboard.on('keydown_A', function (event) {
             //already press do nothing
             if (self.lock) {
                 return;
             }
-
-            let myturn = Globals.data.combat.attackerObject.id === Websocket.io.id;
-            if (myturn) {
-                self.lock = true;
-                console.log("was my turn switch now");
-                let attacker = createPlayerCombatFromStructure(Globals.data.combat.attackerObject);
-                let defender = createPlayerCombatFromStructure(Globals.data.combat.defenderObject);
-                attacker.basicAttack(defender);
-                attacker.attacksAndSpells[0].combatFunction.call(attacker,defender);
-
-                console.log(defender);
-
-
-                let summaryString = "basic attack done";
-                let attackString = "basic attack done";
-                let combat = new CombatWrapper(defender, attacker, summaryString, attackString);
-                Globals.data.combat = combat;
-                Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, combat);
-                console.log('send data will wait now');
-                self.renderActionText('Attack: '+ attackString + ' \n' +summaryString  + ' \n\nWait for other turn now');
-            } else {
-                self.renderActionText('Its not your turn now');
+            self.executeAttack("A",myturn, self, attacker, defender);
+        });
+        this.input.keyboard.on('keydown_B', function (event) {
+            //already press do nothing
+            if (self.lock) {
+                return;
             }
+            self.executeAttack("B",myturn, self, attacker, defender);
+        });
+        this.input.keyboard.on('keydown_C', function (event) {
+            //already press do nothing
+            if (self.lock) {
+                return;
+            }
+            self.executeAttack("C",myturn, self, attacker, defender);
+        });
+        this.input.keyboard.on('keydown_D', function (event) {
+            //already press do nothing
+            if (self.lock) {
+                return;
+            }
+            self.executeAttack("D",myturn, self, attacker, defender);
+        });
+        this.input.keyboard.on('keydown_E', function (event) {
+            //already press do nothing
+            if (self.lock) {
+                return;
+            }
+            self.executeAttack("E",myturn, self, attacker, defender);
         });
 
 
-        Websocket.io.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (p: any) => {
+
+        Websocket.io.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (p: CombatWrapper) => {
             console.log("Received combat event from server");
-            self.renderActionText('Enemy hit with ' + p.attackName + '\n' + p.summaryString + '\n\nIts you turn now');
+            self.renderActionText('Enemy hit with ' + p.attackName + '\n' + p.summaryString + 'And delt'+p.+'' \n\nIts you turn now');
             Globals.data.combat = p;
             self.renderHudText(p);
             self.lock = false;
@@ -121,6 +155,30 @@ export class BattleScene extends Phaser.Scene {
 
     }
 
+    private executeAttack(a:string, myturn, self, attacker, defender) {
+        if (myturn) {
+            self.lock = true;
+            console.log("was my turn switch now");
+
+            let attackFile = this.selection[a];
+            if(attackFile == null){//is disabled
+                return;
+            }
+
+            let combat: CombatWrapper = attackFile.combatFunction.call(attacker, defender);
+
+            let summaryString = attackFile.dialogForAttack;
+            let attackString = attackFile.name;
+            combat.summaryString = attackFile.name;
+            Globals.data.combat = combat;
+            Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, combat);
+            console.log('send data will wait now');
+            self.renderActionText('Attack: ' + attackString + ' \n' + summaryString + ' \n\nWait for other turn now');
+        } else {
+            self.renderActionText('Its not your turn now');
+        }
+    }
+
     renderActionText(text: string) {
         if(!this.dbox){
             this.dbox = new DialogBox(this);
@@ -128,6 +186,7 @@ export class BattleScene extends Phaser.Scene {
         }
         this.dbox.setText(text, false);
     }
+
 
     renderHudText(o: CombatWrapper){
         this.hudText.get('soc_standing'+o.attackerObject.id).text = o.attackerObject.finalSocialStanding.toString();
