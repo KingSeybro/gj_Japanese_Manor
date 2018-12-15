@@ -21,6 +21,8 @@ export class OverWorldScene extends BaseTileMapScene {
 
 
     public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
+    private gracePeriod: number;
+    private static DEFAULT_GRACE_PERIOD: number = 2000;
 
     constructor() {
         super({
@@ -42,6 +44,7 @@ export class OverWorldScene extends BaseTileMapScene {
     create(): void {
         Websocket.init();
 
+        this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
         this.initMap(Assets.TILES_OVERWORLD_MAP);
 
 
@@ -53,7 +56,6 @@ export class OverWorldScene extends BaseTileMapScene {
             .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
             .setCollideWorldBounds(true)
             .setDrag(500, 500);
-
         this.player.body.stopVelocityOnCollide = true;
 
         this.setUpCollisionLayer([1, 2], this.player);
