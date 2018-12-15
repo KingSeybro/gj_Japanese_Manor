@@ -1,0 +1,102 @@
+[
+	{
+		"title": "StartButler",
+		"tags": "Butler StartButler",
+		"body": "Good evening my lady. I trust everything is to your liking?\n[[Yes, did you string up the lovely decorations?|ButlerGood01]]\n[[Yes, could you get me a drink?.|ButlerNeutral01]]\n[[Yes, but I feel I haven't spent enough time with Graf Von Azabu. |ButlerBad01]]",
+		"position": {
+			"x": 808,
+			"y": -77
+		},
+		"colorID": 0
+	},
+	{
+		"title": "ButlerGood01",
+		"tags": "Butler",
+		"body": "Yes, I had to use some heavy rope. \n[[You must be exhausted. Perhaps you should take a break.|ButlerGood02]]\n[[Ok. Could you make me a Hanky Panky, please?|ButlerNeutral02]]\n[[That Graf must keep you all tied up!|ButlerBad02]]",
+		"position": {
+			"x": 207,
+			"y": 192
+		},
+		"colorID": 0
+	},
+	{
+		"title": "ButlerBad01",
+		"tags": "Butler",
+		"body": "Maybe some liquid courage, my lady?\n[[Yes, a Hanky Panky, please.|ButlerNeutral02]]\n[[Yes, what about a Virgin Mary, please.|ButlerBad02]]\n[[Just water for me, please.|ButlerBad02]]",
+		"position": {
+			"x": 1348,
+			"y": 189
+		},
+		"colorID": 0
+	},
+	{
+		"title": "ButlerNeutral01",
+		"tags": "Butler",
+		"body": "Certainly. What's your preference? \n[[A Bloody Mary, please.|ButlerGood02]]\n[[A Hanky Panky to get in the mood, please.|ButlerNeutral02]]\n[[I'll have what the Graf is drinking, please.|ButlerBad02]]\n",
+		"position": {
+			"x": 814,
+			"y": 212
+		},
+		"colorID": 0
+	},
+	{
+		"title": "ButlerGood02",
+		"tags": "Butler",
+		"body": "Thank you. Anything else?\nBloody Mary/break \n[[Could you tell the Graf to meet me on the balcony, please?|ButlerGoodEnding]]\n[[Could you put in a good word for me with the Gräfin?|ButlerGoodEnding]]\n[[Thank you, that'll be all for now.|ButlerNeutralEnding]]",
+		"position": {
+			"x": 213,
+			"y": 567
+		},
+		"colorID": 0
+	},
+	{
+		"title": "ButlerNeutral02",
+		"tags": "Butler",
+		"body": "Anything else? \nhanky panky\n[[Yes, another one please!|ButlerNeutralEnding]]\n[[Thank you, that'll be all for now.|ButlerNeutralEnding]]\n[[Just leave me alone now!|ButlerBadEnding]]\n\nThis explains your butch forarms.",
+		"position": {
+			"x": 829,
+			"y": 577
+		},
+		"colorID": 0
+	},
+	{
+		"title": "ButlerBad02",
+		"tags": "Butler",
+		"body": "You seem very interested in the Graf. \nCount's drink/ tied up\n[[I'm interested in many things.|ButlerNeutralending]]\n[[Yes, that's why I'm here.|ButlerBadEnding]]\n[[What do you think?.|ButlerBadEnding]]",
+		"position": {
+			"x": 1381,
+			"y": 560
+		},
+		"colorID": 0
+	},
+	{
+		"title": "ButlerGoodEnding",
+		"tags": "Butler ButlerEnding GoodEnding",
+		"body": "Most certainly, my lady! Enjoy your evening. ",
+		"position": {
+			"x": 217,
+			"y": 844
+		},
+		"colorID": 6
+	},
+	{
+		"title": "ButlerNeutralEnding",
+		"tags": "Butler ButlerEnding NeutralEnding",
+		"body": "As you wish, my lady. Enjoy your evening. ",
+		"position": {
+			"x": 838,
+			"y": 859
+		},
+		"colorID": 1
+	},
+	{
+		"title": "ButlerBadEnding",
+		"tags": "Butler ButlerEnding BadEnding",
+		"body": "You may be disappointed.",
+		"position": {
+			"x": 1375,
+			"y": 846
+		},
+		"colorID": 0
+	}
+]
