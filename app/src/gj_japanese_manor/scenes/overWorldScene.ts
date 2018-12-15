@@ -7,14 +7,14 @@ import {Assets} from "../assets";
 import {Constants} from "../constants";
 import * as socketIo from "socket.io-client";
 import {SharedConstants} from "../../shared/sharedConstants";
-import {Position, PlayerInfo} from "../../shared/playerInfo";
+import {PlayerInfo, Position} from "../../shared/playerInfo";
 import {BaseTileMapScene} from "./baseTileMapScene";
-import {cpus} from "os";
 import {Globals} from "../globals";
 
 export class OverWorldScene extends BaseTileMapScene {
 
     public static readonly TILESET_NAME = 'Overworld_Tileset';
+
 
     private moveKeys: object;
     private player: Phaser.Physics.Arcade.Sprite;
@@ -34,7 +34,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
     preload(): void {
         super.preload();
-        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('prototype.json'));
+        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'prototype.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
         this.physics.world.setBounds(0, 0, 9001, 9001);
     }
@@ -48,11 +48,14 @@ export class OverWorldScene extends BaseTileMapScene {
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         this.player = this.physics.add.sprite(400, 300, 'player');
-        this.player.setOrigin(0.5, 0.5).setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE).setCollideWorldBounds(true).setDrag(500, 500);
+        this.player
+            .setOrigin(0.5, 0.5)
+            .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
+            .setCollideWorldBounds(true)
+            .setDrag(500, 500);
+        this.player.body.allowRotation = true;
 
-        let collisionLayer = this.layers.get(1);
-        collisionLayer.setCollisionByProperty({collides: true});
-        this.physics.add.collider(this.player, collisionLayer);
+        this.setUpCollisionLayer([1, 2], this.player);
 
         this.initializeInput();
         this.cameras.main.setZoom(2);
