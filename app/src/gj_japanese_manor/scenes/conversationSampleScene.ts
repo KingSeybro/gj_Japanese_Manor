@@ -125,7 +125,7 @@ export class ConversationScene extends Phaser.Scene {
 
     private switchToOverworld(scene: SceneManager){
         scene.resume('OverWorldScene');
-        scene.remove("ConversationScene");
+        scene.stop("ConversationScene");
     }
 
     setConversationNode(value: any) {
