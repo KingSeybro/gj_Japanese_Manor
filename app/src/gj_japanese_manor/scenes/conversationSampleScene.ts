@@ -17,6 +17,7 @@ export class ConversationScene extends Phaser.Scene {
 
     preload(): void {
             this.load.json('conversation', Assets.url('conversations','TestConversation.json'));
+            this.load.image('bg_back_s', Assets.url('backgrounds','JM_Back_S.png'));
     }
 
     create(): void {
@@ -25,7 +26,8 @@ export class ConversationScene extends Phaser.Scene {
         this.node = this.conversation.getNextNode();
         this.conv = this.add.text(16, 16, "", { fontSize: '18px', fill: '#FFFF' });
         this.options = this.add.text(16, 64, "", { fontSize: '18px', fill: '#FFFF' });
-
+        // this.addimage('bg_1');
+        this.add.image(0,0,'bg_back_s');
 
         let scene = this.scene;
         let self=this;
