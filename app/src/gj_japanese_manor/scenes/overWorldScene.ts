@@ -247,7 +247,7 @@ export class OverWorldScene extends BaseTileMapScene {
         super.update(time, delta);
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
-        this.constrainVelocity(this.player, 100);
+        this.constrainVelocity(this.player, 400);
         let y = this.player.body.velocity.y * 100;
         let x = this.player.body.velocity.x * 100;
         if (x != 0 && y != 0) {
