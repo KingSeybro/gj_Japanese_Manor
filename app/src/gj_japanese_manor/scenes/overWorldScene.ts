@@ -40,7 +40,8 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     create(): void {
-        super.create();
+        this.initMap(Assets.TILES_OVERWORLD_MAP);
+
         this.io = socketIo(Constants.SERVER_URL);
         this.io.connect();
 

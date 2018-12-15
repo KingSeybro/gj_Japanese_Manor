@@ -26,16 +26,20 @@ export class BaseTileMapScene extends Phaser.Scene {
         this.collideableLayers = [];
     }
 
+    /**
+     * Will load all images passed from imagesToLoad array
+     */
     preload(): void {
         for (const img of this.imagesToLoad) {
             this.load.image(img, Assets.url('tilemap', img + '.png'));
         }
     }
 
-    create(): void {
-        this.initMap(Assets.TILES_OVERWORLD_MAP);
-    }
-
+    /**
+     * Loads the tilesets and layers no collision layer set at this
+     * point of time
+     * @param keyMap
+     */
     protected initMap(keyMap): void {
         console.log("Init map " + keyMap + " now");
         this.map = this.make.tilemap({
@@ -58,13 +62,20 @@ export class BaseTileMapScene extends Phaser.Scene {
         }
     }
 
+    /**
+     * Sets up the collision between the layers in ids array
+     * and the object1 parameter.
+     *
+     * @param {number[]} ids
+     * @param {Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | Phaser.GameObjects.Group | Phaser.GameObjects.Group[]} object1
+     */
     protected setUpCollisionLayer(ids: number[], object1: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | Phaser.GameObjects.Group | Phaser.GameObjects.Group[]) {
         if (this.collideableLayers.length == 0) {
             for (const id of ids) {
                 this.collideableLayers.push(this.layers.get(id));
             }
         } else {
-            console.log("Setup collision layer called twice will not init layers again");
+            console.error("Setup collision layer called twice will not init layers again");
         }
 
         for (let i = 0; i < this.collideableLayers.length; i++) {
