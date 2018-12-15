@@ -20,7 +20,7 @@ export class Conversation {
 
             this.conv.push({
                 title: json[i].title,
-                text: json[i].body.split("\n\n")[0],
+                text: json[i].body.split("\n")[0],
                 options:options,
             })
         }
