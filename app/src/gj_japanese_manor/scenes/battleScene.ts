@@ -31,6 +31,10 @@ export class BattleScene extends Phaser.Scene {
             scene.switch('OverWorldScene'); // Start the main scene
         });
 
+        this.input.keyboard.on('keydown_F', function (event) {
+
+        });
+
         const self = this;
 
         Websocket.io.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (p: CombatWrapper) => {
