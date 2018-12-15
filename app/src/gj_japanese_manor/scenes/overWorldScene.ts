@@ -30,7 +30,6 @@ export class OverWorldScene extends BaseTileMapScene {
         }, ['background_tiles']);
         this.otherPlayers = new Map<string, Phaser.Physics.Arcade.Sprite>();
         this.layers = new Map<number, Phaser.Tilemaps.StaticTilemapLayer>();
-        this.tiles = new Map<string, Phaser.Tilemaps.Tileset>();
         this.tilesMapping = new Map<number, string>();
     }
 
