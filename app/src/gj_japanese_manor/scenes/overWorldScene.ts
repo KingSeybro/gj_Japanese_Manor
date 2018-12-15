@@ -11,6 +11,8 @@ import {BaseTileMapScene} from "./baseTileMapScene";
 import {Globals} from "../globals";
 import {Websocket} from "../websocket";
 import {CombatData} from "../../shared/data";
+import {PlayerCombat, The_Fool, The_Naughty_Nerd} from "../../shared/playerCombat";
+import {SelectedPlayer} from "../selectedPlayer";
 
 export class OverWorldScene extends BaseTileMapScene {
 
@@ -25,6 +27,7 @@ export class OverWorldScene extends BaseTileMapScene {
     private gracePeriod: number;
     private static DEFAULT_GRACE_PERIOD: number = 2000;
     private wasInBattleScreen: boolean;
+    private selectedPlayer: PlayerCombat;
 
     constructor() {
         super({
@@ -51,11 +54,10 @@ export class OverWorldScene extends BaseTileMapScene {
 
     }
 
-    create(playerObject): void {
-        console.log(playerObject);
+    create(playerObject:SelectedPlayer): void {
 
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
-        Websocket.init();
+        vat id = Websocket.init();
 
         this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
         this.initMap(Assets.TILES_OVERWORLD_MAP);
@@ -304,7 +306,6 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     private getCurrentPlayerData(): PlayerInfo {
-        let playerData = new PlayerInfo(Websocket.io.id, new Position(this.player.x, this.player.y));
-        return playerData;
+        return new PlayerInfo(Websocket.io.id, new Position(this.player.x, this.player.y),this.selectedPlayer.type);
     }
 }
