@@ -32,47 +32,23 @@ export class BattleScene extends Phaser.Scene {
         });
 
         this.input.keyboard.on('keydown_F', function (event) {
+            let myturn = Globals.data.combat.attackerObject.id === Websocket.io.id;
+            if (myturn) {
+                console.log("was my turn switch now");
 
+                Globals.data.combat.attackerObject.basicAttack(Globals.data.combat.defenderObject);
+                Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, Globals.data.combat);
+            } else {
+                console.log("not my turn");
+            }
         });
 
         const self = this;
 
         Websocket.io.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (p: CombatWrapper) => {
-            //
-            // if (p.id !== Websocket.io.id) {
-            //     // console.log("player update" + JSON.stringify(p));
-            //     if (!self.otherPlayers.get(p.id)) {
-            //         let otherPlayer = this.physics.add.sprite(p.x, p.y, 'player');
-            //         otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
-            //             .setCollideWorldBounds(true)
-            //             .setDrag(500, 500);
-            //         otherPlayer.body.stopVelocityOnCollide=true;
-            //         self.physics.add.collider(otherPlayer, self.player);
-            //         self.otherPlayers.set(p.id, otherPlayer);
-            //     } else {
-            //         // console.log("update " + p.id);
-            //         self.otherPlayers.get(p.id).y = p.y;
-            //         self.otherPlayers.get(p.id).x = p.x;
-            //     }
-            // }
+            Globals.data.combat = p;
 
         });
-
-        // Websocket.io.on(SharedConstants.EVENT_PLAYER_DISCONNECTED, (p: any) => {
-        //     // console.log('Disconnected player ' + p);
-        //     // self.otherPlayers.get(p).destroy();
-        //     // self.otherPlayers.delete(p);
-        // });
-
-        // Websocket.io.emit(SharedConstants.EVENT_PLAYER_JOINED, this.getCurrentPlayerData());
-        // this.sendPlayerMoved();
-        //
-        // // Generic event sample
-        // // let enemyId = self.otherPlayers.entries()[0].id;
-        // let enemyId = 'test';
-        // Websocket.io.emit('generic_event', {enemyId: enemyId})
-
-
 
 
     }
