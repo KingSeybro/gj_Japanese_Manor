@@ -12,6 +12,7 @@ import {
     The_Naughty_Nerd, The_Sexy_Samurai
 } from "../../shared/playerCombat";
 import {CombatData} from "../../shared/data";
+import {DialogBox} from "../dialogbox";
 
 export class BattleScene extends Phaser.Scene {
 
@@ -19,6 +20,7 @@ export class BattleScene extends Phaser.Scene {
     public enemyObject: PlayerCombat;
     public lock: boolean;
     public text: Phaser.GameObjects.Text;
+    public dbox: DialogBox;
 
     constructor() {
         //TODO SET PLAYER OBJECTS
@@ -113,11 +115,12 @@ export class BattleScene extends Phaser.Scene {
     }
 
     renderActionText(text: string) {
-        if(!this.text) {
-            this.text = this.add.text(this.game.renderer.width / 2, 100, text, {color: '#000000'});
-        } else {
-            this.text.text = text;
+        if(!this.dbox){
+            this.dbox = new DialogBox(this);
+            this.dbox._createWindow();
         }
+        this.dbox.setText(text, true);
+        this.dbox.dialog = text;
 
     }
 

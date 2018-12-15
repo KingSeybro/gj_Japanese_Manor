@@ -68,7 +68,7 @@ export class DialogBox {
     }
 
     // Sets the text for the dialog window
-    setText(text, animate) {
+    setText(text, animate: boolean) {
         // Reset the dialog
         this.eventCounter = 0;
         this.dialog = text.split('');
