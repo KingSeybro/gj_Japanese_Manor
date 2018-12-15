@@ -102,11 +102,15 @@ export class App {
                 if(newAttacker.finalSocialStanding <= 0 || newAttacker.currentFocus <= 0){
                     socket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
                     otherSocket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
+                    newAttacker.endOfCombatHouseKeeping();
+                    newDefender.endOfCombatHouseKeeping();
                     return;
                 }
                 if(newDefender.finalSocialStanding <= 0 || newDefender.currentFocus <= 0){
                     socket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
                     otherSocket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
+                    newAttacker.endOfCombatHouseKeeping();
+                    newDefender.endOfCombatHouseKeeping();
                     return;
                 }
                 Log.log("something weird happened we should not come to here");

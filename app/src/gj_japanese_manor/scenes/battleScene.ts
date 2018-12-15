@@ -21,18 +21,18 @@ export class BattleScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.image('bg', Assets.url('backgrounds','JM_Back_HS.png'));
-        this.load.image('jb_char', Assets.url('characters','Jailbait Sketch.png'));
-        this.load.image('fool_char', Assets.url('characters','Fool Sketch.png'));
+        this.load.image('bg', Assets.url('backgrounds', 'JM_Back_HS.png'));
+        this.load.image('jb_char', Assets.url('characters', 'Jailbait Sketch.png'));
+        this.load.image('fool_char', Assets.url('characters', 'Fool Sketch.png'));
     }
 
     create(): void {
-        this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'bg');
-        let face1 = this.add.sprite(this.game.renderer.width/5 *4, 500, "jb_char");
+        this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'bg');
+        let face1 = this.add.sprite(this.game.renderer.width / 5 * 4, 500, "jb_char");
         face1.displayWidth = 400;
         face1.scaleY = face1.scaleX;
 
-        let face2 = this.add.sprite(this.game.renderer.width/5 *1, 500, "fool_char");
+        let face2 = this.add.sprite(this.game.renderer.width / 5 * 1, 500, "fool_char");
         face2.displayWidth = 400;
         face2.scaleY = face2.scaleX;
 
@@ -40,11 +40,6 @@ export class BattleScene extends Phaser.Scene {
         console.log("created battle screen");
         this.lock = false;
         let scene = this.scene;
-        this.input.keyboard.on('keydown_B', function (event) {
-            console.log("now!");
-
-        });
-
         const self = this;
         this.input.keyboard.on('keydown_F', function (event) {
             //already press do nothing
@@ -64,6 +59,7 @@ export class BattleScene extends Phaser.Scene {
                 let combat = new CombatWrapper(defender, attacker, "basic attack done", "basic attack done");
                 Globals.data.combat = combat;
                 Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, combat);
+                self.add.text(self.game.renderer.width / 2, 100, 'Wait for other turn now', );
             } else {
                 console.log("not my turn");
             }
@@ -72,6 +68,7 @@ export class BattleScene extends Phaser.Scene {
 
         Websocket.io.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (p: CombatWrapper) => {
             console.log("Received combat event from server");
+            self.add.text(self.game.renderer.width / 2, 100, p.attackName + ' ' + p.summaryString, {color: '#000000'});
             Globals.data.combat = p;
             self.lock = false;
         });
@@ -82,7 +79,7 @@ export class BattleScene extends Phaser.Scene {
 
             let myself = null;
             let enemy = null;
-            if(p1.id === Websocket.io.id){
+            if (p1.id === Websocket.io.id) {
                 myself = p1;
                 enemy = p2;
             } else {
@@ -90,7 +87,7 @@ export class BattleScene extends Phaser.Scene {
                 enemy = p1;
             }
 
-            if (myself.currentFocus > 0 && myself.finalSocialStanding > 0 ){
+            if (myself.currentFocus > 0 && myself.finalSocialStanding > 0) {
                 console.log("won");
             } else {
                 console.log("lost");
