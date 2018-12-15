@@ -13,8 +13,8 @@ export class StartScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.image('startBackground', 'assets/game/phaser.png');
-        this.load.image('startBtn', 'assets/game/phaser.png');
+        this.load.image('startBackground', 'assets/game/background_startscreen.png');
+        this.load.image('startBtn', 'assets/game/start_button.png');
         // how to use this?
         this.load.bitmapFont('Connection', 'assets/font/Connection.bmp');
         this.load.image('sexySamurai', 'assets/characters/Zhe sexy samurai Portrait sketch.png');
@@ -27,33 +27,27 @@ export class StartScene extends Phaser.Scene {
         console.log("created start screen");
         let scene = this.scene;
 
-        this.add.image(0, 0, 'startBackground').setOrigin(0, 0).setDepth(0);
-        this.add.text((this.game.renderer.width / 2) - 200, this.game.renderer.height / 5, 'Japanese Manor', {
-            fontSize: '50px',
-            fill: '#f7f8f9'
-        });
-        let playButton = this.add.image(this.game.renderer.width / 2, 2 * this.game.renderer.height / 5, 'startBtn').setScale(0.5, 0.5);
+        this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'startBackground').setDepth(0);
 
-        // let player1Btn = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 5 + 100, 'startBtn').setScale(0.3, 0.3);
-        // let player2Btn = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 5 + 200, 'startBtn').setScale(0.3, 0.3);
-        // let player3Btn = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 5 + 300, 'startBtn').setScale(0.3, 0.3);
-        // let player4Btn = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 5 + 400, 'startBtn').setScale(0.3, 0.3);
-        var anzahlPlayer = 4;
+        let playButton = this.add.image(this.game.renderer.width / 2, 2.2 * this.game.renderer.height / 5, 'startBtn').setScale(0.5, 0.5);
+
+        // var anzahlPlayer = 4;
         let playerTextures = ['sexySamurai', 'naughtyNerd', 'jailbait', 'fool'];
+        var anzahlPlayer = playerTextures.length;
         let playerArray = [];
 
 
         playButton.setVisible(false);
-        playButton.setInteractive();
+        playButton.setInteractive({useHandCursor: true});
 
         for (var i = 0; i < anzahlPlayer; i++) {
-            playerArray[i] = this.addPlayer(i, anzahlPlayer, playerTextures[i], 0.3, 0.3);
+            playerArray[i] = this.addPlayer(i, anzahlPlayer, playerTextures[i], 2/anzahlPlayer, 2/anzahlPlayer);
         }
 
 
         var clickedPlayerIndex = 0;
         for (let playerBtn of playerArray) {
-            playerBtn.setInteractive();
+            playerBtn.setInteractive({useHandCursor: true});
             //choose Player + set StartButton visibility
             playerBtn.on("pointerup", () => {
                 for (let players of playerArray) {
