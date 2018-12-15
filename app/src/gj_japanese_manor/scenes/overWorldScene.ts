@@ -47,7 +47,7 @@ export class OverWorldScene extends BaseTileMapScene {
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
 
-        console.log("created start screen");
+        console.log("preload overworld screen");
         let scene = this.scene;
         /*this.input.keyboard.on('keydown_S', function (event) {
             console.log("now!");
