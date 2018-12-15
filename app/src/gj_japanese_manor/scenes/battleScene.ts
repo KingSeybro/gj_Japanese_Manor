@@ -36,6 +36,7 @@ export class BattleScene extends Phaser.Scene {
             if (myturn) {
                 console.log("was my turn switch now");
 
+
                 Globals.data.combat.attackerObject.basicAttack(Globals.data.combat.defenderObject);
                 Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, Globals.data.combat);
             } else {
