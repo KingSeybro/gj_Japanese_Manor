@@ -49,15 +49,29 @@ export class App {
             });
 
             socket.on(SharedConstants.EVENT_PLAYER_MOVED, (m: PlayerInfo) => {
+                // Log.log('Received movement update ' + JSON.stringify(m));
+                player.x = m.position.x;
+                player.y = m.position.y;
+                this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, player)
+            });
+
+            socket.on(SharedConstants.EVENT_PLAYER_JOINED, (m: PlayerInfo) => {
                 Log.log('Received movement update ' + JSON.stringify(m));
                 player.x = m.position.x;
                 player.y = m.position.y;
+                for (const otherPlayerEntry of this.players.keys()) {
+                    let otherPlayer = this.players.get(otherPlayerEntry);
+                    Log.log('Update socket ' + connId + ' with info of other player ' + otherPlayer);
+                    socket.emit(SharedConstants.EVENT_PLAYER_UPDATE, otherPlayer);
+                }
                 this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, player)
             });
 
             socket.on('disconnect', () => {
 
                 Log.log('Client disconnected ' + connId);
+                this.players.delete(connId);
+                this.io.emit(SharedConstants.EVENT_PLAYER_DISCONNECTED, connId);
             });
         });
     }

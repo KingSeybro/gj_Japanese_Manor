@@ -5,11 +5,11 @@
  */
 import {Assets} from "../assets";
 import {Constants} from "../constants";
-import * as socketIo from "socket.io-client";
 import {SharedConstants} from "../../shared/sharedConstants";
 import {PlayerInfo, Position} from "../../shared/playerInfo";
 import {BaseTileMapScene} from "./baseTileMapScene";
 import {Globals} from "../globals";
+import {Websocket} from "../websocket";
 
 export class OverWorldScene extends BaseTileMapScene {
 
@@ -18,7 +18,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
     private moveKeys: object;
     private player: Phaser.Physics.Arcade.Sprite;
-    private io: SocketIOClient.Socket;
+
 
     public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
 
@@ -40,10 +40,9 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     create(): void {
-        this.initMap(Assets.TILES_OVERWORLD_MAP);
+        Websocket.init();
 
-        this.io = socketIo(Constants.SERVER_URL);
-        this.io.connect();
+        this.initMap(Assets.TILES_OVERWORLD_MAP);
 
 
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -54,7 +53,8 @@ export class OverWorldScene extends BaseTileMapScene {
             .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
             .setCollideWorldBounds(true)
             .setDrag(500, 500);
-        this.player.body.allowRotation = true;
+
+        this.player.body.stopVelocityOnCollide = true;
 
         this.setUpCollisionLayer([1, 2], this.player);
 
@@ -70,22 +70,28 @@ export class OverWorldScene extends BaseTileMapScene {
             // });
 
         }
-        if (this.io.connected) {
+        if (Websocket.isConnected()) {
             console.log("Connected to server " + Constants.SERVER_URL);
         } else {
             console.log("Could not connect to server " + Constants.SERVER_URL);
         }
 
         const self = this;
-        this.io.on(SharedConstants.EVENT_PLAYER_UPDATE, (p: any) => {
-            if (p.id !== this.io.id) {
-                console.log("player update" + JSON.stringify(p));
+
+        Websocket.io.on(SharedConstants.EVENT_PLAYER_UPDATE, (p: any) => {
+
+            if (p.id !== Websocket.io.id) {
+                // console.log("player update" + JSON.stringify(p));
                 if (!self.otherPlayers.get(p.id)) {
                     let otherPlayer = this.physics.add.sprite(p.x, p.y, 'player');
-                    otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE);
+                    otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
+                        .setCollideWorldBounds(true)
+                        .setDrag(500, 500);
+                        otherPlayer.body.stopVelocityOnCollide=true;
+                    self.physics.add.collider(otherPlayer, self.player);
                     self.otherPlayers.set(p.id, otherPlayer);
                 } else {
-                    console.log("update " + p.id);
+                    // console.log("update " + p.id);
                     self.otherPlayers.get(p.id).y = p.y;
                     self.otherPlayers.get(p.id).x = p.x;
                 }
@@ -93,6 +99,13 @@ export class OverWorldScene extends BaseTileMapScene {
 
         });
 
+        Websocket.io.on(SharedConstants.EVENT_PLAYER_DISCONNECTED, (p: any) => {
+            console.log('Disconnected player ' + p);
+            self.otherPlayers.get(p).destroy();
+            self.otherPlayers.delete(p);
+        });
+
+        Websocket.io.emit(SharedConstants.EVENT_PLAYER_JOINED, this.getCurrentPlayerData());
         this.sendPlayerMoved();
 
     }
@@ -194,7 +207,11 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     private sendPlayerMoved(): void {
+        Websocket.io.emit(SharedConstants.EVENT_PLAYER_MOVED, this.getCurrentPlayerData());
+    }
+
+    private getCurrentPlayerData(): PlayerInfo {
         let playerData = new PlayerInfo(new Position(this.player.x, this.player.y));
-        this.io.emit(SharedConstants.EVENT_PLAYER_MOVED, playerData);
+        return playerData;
     }
 }
