@@ -51,7 +51,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
-        this.player = this.physics.add.sprite(Math.random()*400, Math.random()*300, 'player');
+        this.player = this.physics.add.sprite(Math.random()*4000, Math.random()*3000, 'player');
         this.player
             .setOrigin(0.5, 0.5)
             .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
@@ -59,7 +59,7 @@ export class OverWorldScene extends BaseTileMapScene {
             .setDrag(500, 500);
         this.player.body.stopVelocityOnCollide = true;
 
-        this.setUpCollisionLayer([0], this.player);
+        this.setUpCollisionLayer([1], this.player);
 
         this.initializeInput();
         this.cameras.main.setZoom(Constants.DEFAULT_ZOOM);
@@ -133,21 +133,32 @@ export class OverWorldScene extends BaseTileMapScene {
 
     private collideCallback(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
         if(object1 == this.player){
+            console.log("o1");
             var value;
             var self =this;
+            for (let [key, v] of this.otherPlayers) {
+                console.log(key);
+                if(v==object2){
+                    value = key;
+                }
+            }
             Object.keys(this.otherPlayers).forEach(function(key) {
-                value = self.otherPlayers[key];
+
             });
         }else if(object2 == this.player){
+            console.log("o2");
             var value;
             var self =this;
-            Object.keys(this.otherPlayers).forEach(function(key) {
-                value = self.otherPlayers[key];
-            });
+            for (let [key, v] of this.otherPlayers) {
+                console.log(key);
+                if(v==object1){
+                    value = key;
+                }
+            }
         }
-        console.log("now");
+        console.log(value);
         if(this.gracePeriod <=0)
-            this.switchToBattleScreen();
+            this.switchToBattleScreen(value);
     }
 
     constrainVelocity(sprite, maxVelocity) {
@@ -245,8 +256,8 @@ export class OverWorldScene extends BaseTileMapScene {
         this.scene.switch('ConversationScene'); // Start the battle scene
     }
 
-    private switchToBattleScreen() {
-        console.log("battleScreen")
+    private switchToBattleScreen(key :string) {
+        console.log(key);
         this.wasInBattleScreen = true;
         this.scene.switch('BattleScene'); // Start the battle scene
     }
