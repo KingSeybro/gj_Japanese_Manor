@@ -4,7 +4,14 @@ import {Websocket} from "../websocket";
 import {Globals} from "../globals";
 import {SharedConstants} from "../../shared/sharedConstants";
 import {CombatWrapper} from "../combatWrapper";
-import {createPlayerCombatFromStructure, PlayerCombat} from "../../shared/playerCombat";
+import {
+    createPlayerCombatFromStructure,
+    PlayerCombat,
+    The_Fool,
+    The_Jailbait,
+    The_Naughty_Nerd, The_Sexy_Samurai
+} from "../../shared/playerCombat";
+import {CombatData} from "../../shared/data";
 
 export class BattleScene extends Phaser.Scene {
 
@@ -21,18 +28,22 @@ export class BattleScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.image('bg', Assets.url('backgrounds', 'JM_Back_HS.png'));
-        this.load.image('jb_char', Assets.url('characters', 'Jailbait Sketch.png'));
-        this.load.image('fool_char', Assets.url('characters', 'Fool Sketch.png'));
+        this.load.image('bg', Assets.url('backgrounds','JM_Back_HS.png'));
+        this.load.image(The_Fool.TYPE, Assets.url('characters', 'Fool Sketch.png'));
+        this.load.image(The_Jailbait.TYPE, Assets.url('characters', 'Jailbait Sketch.png'));
+        this.load.image(The_Naughty_Nerd.TYPE, Assets.url('characters', 'Naughty Nerd Sketch.png'));
+        this.load.image(The_Sexy_Samurai.TYPE, Assets.url('characters', 'Zhe sexy samurai sketch.png'));
     }
 
-    create(): void {
-        this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'bg');
-        let face1 = this.add.sprite(this.game.renderer.width / 5 * 4, 500, "jb_char");
+
+    create(o:CombatData): void {
+        console.log(o);
+        this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'bg');
+        let face1 = this.add.sprite(this.game.renderer.width/5 *4, 500, o.combat.attackerObject.type);
         face1.displayWidth = 400;
         face1.scaleY = face1.scaleX;
 
-        let face2 = this.add.sprite(this.game.renderer.width / 5 * 1, 500, "fool_char");
+        let face2 = this.add.sprite(this.game.renderer.width/5 *1, 500, o.combat.defenderObject.type);
         face2.displayWidth = 400;
         face2.scaleY = face2.scaleX;
 
@@ -54,6 +65,7 @@ export class BattleScene extends Phaser.Scene {
                 let attacker = createPlayerCombatFromStructure(Globals.data.combat.attackerObject);
                 let defender = createPlayerCombatFromStructure(Globals.data.combat.defenderObject);
                 attacker.basicAttack(defender);
+                attacker.attacksAndSpells[0].combatFunction(defender); //TODO choose which attack
 
                 let combat = new CombatWrapper(defender, attacker, "basic attack done", "basic attack done");
                 Globals.data.combat = combat;
