@@ -1,13 +1,13 @@
 import {PlayerCombat} from "../shared/playerCombat";
 
-export class CombatWrapper{
+export class CombatWrapper {
 
     public attackerObject: PlayerCombat;
     public defenderObject: PlayerCombat;
-    public summaryString: String;
-    public attackName: String;
+    public summaryString: string;
+    public attackName: string;
 
-    constructor(attackerObject: PlayerCombat, defenderObject: PlayerCombat, summaryString: String, attackName: String){
+    constructor(attackerObject: PlayerCombat, defenderObject: PlayerCombat, summaryString: string, attackName: string) {
         this.attackerObject = attackerObject;
         this.defenderObject = defenderObject;
         this.summaryString = summaryString;
