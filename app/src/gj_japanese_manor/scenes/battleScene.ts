@@ -51,7 +51,6 @@ export class BattleScene extends Phaser.Scene {
             if (myturn) {
                 self.lock = true;
                 console.log("was my turn switch now");
-                console.log(Globals.data.combat);
                 let attacker = createPlayerCombatFromStructure(Globals.data.combat.attackerObject);
                 let defender = createPlayerCombatFromStructure(Globals.data.combat.defenderObject);
                 attacker.basicAttack(defender);
@@ -59,14 +58,15 @@ export class BattleScene extends Phaser.Scene {
                 let combat = new CombatWrapper(defender, attacker, "basic attack done", "basic attack done");
                 Globals.data.combat = combat;
                 Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, combat);
-                self.add.text(self.game.renderer.width / 2, 100, 'Wait for other turn now', );
+                console.log('send data will wait now');
+                self.add.text(self.game.renderer.width / 2, 100, 'Wait for other turn now', {color: '#000000'});
             } else {
                 console.log("not my turn");
             }
         });
 
 
-        Websocket.io.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (p: CombatWrapper) => {
+        Websocket.io.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (p: any) => {
             console.log("Received combat event from server");
             self.add.text(self.game.renderer.width / 2, 100, p.attackName + ' ' + p.summaryString, {color: '#000000'});
             Globals.data.combat = p;

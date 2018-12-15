@@ -9,7 +9,7 @@ import {Log} from "./log";
 import {SharedConstants} from "../shared/sharedConstants";
 import {PlayerInfo, Position} from "../shared/playerInfo";
 import {CombatWrapper} from "../gj_japanese_manor/combatWrapper";
-import {createPlayerCombatFromStructure, The_Naughty_Nerd} from "../shared/playerCombat";
+import {createPlayerCombatFromStructure, The_Fool, The_Naughty_Nerd} from "../shared/playerCombat";
 import {CombatData} from "../shared/data";
 import apply = Reflect.apply;
 
@@ -88,7 +88,6 @@ export class App {
 
             socket.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (o: CombatWrapper) => {
                 Log.log('received player combat event from id  ' + connId + ' to ' + o.attackerObject.id);
-                // Log.log(JSON.stringify(o));
                 let otherSocket = this.sockets.get(o.attackerObject.id);
 
                 let newAttacker = createPlayerCombatFromStructure(o.attackerObject);
@@ -97,6 +96,7 @@ export class App {
                 if (newAttacker.finalSocialStanding > 0 && newAttacker.currentFocus > 0 && newDefender.finalSocialStanding > 0 && newDefender.currentFocus > 0) {
                     Log.log('no winner between ' + connId + ' and ' + o.attackerObject.id + ' yet');
                     otherSocket.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, o);
+                    otherSocket.send('test message');
                     return;
                 }
                 if(newAttacker.finalSocialStanding <= 0 || newAttacker.currentFocus <= 0){
@@ -139,7 +139,7 @@ export class App {
                 this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, otherPlayer);
 
                 let player1Obj = new The_Naughty_Nerd(player.id);
-                let player2Obj = new The_Naughty_Nerd(otherPlayer.id);
+                let player2Obj = new The_Fool(otherPlayer.id);
 
                 let combat = new CombatWrapper(player1Obj, player2Obj, "You are first", "");
                 let data1 = new CombatData();

@@ -8,6 +8,11 @@ export class Websocket {
     public static init(): void {
     this.io = socketIo(Constants.SERVER_URL, {secure: true, path: '/klujam18server/socket.io/', transports: ['websocket'], upgrade: false});
         this.io.connect();
+
+        Websocket.io.on('message', function (p: any) {
+            console.log('RECEIVE MESSAGE:', p);
+        })
+
     }
 
     public static isConnected(): boolean {
