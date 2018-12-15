@@ -21,12 +21,13 @@ export class BattleScene extends Phaser.Scene {
     public lock: boolean;
     public text: Phaser.GameObjects.Text;
     public dbox: DialogBox;
-
+    public hudText: Map<String, Phaser.GameObjects.Text>;
     constructor() {
         //TODO SET PLAYER OBJECTS
         super({
             key: "BattleScene"
         });
+        this.hudText = new Map<String, Phaser.GameObjects.Text>();
     }
 
     preload(): void {
@@ -39,7 +40,6 @@ export class BattleScene extends Phaser.Scene {
 
 
     create(o: CombatData): void {
-        console.log(o);
         this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'bg');
         let face1 = this.add.sprite(this.game.renderer.width / 5 * 4, 500, o.combat.attackerObject.type);
         face1.displayWidth = 400;
@@ -86,6 +86,7 @@ export class BattleScene extends Phaser.Scene {
             console.log("Received combat event from server");
             self.renderActionText('Enemy hit with ' + p.attackName + '\n' + p.summaryString + '\n\nIts you turn now');
             Globals.data.combat = p;
+            self.renderHudText(p);
             self.lock = false;
         });
 
@@ -113,6 +114,7 @@ export class BattleScene extends Phaser.Scene {
             Globals.data.combat = null;
         });
 
+        this.createHudText(o);
 
     }
 
@@ -122,7 +124,19 @@ export class BattleScene extends Phaser.Scene {
             this.dbox._createWindow();
         }
         this.dbox.setText(text, false);
+    }
 
+    renderHudText(o: CombatWrapper){
+        this.hudText.get('soc_standing'+o.attackerObject.id).text = o.attackerObject.finalSocialStanding.toString();
+        this.hudText.get('soc_standing'+o.defenderObject.id).text =  o.defenderObject.finalSocialStanding.toString();
+    }
+
+    createHudText(o: CombatData){
+        let leftSocialStanding = this.add.text(40, 40, o.combat.attackerObject.finalSocialStanding.toString(), {color: 'green', 'font-size': '45px'});
+        let rightSocialStanding = this.add.text(this.game.renderer.width - 40, 40, o.combat.defenderObject.finalSocialStanding.toString(), {color: 'green', 'font-size': '45px'});
+
+        this.hudText.set('soc_standing'+o.combat.attackerObject.id, leftSocialStanding);
+        this.hudText.set('soc_standing'+o.combat.defenderObject.id, rightSocialStanding);
     }
 
 

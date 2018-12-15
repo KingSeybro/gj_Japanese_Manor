@@ -97,7 +97,6 @@ export class App {
                 if (newAttacker.finalSocialStanding > 0 && newAttacker.currentFocus > 0 && newDefender.finalSocialStanding > 0 && newDefender.currentFocus > 0) {
                     Log.log('no winner between ' + connId + ' and ' + o.attackerObject.id + ' yet');
                     otherSocket.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, o);
-                    otherSocket.send('test message');
                     return;
                 }
                 if(newAttacker.finalSocialStanding <= 0 || newAttacker.currentFocus <= 0){
