@@ -1,16 +1,24 @@
 import {Constants} from "./constants";
 import * as socketIo from "socket.io-client";
+import {Helper} from "./scenes/helper";
 
 export class Websocket {
 
     public static io: SocketIOClient.Socket;
     public static connected = false;
 
-    public static init(game: Phaser.Game): string {
-        if(Websocket.connected){
+    public static init(scene: Phaser.Scenes.SceneManager): string {
+        if (Websocket.connected) {
             return this.io.id;
         }
-        this.io = socketIo(Constants.SERVER_URL, {secure: true, path: '/klujam18server/socket.io/', transports: ['websocket'], upgrade: false});
+        this.io = socketIo(Constants.SERVER_URL, {
+            secure: true,
+            path: '/klujam18server/socket.io/',
+            transports: ['websocket'],
+            upgrade: false,
+            autoConnect: false,
+            reconnection: false
+        });
         this.io.connect();
         Websocket.io.on('message', function (p: any) {
             console.log('RECEIVE MESSAGE:', p);
@@ -22,12 +30,12 @@ export class Websocket {
         Websocket.io.on('disconnect', function (p: any) {
             console.log('disconnect to ws server');
             Websocket.connected = false;
-            game.scene.stop('StartScene');
+            Helper.switchToStartScreen(scene);
         });
         Websocket.io.on('connect_error', function (p: any) {
             console.log('disconnect to ws server');
             Websocket.connected = false;
-            game.scene.dump();
+            Helper.switchToStartScreen(scene);
         });
         return this.io.id;
     }
@@ -35,7 +43,6 @@ export class Websocket {
     public static isConnected(): boolean {
         return this.connected;
     }
-
 
 
 }

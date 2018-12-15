@@ -141,7 +141,7 @@ export class App {
                 let player1Obj = new The_Naughty_Nerd(player.id);
                 let player2Obj = new The_Fool(otherPlayer.id);
 
-                let combat = new CombatWrapper(player1Obj, player2Obj, "You are first", "");
+                let combat = new CombatWrapper(player1Obj, player2Obj, "You are first", "", false, 0);
                 let data1 = new CombatData();
                 data1.combat = combat;
                 data1.otherPlayer = otherPlayer;

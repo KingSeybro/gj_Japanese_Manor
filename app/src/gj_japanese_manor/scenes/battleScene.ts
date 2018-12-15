@@ -71,7 +71,7 @@ export class BattleScene extends Phaser.Scene {
 
                 let summaryString = "basic attack done";
                 let attackString = "basic attack done";
-                let combat = new CombatWrapper(defender, attacker, summaryString, attackString);
+                let combat = new CombatWrapper(defender, attacker, summaryString, attackString, false, 0);
                 Globals.data.combat = combat;
                 Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, combat);
                 console.log('send data will wait now');

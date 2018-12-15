@@ -62,7 +62,7 @@ export class OverWorldScene extends BaseTileMapScene {
         console.log('OverWorldScene created called');
 
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
-        let id = Websocket.init(this.game);
+        let id = Websocket.init(this.game.scene);
         switch (playerObject.type) {
             case The_Fool.TYPE:
                 this.selectedPlayer = new The_Fool(id);
