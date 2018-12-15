@@ -4,12 +4,13 @@ import {Websocket} from "../websocket";
 import {Globals} from "../globals";
 import {SharedConstants} from "../../shared/sharedConstants";
 import {CombatWrapper} from "../combatWrapper";
-import {PlayerCombat} from "../../shared/playerCombat";
+import {createPlayerCombatFromStructure, PlayerCombat} from "../../shared/playerCombat";
 
 export class BattleScene extends Phaser.Scene {
 
     public meObject: PlayerCombat;
     public enemyObject: PlayerCombat;
+    public lock: boolean;
 
 
     constructor() {
@@ -20,59 +21,84 @@ export class BattleScene extends Phaser.Scene {
     }
 
     preload(): void {
-
+        this.load.image('bg', Assets.url('backgrounds','JM_Back_HS.png'));
+        this.load.image('jb_char', Assets.url('characters','Jailbait Sketch.png'));
+        this.load.image('fool_char', Assets.url('characters','Fool Sketch.png'));
     }
 
     create(): void {
+        this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'bg');
+        let face1 = this.add.sprite(this.game.renderer.width/5 *4, 500, "jb_char");
+        face1.displayWidth = 400;
+        face1.scaleY = face1.scaleX;
+
+        let face2 = this.add.sprite(this.game.renderer.width/5 *1, 500, "fool_char");
+        face2.displayWidth = 400;
+        face2.scaleY = face2.scaleX;
+
+
         console.log("created battle screen");
+        this.lock = false;
         let scene = this.scene;
         this.input.keyboard.on('keydown_B', function (event) {
             console.log("now!");
-            scene.switch('OverWorldScene'); // Start the main scene
-        });
-
-        this.input.keyboard.on('keydown_F', function (event) {
 
         });
 
         const self = this;
+        this.input.keyboard.on('keydown_F', function (event) {
+            //already press do nothing
+            if (self.lock) {
+                return;
+            }
 
-        Websocket.io.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (p: CombatWrapper) => {
-            //
-            // if (p.id !== Websocket.io.id) {
-            //     // console.log("player update" + JSON.stringify(p));
-            //     if (!self.otherPlayers.get(p.id)) {
-            //         let otherPlayer = this.physics.add.sprite(p.x, p.y, 'player');
-            //         otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
-            //             .setCollideWorldBounds(true)
-            //             .setDrag(500, 500);
-            //         otherPlayer.body.stopVelocityOnCollide=true;
-            //         self.physics.add.collider(otherPlayer, self.player);
-            //         self.otherPlayers.set(p.id, otherPlayer);
-            //     } else {
-            //         // console.log("update " + p.id);
-            //         self.otherPlayers.get(p.id).y = p.y;
-            //         self.otherPlayers.get(p.id).x = p.x;
-            //     }
-            // }
+            let myturn = Globals.data.combat.attackerObject.id === Websocket.io.id;
+            if (myturn) {
+                self.lock = true;
+                console.log("was my turn switch now");
+                console.log(Globals.data.combat);
+                let attacker = createPlayerCombatFromStructure(Globals.data.combat.attackerObject);
+                let defender = createPlayerCombatFromStructure(Globals.data.combat.defenderObject);
+                attacker.basicAttack(defender);
 
+                let combat = new CombatWrapper(defender, attacker, "basic attack done", "basic attack done");
+                Globals.data.combat = combat;
+                Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, combat);
+            } else {
+                console.log("not my turn");
+            }
         });
 
-        // Websocket.io.on(SharedConstants.EVENT_PLAYER_DISCONNECTED, (p: any) => {
-        //     // console.log('Disconnected player ' + p);
-        //     // self.otherPlayers.get(p).destroy();
-        //     // self.otherPlayers.delete(p);
-        // });
 
-        // Websocket.io.emit(SharedConstants.EVENT_PLAYER_JOINED, this.getCurrentPlayerData());
-        // this.sendPlayerMoved();
-        //
-        // // Generic event sample
-        // // let enemyId = self.otherPlayers.entries()[0].id;
-        // let enemyId = 'test';
-        // Websocket.io.emit('generic_event', {enemyId: enemyId})
+        Websocket.io.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (p: CombatWrapper) => {
+            console.log("Received combat event from server");
+            Globals.data.combat = p;
+            self.lock = false;
+        });
 
+        Websocket.io.on(SharedConstants.EVENT_STOP_BATTLE, (p: CombatWrapper) => {
+            let p1 = createPlayerCombatFromStructure(p.defenderObject);
+            let p2 = createPlayerCombatFromStructure(p.attackerObject);
 
+            let myself = null;
+            let enemy = null;
+            if(p1.id === Websocket.io.id){
+                myself = p1;
+                enemy = p2;
+            } else {
+                myself = p2;
+                enemy = p1;
+            }
+
+            if (myself.currentFocus > 0 && myself.finalSocialStanding > 0 ){
+                console.log("won");
+            } else {
+                console.log("lost");
+            }
+
+            scene.switch('OverWorldScene');
+            Globals.data.combat = null;
+        });
 
 
     }

@@ -9,8 +9,9 @@ import {Log} from "./log";
 import {SharedConstants} from "../shared/sharedConstants";
 import {PlayerInfo, Position} from "../shared/playerInfo";
 import {CombatWrapper} from "../gj_japanese_manor/combatWrapper";
-import {The_Naughty_Nerd} from "../shared/playerCombat";
+import {createPlayerCombatFromStructure, The_Naughty_Nerd} from "../shared/playerCombat";
 import {CombatData} from "../shared/data";
+import apply = Reflect.apply;
 
 export class App {
 
@@ -86,23 +87,46 @@ export class App {
             });
 
             socket.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (o: CombatWrapper) => {
-                // Log.log('received player combat event ' + JSON.stringify(o));
-                // let enemyPlayer = this.players.get(o.enemyId);
-                // Log.log(enemyPlayer);
-                // if(!enemyPlayer){
-                //     Log.log("Could not find player " + o.enemyId);
-                //     return;
-                // }
-                // this.sockets.get(o.enemyId).emit('send_event_to_other_player', {payload: 'blub'});
+                Log.log('received player combat event from id  ' + connId + ' to ' + o.attackerObject.id);
+                // Log.log(JSON.stringify(o));
+                let otherSocket = this.sockets.get(o.attackerObject.id);
+
+                let newAttacker = createPlayerCombatFromStructure(o.attackerObject);
+                let newDefender = createPlayerCombatFromStructure(o.defenderObject);
+
+                if (newAttacker.finalSocialStanding > 0 && newAttacker.currentFocus > 0 && newDefender.finalSocialStanding > 0 && newDefender.currentFocus > 0) {
+                    Log.log('no winner between ' + connId + ' and ' + o.attackerObject.id + ' yet');
+                    otherSocket.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, o);
+                    return;
+                }
+                if(newAttacker.finalSocialStanding <= 0 || newAttacker.currentFocus <= 0){
+                    socket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
+                    otherSocket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
+                    return;
+                }
+                if(newDefender.finalSocialStanding <= 0 || newDefender.currentFocus <= 0){
+                    socket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
+                    otherSocket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
+                    return;
+                }
+                Log.log("something weird happened we should not come to here");
 
             });
 
             socket.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: any) => {
                 Log.log('Received start battle between ' + connId + ' and ' + o.otherPlayerId);
                 let otherPlayer = this.players.get(o.otherPlayerId);
-                if (player.inCombat || !otherPlayer || otherPlayer.inCombat) {
+                if (!otherPlayer) {
                     //TODO: we could send back to the socket that we have no idea who the other id is
                     Log.log("ERROR - could not find other player");
+                    return;
+                }
+                if(otherPlayer.inCombat) {
+                    Log.log("ERROR other player in combat");
+                    return;
+                }
+                if(player.inCombat) {
+                    Log.log("ERROR player in combat");
                     return;
                 }
                 player.inCombat = true;

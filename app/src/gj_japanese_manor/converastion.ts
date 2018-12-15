@@ -18,10 +18,19 @@ export class Conversation {
                 }
             } while (match);
 
+            let outcome = undefined;
+            if(json[i].tags.indexOf('BadEnding')!=-1){
+                outcome = false;
+            }
+            if(json[i].tags.indexOf('GoodEnding')!=-1){
+                outcome = true;
+            }
+
             this.conv.push({
                 title: json[i].title,
-                text: json[i].body.split("\n\n")[0],
+                text: json[i].body.split("\n")[0],
                 options:options,
+                outcome: outcome
             })
         }
     }
@@ -43,6 +52,7 @@ export class ConversationNode{
     title: string;
     text: string;
     options :ConversationNodeOption[];
+    outcome: boolean;
 
 }
 

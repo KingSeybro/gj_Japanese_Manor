@@ -96,7 +96,7 @@ export class OverWorldScene extends BaseTileMapScene {
         Websocket.io.on(SharedConstants.EVENT_PLAYER_UPDATE, (p: PlayerInfo) => {
 
             if (p.id !== Websocket.io.id) {
-                console.log("player update" + JSON.stringify(p));
+                // console.log("player update" + JSON.stringify(p));
                 if (!self.otherPlayers.get(p.id)) {
                     let otherPlayer = this.physics.add.sprite(p.position.x, p.position.y, 'player');
                     otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
@@ -123,10 +123,11 @@ export class OverWorldScene extends BaseTileMapScene {
                 otherPlayer.destroy();
                 self.otherPlayers.delete(p);
             }
-        });
+        });+
 
         Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: CombatData) => {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
+            Globals.data = o;
             this.scene.switch('BattleScene');
         });
 
@@ -148,7 +149,6 @@ export class OverWorldScene extends BaseTileMapScene {
             var value;
             var self = this;
             for (let [key, v] of this.otherPlayers) {
-                console.log(key);
                 if (v == object2) {
                     value = key;
                 }
@@ -160,7 +160,6 @@ export class OverWorldScene extends BaseTileMapScene {
             var value;
             var self = this;
             for (let [key, v] of this.otherPlayers) {
-                console.log(key);
                 if (v == object1) {
                     value = key;
                 }
@@ -235,6 +234,7 @@ export class OverWorldScene extends BaseTileMapScene {
         });
         this.input.keyboard.on('keydown_Z', function (event) {
             camera.setZoom(camera.zoom + 0.1);
+            console.log(camera.zoom);
         });
         this.input.keyboard.on('keydown_T', function (event) {
             camera.setZoom(camera.zoom - 0.1);
@@ -257,6 +257,11 @@ export class OverWorldScene extends BaseTileMapScene {
             self.switchToConversationScreen();
         });
 
+        this.input.keyboard.on('keydown_N', function (event) {
+            player.setAcceleration(0, 0);
+            player.setVelocity(0, 0);
+            scene.switch('DialogueScene'); // Start the battle scene
+        });
     }
 
     public switchToConversationScreen() {

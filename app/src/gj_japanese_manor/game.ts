@@ -11,17 +11,20 @@ import {OverWorldScene} from "./scenes/overWorldScene";
 import {BattleScene} from "./scenes/battleScene";
 import {StartScene} from "./scenes/startScene";
 import {ConversationScene} from "./scenes/conversationSampleScene";
+import {DialogueScene} from "./scenes/dialogueScene";
 
 
 // main game configuration
 const config: GameConfig = {
+
     width: 1280,
     height: 720,
+
     type: Phaser.AUTO,
-    pixelArt: true,
+    pixelArt: false,
     parent: "game",
 
-    scene: [StartScene, OverWorldScene, BattleScene, ConversationScene],
+    scene: [StartScene, OverWorldScene, BattleScene, ConversationScene, DialogueScene],
     physics: {
         default: "arcade",
         arcade: {
