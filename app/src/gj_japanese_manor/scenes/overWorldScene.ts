@@ -21,29 +21,29 @@ export class OverWorldScene extends BaseTileMapScene {
 
 
     public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
-    private inOverworld: boolean;
+    private gracePeriod: number;
+    private static DEFAULT_GRACE_PERIOD: number = 2000;
 
     constructor() {
         super({
             key: "OverWorldScene"
-        }, ['overworld', 'Inside_A4', 'Inside_A2', 'Outside_B']);
+        }, ['background_tiles']);
         this.otherPlayers = new Map<string, Phaser.Physics.Arcade.Sprite>();
         this.layers = new Map<number, Phaser.Tilemaps.StaticTilemapLayer>();
-        this.tiles = new Map<string, Phaser.Tilemaps.Tileset>();
         this.tilesMapping = new Map<number, string>();
-        this.inOverworld = true;
     }
 
     preload(): void {
         super.preload();
-        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'prototype.json'));
+        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
-        this.physics.world.setBounds(0, 0, 9001, 9001);
+        this.physics.world.setBounds(0, 0, 500*Constants.TILE_SIZE, 500*Constants.TILE_SIZE);
     }
 
     create(): void {
         Websocket.init();
 
+        this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
         this.initMap(Assets.TILES_OVERWORLD_MAP);
 
 
@@ -55,13 +55,12 @@ export class OverWorldScene extends BaseTileMapScene {
             .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
             .setCollideWorldBounds(true)
             .setDrag(500, 500);
-
         this.player.body.stopVelocityOnCollide = true;
 
-        this.setUpCollisionLayer([1, 2], this.player);
+        this.setUpCollisionLayer([0], this.player);
 
         this.initializeInput();
-        this.cameras.main.setZoom(2);
+        this.cameras.main.setZoom(Constants.DEFAULT_ZOOM);
 
         if (Globals.DEBUG_ON) {
             const debugGraphics = this.add.graphics().setAlpha(0.75);
@@ -145,7 +144,7 @@ export class OverWorldScene extends BaseTileMapScene {
             });
         }
         console.log("now");
-        if(this.inOverworld)
+        if(this.gracePeriod <=0)
             this.switchToBattleScreen();
     }
 
@@ -184,16 +183,16 @@ export class OverWorldScene extends BaseTileMapScene {
 
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_W', function (event) {
-            player.setAccelerationY(-400);
+            player.setAccelerationY(-Constants.ACCELERATION);
         });
         this.input.keyboard.on('keydown_S', function (event) {
-            player.setAccelerationY(400);
+            player.setAccelerationY(Constants.ACCELERATION);
         });
         this.input.keyboard.on('keydown_A', function (event) {
-            player.setAccelerationX(-400);
+            player.setAccelerationX(-Constants.ACCELERATION);
         });
         this.input.keyboard.on('keydown_D', function (event) {
-            player.setAccelerationX(400);
+            player.setAccelerationX(Constants.ACCELERATION);
         });
         // Stops player acceleration on uppress of WASD keys
         this.input.keyboard.on('keyup_W', function (event) {
@@ -233,9 +232,13 @@ export class OverWorldScene extends BaseTileMapScene {
             self.hitPlayer();
         });
 
+        this.input.keyboard.on('keydown_C', function (event) {
+          self.switchToConversationScreen();
+        });
+
     }
 
-    private switchToConversationScreen() {
+    public switchToConversationScreen() {
         this.player.setAcceleration(0, 0).setVelocity(0, 0);
         this.scene.switch('ConversationScene'); // Start the battle scene
     }
@@ -247,9 +250,10 @@ export class OverWorldScene extends BaseTileMapScene {
 
     update(time: number, delta: number): void {
         super.update(time, delta);
+        this.gracePeriod-=delta;
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
-        this.constrainVelocity(this.player, 100);
+        this.constrainVelocity(this.player, 400);
         let y = this.player.body.velocity.y * 100;
         let x = this.player.body.velocity.x * 100;
         if (x != 0 && y != 0) {
@@ -275,7 +279,7 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     private sendPlayerMoved(): void {
-        console.log("send player moved");
+        // console.log("send player moved");
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_MOVED, this.getCurrentPlayerData());
     }
 
