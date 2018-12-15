@@ -11,6 +11,7 @@ import {OverWorldScene} from "./scenes/overWorldScene";
 import {BattleScene} from "./scenes/battleScene";
 import {StartScene} from "./scenes/startScene";
 import {ConversationScene} from "./scenes/conversationSampleScene";
+import {DialogueScene} from "./scenes/dialogueScene";
 
 
 // main game configuration
@@ -21,7 +22,7 @@ const config: GameConfig = {
     pixelArt: false,
     parent: "game",
 
-    scene: [StartScene, OverWorldScene, BattleScene, ConversationScene],
+    scene: [StartScene, OverWorldScene, BattleScene, ConversationScene, DialogueScene],
     physics: {
         default: "arcade",
         arcade: {

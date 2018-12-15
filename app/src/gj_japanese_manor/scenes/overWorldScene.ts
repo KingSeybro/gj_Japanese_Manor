@@ -259,6 +259,11 @@ export class OverWorldScene extends BaseTileMapScene {
             self.switchToConversationScreen();
         });
 
+        this.input.keyboard.on('keydown_N', function (event) {
+            player.setAcceleration(0, 0);
+            player.setVelocity(0, 0);
+            scene.switch('DialogueScene'); // Start the battle scene
+        });
     }
 
     public switchToConversationScreen() {
