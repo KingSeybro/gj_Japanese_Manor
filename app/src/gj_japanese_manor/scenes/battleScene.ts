@@ -57,64 +57,56 @@ export class BattleScene extends Phaser.Scene {
         this.lock = false;
         let scene = this.scene;
         const self = this;
-        let myturn = Globals.data.combat.attackerObject.id === Websocket.io.id;
+
         let attackChooseText = "Choose attack:\n";
         let attacker = createPlayerCombatFromStructure(Globals.data.combat.attackerObject);
         let defender = createPlayerCombatFromStructure(Globals.data.combat.defenderObject);
         this.selection = new Map<String, AttackFile>();
-        let options = ["A","B","C","D","E"];
-        if(myturn){
-            for (let i = 0; i < attacker.attacksAndSpells.length; i++) {
-                let attackFile1 = attacker.attacksAndSpells[i];
-                let disabledString="";
-                if(attackFile1.attackCost > attacker.currentFocus){
-                    disabledString = " (disabled)";
-                    this.selection.set(options[i],null);
-                }else{
-                    this.selection.set(options[i],attackFile1);
-                }
-                attackChooseText +=options[i]+") "+attackFile1.name+" ("+attackFile1.attackCost+")"+disabledString+" - "+attackFile1.descriptionOfAttack+"\n";
+        this.renderAttackOptions(attacker, attackChooseText);
+
+        this.input.keyboard.on("keydown_X", function (event) {
+            console.log("x hit");
+            //already press do nothing
+            if (self.lock) {
+                return;
             }
-            this.renderActionText(attackChooseText);
+            self.renderAttackOptions( attacker, attackChooseText);
+        });
 
-        }else {
-            this.renderActionText("Wait for your opponents turn.");
-
-        }
         this.input.keyboard.on('keydown_A', function (event) {
             //already press do nothing
             if (self.lock) {
                 return;
             }
-            self.executeAttack("A",myturn, self, attacker, defender);
+            self.executeAttack("A",self, attacker, defender);
         });
         this.input.keyboard.on('keydown_B', function (event) {
             //already press do nothing
             if (self.lock) {
                 return;
             }
-            self.executeAttack("B",myturn, self, attacker, defender);
+            self.executeAttack("B",self, attacker, defender);
         });
         this.input.keyboard.on('keydown_C', function (event) {
             //already press do nothing
             if (self.lock) {
                 return;
             }
-            self.executeAttack("C",myturn, self, attacker, defender);
+            self.executeAttack("C",self, attacker, defender);
         });
         this.input.keyboard.on('keydown_D', function (event) {
             //already press do nothing
             if (self.lock) {
                 return;
             }
-            self.executeAttack("D",myturn, self, attacker, defender);
+            self.executeAttack("D", self, attacker, defender);
         });
         this.input.keyboard.on('keydown_E', function (event) {
             //already press do nothing
             if (self.lock) {
                 return;
             }
-            self.executeAttack("E",myturn, self, attacker, defender);
+            self.executeAttack("E", self, attacker, defender);
         });
 
 
@@ -127,7 +119,7 @@ export class BattleScene extends Phaser.Scene {
            }else{
                hitText += "You have been missed by the enemy attack. Your social standing remains unchanged."
            }
-            self.renderActionText(p.summaryString+"\n"+hitText);
+            self.renderActionText(p.summaryString+"\n"+hitText+"\n Hit 'X' key to continue.");
             Globals.data.combat = p;
             self.renderHudText(p);
             self.lock = false;
@@ -161,7 +153,32 @@ export class BattleScene extends Phaser.Scene {
 
     }
 
-    private executeAttack(a:string, myturn, self, attacker, defender) {
+    private renderAttackOptions( attacker, attackChooseText: string) {
+        let options = ["A", "B", "C", "D", "E"];
+        let myturn = Globals.data.combat.attackerObject.id === Websocket.io.id;
+        if (myturn) {
+            console.log("x hit and my turn");
+            for (let i = 0; i < attacker.attacksAndSpells.length; i++) {
+                let attackFile1 = attacker.attacksAndSpells[i];
+                let disabledString = "";
+                if (attackFile1.attackCost > attacker.currentFocus) {
+                    disabledString = " (disabled)";
+                    this.selection.set(options[i], null);
+                } else {
+                    this.selection.set(options[i], attackFile1);
+                }
+                attackChooseText += options[i] + ") " + attackFile1.name + " (" + attackFile1.attackCost + ")" + disabledString + " - " + attackFile1.descriptionOfAttack + "\n";
+            }
+            this.renderActionText(attackChooseText);
+
+        } else {
+            this.renderActionText("Wait for your opponents turn.");
+
+        }
+    }
+
+    private executeAttack(a:string, self, attacker, defender) {
+        let myturn = Globals.data.combat.attackerObject.id === Websocket.io.id;
         if (myturn) {
             self.lock = true;
             console.log("was my turn switch now");
@@ -172,15 +189,26 @@ export class BattleScene extends Phaser.Scene {
                 return;
             }
 
-            let combat: CombatWrapper = attackFile.combatFunction.call(attacker, defender);
+            let combat: CombatWrapper = attackFile.combatFunction.call(attacker, defender);//actual attack
+
+
 
             let summaryString = attackFile.dialogForAttack;
             let attackString = attackFile.name;
             combat.summaryString = attackFile.descriptionOfAttack;
+            let def = combat.defenderObject;
+            combat.defenderObject = combat.attackerObject ;
+            combat.attackerObject = def;
             Globals.data.combat = combat;
             Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, combat);
             console.log('send data will wait now');
-            self.renderActionText('Attack: ' + attackString + ' \n' + summaryString + ' \n\nWait for other turn now');
+            let hitText ="";
+            if(combat.attackHit){
+                hitText += "You have hit the enemy with an attack and her social standing is reduced by "+combat.damageDealt+" points.";
+            }else{
+                hitText += "You have missed the enemy. Her social standing remains unchanged."
+            }
+            self.renderActionText('Attack: ' + attackString + ' \n' + summaryString +'\n'+hitText+ ' \n\nWait for other turn now');
         } else {
             self.renderActionText('Its not your turn now');
         }
