@@ -55,6 +55,8 @@ export class PlayerCombat {
         this.finalSocialStanding = socialStanding;
         this.finalFocus = focus;
         this.currentFocus = focus;
+        this.attacksAndSpells = []
+        this.items = []
     }
 
    public returnCombatWrapper(passing: Function, enemyPlayer: PlayerCombat): CombatWrapper {
