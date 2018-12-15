@@ -16,7 +16,7 @@ export class ConversationScene extends Phaser.Scene {
     }
 
     preload(): void {
-            this.load.json('conversation', Assets.url('conversations','TestConversation.json'));
+            this.load.json('conversation', Assets.url('conversations','ButlerConversation.json'));
     }
 
     create(): void {
