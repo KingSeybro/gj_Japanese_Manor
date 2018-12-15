@@ -2,6 +2,9 @@ import {Item} from "./item";
 
 export class PlayerCombat{
 
+    public ultimateAttackIsEnabled: boolean = false;
+
+    public attacksAndSpells: AttackFile[];
     //Name to be Displayed
     public name: String;
     //Unique ID
@@ -129,7 +132,23 @@ export class PlayerCombat{
         this.currentFocus = this.currentFocus - focusCost;
     }
 
+    //Call this after the END of each Combat
+    public endOfCombatHouseKeeping(){
+        this.finalDef = this.def;
+        this.finalArm = this.arm;
+        this.finalDamageDone = this.damageDone;
+        this.finalAttack = this.attack;
+        this.finalFocus = this.focus;
+        for (let i = 0; i < this.items.length; i++) {
+            this.finalDef = this.finalDef + this.items[i].defMod;
+            this.finalArm = this.finalArm + this.items[i].armMod;
+            this.finalDamageDone = this.finalDamageDone + this.items[i].damageMod;
+            this.finalAttack = this.finalAttack + this.items[i].attackMod;
+            this.finalFocus = this.finalFocus + this.items[i].focusMod;
+        }
+    }
 
+    //Call this after you receive an ITEM
     public receiveItem(itemReceived: Item){
         this.items.push(itemReceived);
         this.finalFocus = this.finalFocus + itemReceived.focusMod;
@@ -156,4 +175,134 @@ export class PlayerCombat{
         return rollResult;
     }
 
+}
+
+export class The_Fool extends PlayerCombat{
+
+
+    constructor(id: String) {
+        super("Daisy Washington III Esq.", id, 12, 19, 11, 6, 16, 6);
+        this.attacksAndSpells.push(new AttackFile("Faux Pas", this.basicAttack, "A basic attack", "Oh, I’m terribly sorry for spoiling your ensemble." ));
+        this.attacksAndSpells.push(new AttackFile("Honorable Gent", this.powerfulAttack, "A powerful attack dealing more damage", "Reginald, please take care of this goose”; Reginald: “I is honored m’lady"));
+        this.attacksAndSpells.push(new AttackFile("Most Powerful Southern Bloodline!", this.combinedAttack, "An expensive attack that is both powerful and accurate", ""));
+        this.attacksAndSpells.push(new AttackFile("Swoon", this.debuffArmSpell, "Daisy disarms her opponent with her charm and reduces their Armor.", "I feel featherbrained – thank ye for catchin’ me, doll" ));
+        this.attacksAndSpells.push(new AttackFile("Monkey Army", this.ultimateAttack, "Daisy unleashes her Army of Monkeys from the Bathouse", "Let’s see how y’all like my spirit animal."));
+    }
+
+
+    //DeBuffspell that gives the Opponent -2 ARM for the Combat
+    public debuffArmSpell(enemyPlayer: PlayerCombat){
+        let focusCost: Number = 2;
+        enemyPlayer.finalArm = enemyPlayer.finalArm-2;
+        this.currentFocus = this.currentFocus - focusCost;
+    }
+
+    public ultimateAttack(enemyPlayer: PlayerCombat){
+
+    }
+
+}
+
+export class The_Jailbait extends PlayerCombat{
+
+    constructor(id: String) {
+        super("Nanni Spielmänner", id, 13, 14, 12, 6, 18, 8);
+        this.attacksAndSpells.push(new AttackFile("Hex of Frailty", this.basicAttack, "A basic spell", "Are you aware of your body’s process of decomposition." ));
+        this.attacksAndSpells.push(new AttackFile("Curse of Despair", this.dotSpell, "A curse that deals fixed damage", "See that doll I made? It looks just like you."));
+        this.attacksAndSpells.push(new AttackFile("Obsidian Curse of the Butterfly", this.debuffArmSpell, "A spell that reduces your opponents Armor", "I felt a butterfly flap its wings in Argentina. The Doom of Damocles hangs over you now!"));
+        this.attacksAndSpells.push(new AttackFile("Aegis of the Oni", this.debuffArmSpell, "Nanni calls upon the Oni to increase her Defense and Armor", "The Oni protect us!" ));
+        this.attacksAndSpells.push(new AttackFile("Tempest of the Last Witch of Azabu ", this.ultimateAttack, "Calling upon her Ultimate Power Nanni reveals her true self!", "-"));
+    }
+
+    //this is a powerful spell, that does fixed damage
+
+
+    public dotSpell(enemyPlayer: PlayerCombat){
+        let focusCost: Number= 3;
+        enemyPlayer.socialStanding = enemyPlayer.socialStanding - 3 - (this.finalDamageDone - this.damageDone);
+        this.currentFocus = this.currentFocus - focusCost;
+    }
+
+    //DeBuffspell that gives the Opponent -2 ARM for the Combat
+    public debuffArmSpell(enemyPlayer: PlayerCombat){
+        let focusCost: Number = 2;
+        enemyPlayer.finalArm = enemyPlayer.finalArm-2;
+        this.currentFocus = this.currentFocus - focusCost;
+    }
+    //TODO
+    public ultimateAttack(enemyPlayer: PlayerCombat){
+
+    }
+}
+
+export class The_Naughty_Nerd extends PlayerCombat {
+
+
+    constructor(id: String) {
+        super("Klaranette Zeitung", id, 16, 16, 11, 6, 14, 7);
+        this.attacksAndSpells.push(new AttackFile("Hushed Rumor", this.basicAttack, "A basic rumor", "Have you heard what the Graf’s mother said about you?"));
+        this.attacksAndSpells.push(new AttackFile("Sticks and Stones...", this.accurateAttack, "An accurate scathing retort.", "... may break my bones, but chains and whips excite me!"));
+        this.attacksAndSpells.push(new AttackFile("Shroud of Haiku", this.defBuffSpell, "Hidden behind weaves of knowledge and words, Kalaranette raises her Defense", "“You and Ben Franklin – share some similarities – namely syphilis.” \n" +
+            "“Early in the day – right when dawn kisses the sky – you should give me tongue.” \n" +
+            "“I’m a lusty wench – put your hand up my skirt and – pinch my bottom, hoss.” \n"));
+        this.attacksAndSpells.push(new AttackFile("Uncanny Knowledge", this.damageBuffSpell, "Words are weapons in the right hands, gain additional damage", "Don’t you know the secret of life? … 42!"));
+        this.attacksAndSpells.push(new AttackFile("Seven Seals Unleashed", this.ultimateAttack, "Kalaranette breaks the last seal and reveals her books true knowledge!", "-"));
+    }
+
+    //this is a dot spell, fixed damage for a few rounds
+
+
+    public damageBuffSpell(enemyPlayer: PlayerCombat) {
+        let focusCost: Number = 2;
+        this.finalDamageDone = this.finalDamageDone + 2;
+        this.currentFocus = this.currentFocus - focusCost;
+    }
+
+
+    //DefenseBuffSpell
+    public defBuffSpell(enemyPlayer: PlayerCombat) {
+        let focusCost: Number = 2;
+        this.finalDef = this.finalDef + 2;
+        this.currentFocus = this.currentFocus - focusCost;
+    }
+
+    //TODO
+    public ultimateAttack(enemyPlayer: PlayerCombat) {
+
+    }
+}
+
+export class The_Sexy_Samurai extends PlayerCombat {
+
+    constructor(id: String) {
+        super("Franziska Schneiden Von Solingens", id, 15, 18, 13, 8, 14, 6);
+        this.attacksAndSpells.push(new AttackFile("Flying Sparrow", this.basicAttack, "A basic attack", "Swift justice!"));
+        this.attacksAndSpells.push(new AttackFile("Iron Cross Slash of Blossoms", this.accurateAttack, "A accurate cross slash", "See how you’ll look with a slashed kimono."));
+        this.attacksAndSpells.push(new AttackFile("Blood and Iron", this.powerfulAttack, "A powerful attack, invoking the spirit of Bismarck", "Now you wear the mark of Schneiden Von Solingens upon your SOUL!"));
+        this.attacksAndSpells.push(new AttackFile("Tempest of Blazing Fury", this.combinedAttack, "Unleashing a torrent of blades Franziska ruffles the feathers of her opponents with this powerful and accurate attack.", "This will blow you away!"));
+        this.attacksAndSpells.push(new AttackFile("Panzerkampfwagen VI Tiger", this.ultimateAttack, "Calling upon her German Spirit Animal she summons a Panzerkampfwagen Tiger I.", "You’re fired"));
+    }
+
+    //TODO
+    public ultimateAttack(enemyPlayer: PlayerCombat) {
+
+    }
+}
+
+
+
+
+    export class AttackFile{
+
+    public name: String;
+    public combatFunction: Function;
+    public descriptionOfAttack: String;
+    public dialogForAttack: String;
+
+    constructor(name: String, combatFunction: Function, descriptionOfAttack: String, dialogForAttack: String) {
+        this.name = name;
+        this.combatFunction = combatFunction;
+        this.descriptionOfAttack = descriptionOfAttack;
+        this.dialogForAttack = dialogForAttack;
+    }
 }
