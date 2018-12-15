@@ -39,11 +39,22 @@ export class OverWorldScene extends BaseTileMapScene {
         super.preload();
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
+
+        console.log("created start screen");
+        let scene = this.scene;
+        /*this.input.keyboard.on('keydown_S', function (event) {
+            console.log("now!");
+            scene.switch('StartScene'); // Start the main scene
+        });*/
+
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
+
     }
 
+    create(playerObject): void {
+        console.log(playerObject);
 
-    create(): void {
+        this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
         Websocket.init();
 
         this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
