@@ -41,6 +41,7 @@ export class ConversationScene extends Phaser.Scene {
         });
         this.input.keyboard.on('keydown_X', function (event) {
             scene.switch('OverWorldScene'); // Start the main scene
+            scene.remove("ConversationScene");
         });
     }
 

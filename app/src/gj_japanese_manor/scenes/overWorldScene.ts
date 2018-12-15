@@ -23,6 +23,7 @@ export class OverWorldScene extends BaseTileMapScene {
     public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
     private gracePeriod: number;
     private static DEFAULT_GRACE_PERIOD: number = 2000;
+    private wasInBattleScreen: boolean;
 
     constructor() {
         super({
@@ -39,6 +40,7 @@ export class OverWorldScene extends BaseTileMapScene {
         this.load.image('player', Assets.url('game', 'phaser.png'));
         this.physics.world.setBounds(0, 0, 500*Constants.TILE_SIZE, 500*Constants.TILE_SIZE);
     }
+
 
     create(): void {
         Websocket.init();
@@ -245,11 +247,20 @@ export class OverWorldScene extends BaseTileMapScene {
 
     private switchToBattleScreen() {
         console.log("battleScreen")
+        this.wasInBattleScreen = true;
         this.scene.switch('BattleScene'); // Start the battle scene
     }
 
     update(time: number, delta: number): void {
         super.update(time, delta);
+        if(this.wasInBattleScreen)
+        {
+            this.wasInBattleScreen = false;
+            this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
+            this.player.setVelocity(0,0);
+            this.player.setAcceleration(0,0);
+            console.log("reset was in screen");
+        }
         this.gracePeriod-=delta;
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
