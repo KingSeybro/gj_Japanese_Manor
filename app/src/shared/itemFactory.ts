@@ -44,5 +44,13 @@ export class ItemFactory{
 
     }
 
+    public getRandomPositiveItem(): Item{
+        let randomInt: Number = 1+Math.floor(Math.random() * 6);
+        return this.itemArrayPositive[randomInt];
+    }
+    public getRandomNegativeItem(): Item{
+        let randomInt: Number = 1+Math.floor(Math.random() * 6);
+        return this.itemArrayNegative[randomInt];
+    }
 
 }
