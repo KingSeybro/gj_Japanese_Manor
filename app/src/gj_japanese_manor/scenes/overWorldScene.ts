@@ -21,6 +21,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
 
     public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
+    private inOverworld: boolean;
 
     constructor() {
         super({
@@ -30,6 +31,7 @@ export class OverWorldScene extends BaseTileMapScene {
         this.layers = new Map<number, Phaser.Tilemaps.StaticTilemapLayer>();
         this.tiles = new Map<string, Phaser.Tilemaps.Tileset>();
         this.tilesMapping = new Map<number, string>();
+        this.inOverworld = true;
     }
 
     preload(): void {
@@ -47,7 +49,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
-        this.player = this.physics.add.sprite(400, 300, 'player');
+        this.player = this.physics.add.sprite(Math.random()*400, Math.random()*300, 'player');
         this.player
             .setOrigin(0.5, 0.5)
             .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
@@ -87,9 +89,11 @@ export class OverWorldScene extends BaseTileMapScene {
                     otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
                         .setCollideWorldBounds(true)
                         .setDrag(500, 500);
-                    otherPlayer.body.stopVelocityOnCollide = true;
-                    self.physics.add.collider(otherPlayer, self.player);
+                        otherPlayer.body.stopVelocityOnCollide=true;
+                    //self.physics.add.collider(otherPlayer, self.player);
                     self.otherPlayers.set(p.id, otherPlayer);
+                    self.physics.add.overlap(self.player, otherPlayer, this.collideCallback, null, self);
+
                 } else {
                     // console.log("update " + p.id);
                     self.otherPlayers.get(p.id).y = p.position.y;
@@ -124,6 +128,25 @@ export class OverWorldScene extends BaseTileMapScene {
         this.sendPlayerMoved();
 
 
+    }
+
+    private collideCallback(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
+        if(object1 == this.player){
+            var value;
+            var self =this;
+            Object.keys(this.otherPlayers).forEach(function(key) {
+                value = self.otherPlayers[key];
+            });
+        }else if(object2 == this.player){
+            var value;
+            var self =this;
+            Object.keys(this.otherPlayers).forEach(function(key) {
+                value = self.otherPlayers[key];
+            });
+        }
+        console.log("now");
+        if(this.inOverworld)
+            this.switchToBattleScreen();
     }
 
     constrainVelocity(sprite, maxVelocity) {
@@ -210,11 +233,16 @@ export class OverWorldScene extends BaseTileMapScene {
             self.hitPlayer();
         });
 
-        this.input.keyboard.on('keydown_C', function (event) {
-            player.setAcceleration(0, 0);
-            player.setVelocity(0, 0);
-            scene.switch('ConversationScene'); // Start the battle scene
-        });
+    }
+
+    private switchToConversationScreen() {
+        this.player.setAcceleration(0, 0).setVelocity(0, 0);
+        this.scene.switch('ConversationScene'); // Start the battle scene
+    }
+
+    private switchToBattleScreen() {
+        console.log("battleScreen")
+        this.scene.switch('BattleScene'); // Start the battle scene
     }
 
     update(time: number, delta: number): void {

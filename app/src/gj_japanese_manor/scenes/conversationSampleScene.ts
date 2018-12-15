@@ -5,7 +5,7 @@ import {Conversation, ConversationNode} from "../converastion";
 export class ConversationScene extends Phaser.Scene {
     private conv: Phaser.GameObjects.Text;
     private options: Phaser.GameObjects.Text;
-    private node: ConversationNode;
+    public node: ConversationNode;
     private conversation: Conversation;
 
 
