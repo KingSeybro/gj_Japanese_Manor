@@ -11,8 +11,12 @@ import {BaseTileMapScene} from "./baseTileMapScene";
 import {Globals} from "../globals";
 import {Websocket} from "../websocket";
 import {CombatData} from "../../shared/data";
+
+import {SceneHelper} from "./sceneHelper";
+
 import {PlayerCombat, The_Fool, The_Jailbait, The_Naughty_Nerd, The_Sexy_Samurai} from "../../shared/playerCombat";
 import {SelectedPlayer} from "../selectedPlayer";
+
 
 export class OverWorldScene extends BaseTileMapScene {
 
@@ -43,7 +47,7 @@ export class OverWorldScene extends BaseTileMapScene {
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
 
-        console.log("created start screen");
+        console.log("preload overworld screen");
         let scene = this.scene;
         /*this.input.keyboard.on('keydown_S', function (event) {
             console.log("now!");
@@ -285,7 +289,8 @@ export class OverWorldScene extends BaseTileMapScene {
 
     public switchToConversationScreen() {
         this.player.setAcceleration(0, 0).setVelocity(0, 0);
-        this.scene.switch('ConversationScene'); // Start the battle scene
+        //this.scene.switch('ConversationScene'); // Start the convo scene
+        this.scene.start('ConversationScene',new SceneHelper(1,1)); // Start the convo scene
     }
 
     update(time: number, delta: number): void {

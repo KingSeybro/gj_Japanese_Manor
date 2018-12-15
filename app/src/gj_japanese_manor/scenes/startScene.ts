@@ -25,6 +25,7 @@ export class StartScene extends Phaser.Scene {
 
     create(): void {
         console.log("created start screen");
+        debugger;
         let scene = this.scene;
 
         this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'startBackground').setDepth(0);
