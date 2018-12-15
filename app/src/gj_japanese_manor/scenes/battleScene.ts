@@ -42,7 +42,7 @@ export class BattleScene extends Phaser.Scene {
         let scene = this.scene;
         this.input.keyboard.on('keydown_B', function (event) {
             console.log("now!");
-            scene.switch('OverWorldScene'); // Start the main scene
+
         });
 
         const self = this;
@@ -75,6 +75,30 @@ export class BattleScene extends Phaser.Scene {
             console.log("Received combat event from server");
             Globals.data.combat = p;
             self.lock = false;
+        });
+
+        Websocket.io.on(SharedConstants.EVENT_STOP_BATTLE, (p: CombatWrapper) => {
+            let p1 = createPlayerCombatFromStructure(p.defenderObject);
+            let p2 = createPlayerCombatFromStructure(p.attackerObject);
+
+            let myself = null;
+            let enemy = null;
+            if(p1.id === Websocket.io.id){
+                myself = p1;
+                enemy = p2;
+            } else {
+                myself = p2;
+                enemy = p1;
+            }
+
+            if (myself.currentFocus > 0 && myself.finalSocialStanding > 0 ){
+                console.log("won");
+            } else {
+                console.log("lost");
+            }
+
+            scene.switch('OverWorldScene');
+            Globals.data.combat = null;
         });
 
 

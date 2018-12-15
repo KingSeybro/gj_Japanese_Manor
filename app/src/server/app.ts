@@ -9,7 +9,7 @@ import {Log} from "./log";
 import {SharedConstants} from "../shared/sharedConstants";
 import {PlayerInfo, Position} from "../shared/playerInfo";
 import {CombatWrapper} from "../gj_japanese_manor/combatWrapper";
-import {The_Naughty_Nerd} from "../shared/playerCombat";
+import {createPlayerCombatFromStructure, The_Naughty_Nerd} from "../shared/playerCombat";
 import {CombatData} from "../shared/data";
 import apply = Reflect.apply;
 
@@ -90,7 +90,27 @@ export class App {
                 Log.log('received player combat event from id  ' + connId + ' to ' + o.attackerObject.id);
                 // Log.log(JSON.stringify(o));
                 let otherSocket = this.sockets.get(o.attackerObject.id);
-                otherSocket.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, o);
+
+                let newAttacker = createPlayerCombatFromStructure(o.attackerObject);
+                let newDefender = createPlayerCombatFromStructure(o.defenderObject);
+
+                if (newAttacker.finalSocialStanding > 0 && newAttacker.currentFocus > 0 && newDefender.finalSocialStanding > 0 && newDefender.currentFocus > 0) {
+                    Log.log('no winner between ' + connId + ' and ' + o.attackerObject.id + ' yet');
+                    otherSocket.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, o);
+                    return;
+                }
+                if(newAttacker.finalSocialStanding <= 0 || newAttacker.currentFocus <= 0){
+                    socket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
+                    otherSocket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
+                    return;
+                }
+                if(newDefender.finalSocialStanding <= 0 || newDefender.currentFocus <= 0){
+                    socket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
+                    otherSocket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
+                    return;
+                }
+                Log.log("something weird happened we should not come to here");
+
             });
 
             socket.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: any) => {
