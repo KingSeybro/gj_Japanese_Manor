@@ -32,7 +32,7 @@ export class ConversationScene extends Phaser.Scene {
         this.conv = this.add.text(16, 16, "", { fontSize: '18px', fill: '#FFFF' });
         this.options = this.add.text(16, 64, "", { fontSize: '18px', fill: '#FFFF' });
         // this.addimage('bg_1');
-        this.add.image(400,300,'bg_back_s');
+        this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'bg_back_s');
         //let x = this.add.image(500,400,'jb_char',0.2);
         let face = this.add.sprite(500, 330, "jb_char");
         //set the width of the sprite
@@ -69,7 +69,7 @@ export class ConversationScene extends Phaser.Scene {
             this.dbox.toggleWindow();
         }
         this.dbox = new DialogBox(this);
-        //this.dbox.setText(""+this.node.text+"\n"+optionstext, false);
+        this.dbox.setText(""+this.node.text+"\n"+optionstext, false);
         this.dbox.dialog = ""+this.node.text+"\n"+optionstext;
         this.dbox._createWindow();
     }

@@ -16,8 +16,8 @@ import {DialogueScene} from "./scenes/dialogueScene";
 
 // main game configuration
 const config: GameConfig = {
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
     type: Phaser.AUTO,
     pixelArt: false,
     parent: "game",
