@@ -1,23 +1,16 @@
-export class Item{
+import {PlayerCombat} from "../shared/playerCombat";
 
-    public name: string;
-    public id: string;
-    public defMod: number;
-    public armMod: number;
-    public damageMod: number;
-    public attackMod: number;
-    public socialMod: number;
-    public focusMod: number;
+export class CombatWrapper{
 
+    public attackerObject: PlayerCombat;
+    public defenderObject: PlayerCombat;
+    public summaryString: String;
+    public attackName: String;
 
-    constructor(name: string, id: string, defMod: number, armMod: number, damageMod: number, attackMod: number, socialMod: number, focusMod: number) {
-        this.name = name;
-        this.id = id;
-        this.defMod = defMod;
-        this.armMod = armMod;
-        this.damageMod = damageMod;
-        this.attackMod = attackMod;
-        this.socialMod = socialMod;
-        this.focusMod = focusMod;
+    constructor(attackerObject: PlayerCombat, defenderObject: PlayerCombat, summaryString: String, attackName: String){
+        this.attackerObject = attackerObject;
+        this.defenderObject = defenderObject;
+        this.summaryString = summaryString;
+        this.attackName = attackName;
     }
 }

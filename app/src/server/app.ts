@@ -9,6 +9,7 @@ import {Log} from "./log";
 import {Player} from "./player";
 import {SharedConstants} from "../shared/sharedConstants";
 import {PlayerInfo} from "../shared/playerInfo";
+import {CombatWrapper} from "../gj_japanese_manor/combatWrapper";
 
 export class App {
 
@@ -81,6 +82,19 @@ export class App {
                 this.sockets.get(o.enemyId).emit('send_event_to_other_player', {payload: 'blub'});
 
             });
+
+            socket.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (o: CombatWrapper) => {
+                // Log.log('received player combat event ' + JSON.stringify(o));
+                // let enemyPlayer = this.players.get(o.enemyId);
+                // Log.log(enemyPlayer);
+                // if(!enemyPlayer){
+                //     Log.log("Could not find player " + o.enemyId);
+                //     return;
+                // }
+                // this.sockets.get(o.enemyId).emit('send_event_to_other_player', {payload: 'blub'});
+
+            });
+
 
             socket.on('disconnect', () => {
 
