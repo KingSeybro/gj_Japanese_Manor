@@ -9,6 +9,7 @@ export class ConversationScene extends Phaser.Scene {
     public node: ConversationNode;
     private conversation: Conversation;
     public dbox : DialogBox;
+    private finished : boolean;
 
 
     constructor() {
@@ -23,6 +24,7 @@ export class ConversationScene extends Phaser.Scene {
             this.load.image('jb_char', Assets.url('characters','Jailbait Sketch.png'));
 
             this.load.json('conversation', Assets.url('conversations','ButlerConversation.json'));
+            this.finished = false;
     }
 
     create(): void {
@@ -42,38 +44,77 @@ export class ConversationScene extends Phaser.Scene {
         let scene = this.scene;
         let self=this;
         this.setConversationNode(this.conversation.getNextNode()); //initial node
-
-
         this.input.keyboard.on('keydown_A', function (event) {
-            self.setConversationNode(self.conversation.getNextNode(self.node.options[0].value));
+            if(!self.finished){
+                self.setConversationNode(self.conversation.getNextNode(self.node.options[0].value));
+            }
+            else{
+                scene.switch('OverWorldScene'); // Start the main scene
+                scene.remove("ConversationScene");
+            }
         });
         this.input.keyboard.on('keydown_B', function (event) {
-            self.setConversationNode(self.conversation.getNextNode(self.node.options[1].value));
+            if(!self.finished){
+                self.setConversationNode(self.conversation.getNextNode(self.node.options[1].value));
+            } else{
+                scene.switch('OverWorldScene'); // Start the main scene
+                scene.remove("ConversationScene");
+            }
         });
         this.input.keyboard.on('keydown_C', function (event) {
-            self.setConversationNode(self.conversation.getNextNode(self.node.options[2].value));
+            if(!self.finished) {
+                self.setConversationNode(self.conversation.getNextNode(self.node.options[2].value));
+            }
+            else{
+                scene.switch('OverWorldScene'); // Start the main scene
+                scene.remove("ConversationScene");
+            }
         });
         this.input.keyboard.on('keydown_X', function (event) {
-            scene.switch('OverWorldScene'); // Start the main scene
-            scene.remove("ConversationScene");
+            if(self.finished!==true){
+        }
+        else {
+                scene.switch('OverWorldScene'); // Start the main scene
+                scene.remove("ConversationScene");
+            }
         });
     }
 
     setConversationNode(value: any) {
         this.node = value;
-        let options = ["A","B","C","D"];
-        let optionstext = "";
-        for (let i = 0; i < this.node.options.length ; i++) {
-            optionstext += options[i]+") "+this.node.options[i].text;
-            optionstext += "\n\n";
+             let optionstext = "";
+             let options = ["A","B","C","D"];
+
+             if(this.dbox!==undefined){
+                 this.dbox.toggleWindow();
+             }
+
+
+        if(this.node.options.length==0){
+            if(this.node.outcome==undefined){
+
+            }
+            else if(this.node.outcome==true){
+                //TODO GIVE POSITIVE ITEM TO PLAYER (not yet here)
+            }
+            else{
+                //TODO GIVE NEGATIVE ITEM TO PLAYER (not yet here)
+            }
+            this.dbox._createCloseModalButton();
+            this.finished = true;
+
         }
-        if(this.dbox!==undefined){
-            this.dbox.toggleWindow();
+        else{
+            for (let i = 0; i < this.node.options.length ; i++) {
+                optionstext += options[i]+") "+this.node.options[i].text;
+                optionstext += "\n\n";
+            }
         }
         this.dbox = new DialogBox(this);
         this.dbox._createWindow();
         this.dbox.setText(""+this.node.text+"\n\n"+optionstext, false);
         this.dbox.dialog = ""+this.node.text+"\n"+optionstext;
+
     }
 
 
