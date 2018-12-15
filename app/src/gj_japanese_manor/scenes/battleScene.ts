@@ -121,7 +121,13 @@ export class BattleScene extends Phaser.Scene {
 
         Websocket.io.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (p: CombatWrapper) => {
             console.log("Received combat event from server");
-            self.renderActionText('Enemy hit with ' + p.attackName + '\n' + p.summaryString + 'And delt'+p.+'' \n\nIts you turn now');
+           let hitText= p.attackName+"\n";
+            if(p.attackHit){
+               hitText += "You have been hit by an enemy attack and your social standing is reduced by "+p.damageDealt+" points.";
+           }else{
+               hitText += "You have been missed by the enemy attack. Your social standing remains unchanged."
+           }
+            self.renderActionText(p.summaryString+"\n"+hitText);
             Globals.data.combat = p;
             self.renderHudText(p);
             self.lock = false;
@@ -160,8 +166,9 @@ export class BattleScene extends Phaser.Scene {
             self.lock = true;
             console.log("was my turn switch now");
 
-            let attackFile = this.selection[a];
+            let attackFile = this.selection.get(a);
             if(attackFile == null){//is disabled
+                console.log("disabled!");
                 return;
             }
 
@@ -169,7 +176,7 @@ export class BattleScene extends Phaser.Scene {
 
             let summaryString = attackFile.dialogForAttack;
             let attackString = attackFile.name;
-            combat.summaryString = attackFile.name;
+            combat.summaryString = attackFile.descriptionOfAttack;
             Globals.data.combat = combat;
             Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, combat);
             console.log('send data will wait now');
@@ -184,6 +191,7 @@ export class BattleScene extends Phaser.Scene {
             this.dbox = new DialogBox(this);
             this.dbox._createWindow();
         }
+        console.log(text);
         this.dbox.setText(text, false);
     }
 
