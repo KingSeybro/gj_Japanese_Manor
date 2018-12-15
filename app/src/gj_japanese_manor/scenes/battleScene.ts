@@ -26,6 +26,16 @@ export class BattleScene extends Phaser.Scene {
     }
 
     create(): void {
+        this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'bg');
+        let face1 = this.add.sprite(this.game.renderer.width/5 *4, 500, "jb_char");
+        face1.displayWidth = 400;
+        face1.scaleY = face1.scaleX;
+
+        let face2 = this.add.sprite(this.game.renderer.width/5 *1, 500, "fool_char");
+        face2.displayWidth = 400;
+        face2.scaleY = face2.scaleX;
+
+
         console.log("created battle screen");
         let scene = this.scene;
         this.input.keyboard.on('keydown_B', function (event) {
