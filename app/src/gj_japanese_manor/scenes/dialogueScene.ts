@@ -19,8 +19,7 @@ export class DialogueScene extends Phaser.Scene {
         console.log("created dialogue screen");
         let scene = this.scene;
         this.input.keyboard.on('keydown_N', function (event) {
-            console.log("now!");
-            scene.switch('OverWorldScene'); // Start the main scene
+            scene.start('OverWorldScene'); // Start the main scene
         });
         // var dialogMessage = new Phaser.GameObjects.Text ();
         var text = "LAlalal"
