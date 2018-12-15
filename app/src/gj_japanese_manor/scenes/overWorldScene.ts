@@ -13,17 +13,10 @@ export class OverWorldScene extends Phaser.Scene {
 
     public static readonly TILESET_NAME = 'Overworld_Tileset';
     private map: Phaser.Tilemaps.Tilemap;
-    private layer0: Phaser.Tilemaps.StaticTilemapLayer;
-    private layer1: Phaser.Tilemaps.DynamicTilemapLayer;
-    private layer2: Phaser.Tilemaps.StaticTilemapLayer;
-    private tiles: Phaser.Tilemaps.Tileset;
+    private collideableLayers: Phaser.Tilemaps.DynamicTilemapLayer[];
     private moveKeys: object;
     private player: Phaser.Physics.Arcade.Sprite;
-    private tiles1: Phaser.Tilemaps.Tileset;
-    private layer4: Phaser.Tilemaps.StaticTilemapLayer;
-    private tiles2: Phaser.Tilemaps.Tileset;
-    private tiles3: Phaser.Tilemaps.Tileset;
-    private layer3: Phaser.Tilemaps.StaticTilemapLayer;
+    private tilesets: Phaser.Tilemaps.Tileset[];
     private io: SocketIOClient.Socket;
 
     public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
@@ -55,15 +48,20 @@ export class OverWorldScene extends Phaser.Scene {
             key: Assets.TILES_OVERWORLD_MAP
         });
         this.map = this.make.tilemap({key: Assets.TILES_OVERWORLD_MAP});
-        this.tiles = this.map.addTilesetImage("Overworld_Tileset (2)", "overworld");
-        this.tiles1 = this.map.addTilesetImage("Inside_A4", "Inside_A4");
-        this.tiles2 = this.map.addTilesetImage("Inside_A2", "Inside_A2");
-        this.tiles3 = this.map.addTilesetImage("Outside_B", "Outside_B");
-        this.layer0 = this.map.createStaticLayer(0, this.tiles, 0, 0);
-        this.layer1 = this.map.createDynamicLayer(1, this.tiles1, 0, 0);
-        this.layer2 = this.map.createStaticLayer(2, this.tiles2, 0, 0);
-        this.layer3 = this.map.createStaticLayer(3, this.tiles3, 0, 0);
-        this.layer4 = this.map.createStaticLayer(4, this.tiles, 0, 0);
+        this.tilesets = [this.map.addTilesetImage("overworld", "overworld")
+                            ,this.map.addTilesetImage("Inside_A4", "Inside_A4"),
+                            this.map.addTilesetImage("Inside_A2", "Inside_A2")
+                            ,this.map.addTilesetImage("Outside_B", "Outside_B")];
+        // @ts-ignore
+        this.map.createStaticLayer('Kachelebene 1',this.tilesets);
+        // @ts-ignore
+        this.map.createStaticLayer('floors', this.tilesets);
+        this.collideableLayers=[
+            // @ts-ignore
+            this.map.createDynamicLayer('walls', this.tilesets),
+            // @ts-ignore
+            this.map.createDynamicLayer('stuff', this.tilesets)
+        ];
 
 
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -71,8 +69,10 @@ export class OverWorldScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(400, 300, 'player');
         this.player.setOrigin(0.5, 0.5).setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE).setCollideWorldBounds(true).setDrag(500, 500);
 
-        this.layer1.setCollisionByProperty({collides: true});
-        this.physics.add.collider(this.player, this.layer1);
+        for (let i = 0; i < this.collideableLayers.length; i++) {
+            this.collideableLayers[i].setCollisionByProperty({collides: true});
+            this.physics.add.collider(this.player, this.collideableLayers[i]);
+        }
 
         this.initializeInput();
         this.cameras.main.setZoom(2);
