@@ -1,0 +1,102 @@
+[
+	{
+		"title": "StartMother",
+		"tags": "Mother StartMother",
+		"body": "State your intentions for my son, young lady! \n[[I want to marry Wentzel. He's so dreamy.|MotherGood01]]\n[[I want to get to know Wentzel better.|MotherNeutral01]]\n[[I'm just here for the cherry blossoms. |MotherBad01]]",
+		"position": {
+			"x": 809,
+			"y": -75
+		},
+		"colorID": 0
+	},
+	{
+		"title": "MotherGood01",
+		"tags": "Mother",
+		"body": "So, you're only interested in him because of his looks? \n[[Of course not. I admire everything about him.|MotherGood02]]\n[[Of course not. I love his personality just as much.|MotherNeutral02]]\n[[Of course. His body is to die for.|MotherBad02]]",
+		"position": {
+			"x": 207,
+			"y": 192
+		},
+		"colorID": 0
+	},
+	{
+		"title": "MotherBad01",
+		"tags": "Mother",
+		"body": "Aren't they lovely this time of year, dear?\n[[Almost as lovely as Graf Von Azabu.|MotherNeutral02]]\n[[Yes, I love how they shimmer in this light.|MotherBad02]]\n[[No, I was just kidding.|MotherBad02]]",
+		"position": {
+			"x": 1348,
+			"y": 189
+		},
+		"colorID": 0
+	},
+	{
+		"title": "MotherNeutral01",
+		"tags": "Mother",
+		"body": "You don't even know him yet? How did you get invited here?\n[[Graf Wentzel invited me.|MotherGood02]]\n[[You invited me.|MotherNeutral02]]\n[[Fräulein Hilf invited me.|MotherBad02]]\n",
+		"position": {
+			"x": 814,
+			"y": 214
+		},
+		"colorID": 0
+	},
+	{
+		"title": "MotherGood02",
+		"tags": "Mother",
+		"body": "So, tell me what exactly you like about my son!\n[[His kind heart radiates brighter than the afternoon sun.|MotherGoodEnding]]\n[[His smile is white like the cherry blossoms in Spring.|MotherGoodEnding]]\n[[I was smitten by his 'large donations'.|MotherNeutralEnding]]",
+		"position": {
+			"x": 213,
+			"y": 568
+		},
+		"colorID": 0
+	},
+	{
+		"title": "MotherNeutral02",
+		"tags": "Mother",
+		"body": "So, tell me what exactly you like about my son!\n[[I was smitten by his 'large donations'.|MotherNeutralEnding]]\n[[His article on compiling the Japanese national postal code guide was fascinating.|MotherNeutralEnding]]\n[[He has very nice friends.|MotherBadEnding]]",
+		"position": {
+			"x": 825,
+			"y": 575
+		},
+		"colorID": 0
+	},
+	{
+		"title": "MotherBad02",
+		"tags": "Mother",
+		"body": "My, my you don't mince your words, do you? \n[[On that we may have something in common.|MotherNeutralending]]\n[[Why should I?|MotherBadEnding]]\n[[Not for you, at least.|MotherBadEnding]]",
+		"position": {
+			"x": 1380,
+			"y": 558
+		},
+		"colorID": 0
+	},
+	{
+		"title": "MotherGoodEnding",
+		"tags": "Mother MotherEnding GoodEnding",
+		"body": "That sounds... lovely. ",
+		"position": {
+			"x": 216,
+			"y": 844
+		},
+		"colorID": 6
+	},
+	{
+		"title": "MotherNeutralEnding",
+		"tags": "Mother MotherEnding NeutralEnding",
+		"body": "That sounds... reasonable. ",
+		"position": {
+			"x": 837,
+			"y": 859
+		},
+		"colorID": 1
+	},
+	{
+		"title": "MotherBadEnding",
+		"tags": "Mother MotherEnding BadEnding",
+		"body": "Hmph! ",
+		"position": {
+			"x": 1375,
+			"y": 846
+		},
+		"colorID": 0
+	}
+]

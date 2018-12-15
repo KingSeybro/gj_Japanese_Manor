@@ -21,22 +21,23 @@ export class OverWorldScene extends BaseTileMapScene {
 
 
     public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
+    private gracePeriod: number;
+    private static DEFAULT_GRACE_PERIOD: number = 2000;
+    private wasInBattleScreen: boolean;
 
     constructor() {
         super({
             key: "OverWorldScene"
-        }, ['overworld', 'Inside_A4', 'Inside_A2', 'Outside_B']);
+        }, ['background_tiles']);
         this.otherPlayers = new Map<string, Phaser.Physics.Arcade.Sprite>();
         this.layers = new Map<number, Phaser.Tilemaps.StaticTilemapLayer>();
-        this.tiles = new Map<string, Phaser.Tilemaps.Tileset>();
         this.tilesMapping = new Map<number, string>();
     }
 
     preload(): void {
         super.preload();
-        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'prototype.json'));
+        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
-        this.physics.world.setBounds(0, 0, 9001, 9001);
 
         console.log("created start screen");
         let scene = this.scene;
@@ -48,26 +49,28 @@ export class OverWorldScene extends BaseTileMapScene {
 
     create(playerObject): void {
         console.log(playerObject);
+
+        this.physics.world.setBounds(0, 0, 500*Constants.TILE_SIZE, 500*Constants.TILE_SIZE);
         Websocket.init();
 
+        this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
         this.initMap(Assets.TILES_OVERWORLD_MAP);
 
 
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
-        this.player = this.physics.add.sprite(400, 300, 'player');
+        this.player = this.physics.add.sprite(Math.random()*400, Math.random()*300, 'player');
         this.player
             .setOrigin(0.5, 0.5)
             .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
             .setCollideWorldBounds(true)
             .setDrag(500, 500);
-
         this.player.body.stopVelocityOnCollide = true;
 
-        this.setUpCollisionLayer([1, 2], this.player);
+        this.setUpCollisionLayer([0], this.player);
 
         this.initializeInput();
-        this.cameras.main.setZoom(2);
+        this.cameras.main.setZoom(Constants.DEFAULT_ZOOM);
 
         if (Globals.DEBUG_ON) {
             const debugGraphics = this.add.graphics().setAlpha(0.75);
@@ -86,22 +89,24 @@ export class OverWorldScene extends BaseTileMapScene {
 
         const self = this;
 
-        Websocket.io.on(SharedConstants.EVENT_PLAYER_UPDATE, (p: any) => {
+        Websocket.io.on(SharedConstants.EVENT_PLAYER_UPDATE, (p: PlayerInfo) => {
 
             if (p.id !== Websocket.io.id) {
-                // console.log("player update" + JSON.stringify(p));
+                console.log("player update" + JSON.stringify(p));
                 if (!self.otherPlayers.get(p.id)) {
-                    let otherPlayer = this.physics.add.sprite(p.x, p.y, 'player');
+                    let otherPlayer = this.physics.add.sprite(p.position.x, p.position.y, 'player');
                     otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
                         .setCollideWorldBounds(true)
                         .setDrag(500, 500);
                         otherPlayer.body.stopVelocityOnCollide=true;
-                    self.physics.add.collider(otherPlayer, self.player);
+                    //self.physics.add.collider(otherPlayer, self.player);
                     self.otherPlayers.set(p.id, otherPlayer);
+                    self.physics.add.overlap(self.player, otherPlayer, this.collideCallback, null, self);
+
                 } else {
                     // console.log("update " + p.id);
-                    self.otherPlayers.get(p.id).y = p.y;
-                    self.otherPlayers.get(p.id).x = p.x;
+                    self.otherPlayers.get(p.id).y = p.position.y;
+                    self.otherPlayers.get(p.id).x = p.position.x;
                 }
             }
 
@@ -109,13 +114,48 @@ export class OverWorldScene extends BaseTileMapScene {
 
         Websocket.io.on(SharedConstants.EVENT_PLAYER_DISCONNECTED, (p: any) => {
             console.log('Disconnected player ' + p);
-            self.otherPlayers.get(p).destroy();
-            self.otherPlayers.delete(p);
+            let otherPlayer = self.otherPlayers.get(p);
+            if (!otherPlayer) {
+                otherPlayer.destroy();
+                self.otherPlayers.delete(p);
+            }
         });
 
+        Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (otherPlayer: PlayerInfo) => {
+            console.log('Other player ' + otherPlayer.id + ' wants to start a battle');
+            this.scene.switch('BattleScene');
+        });
+
+
+        // Generic event sample
+        // let enemyId = self.otherPlayers.entries()[0].id;
+        // let enemyId = 'test';
+        // Websocket.io.emit('generic_event', {enemyId: enemyId})
+
+        //actions create finished
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_JOINED, this.getCurrentPlayerData());
         this.sendPlayerMoved();
 
+
+    }
+
+    private collideCallback(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
+        if(object1 == this.player){
+            var value;
+            var self =this;
+            Object.keys(this.otherPlayers).forEach(function(key) {
+                value = self.otherPlayers[key];
+            });
+        }else if(object2 == this.player){
+            var value;
+            var self =this;
+            Object.keys(this.otherPlayers).forEach(function(key) {
+                value = self.otherPlayers[key];
+            });
+        }
+        console.log("now");
+        if(this.gracePeriod <=0)
+            this.switchToBattleScreen();
     }
 
     constrainVelocity(sprite, maxVelocity) {
@@ -140,6 +180,7 @@ export class OverWorldScene extends BaseTileMapScene {
         let player = this.player;
         let camera = this.cameras.main;
         let scene = this.scene;
+        let self = this;
 
         // Creates object for input with WASD kets
         this.moveKeys = this.input.keyboard.addKeys({
@@ -152,16 +193,16 @@ export class OverWorldScene extends BaseTileMapScene {
 
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_W', function (event) {
-            player.setAccelerationY(-400);
+            player.setAccelerationY(-Constants.ACCELERATION);
         });
         this.input.keyboard.on('keydown_S', function (event) {
-            player.setAccelerationY(400);
+            player.setAccelerationY(Constants.ACCELERATION);
         });
         this.input.keyboard.on('keydown_A', function (event) {
-            player.setAccelerationX(-400);
+            player.setAccelerationX(-Constants.ACCELERATION);
         });
         this.input.keyboard.on('keydown_D', function (event) {
-            player.setAccelerationX(400);
+            player.setAccelerationX(Constants.ACCELERATION);
         });
         // Stops player acceleration on uppress of WASD keys
         this.input.keyboard.on('keyup_W', function (event) {
@@ -187,22 +228,51 @@ export class OverWorldScene extends BaseTileMapScene {
             camera.setZoom(camera.zoom - 0.1);
         });
         this.input.keyboard.on('keyup_O', function (event) {
-           Globals.DEBUG_ON = !Globals.DEBUG_ON;
-           console.log(Globals.DEBUG_ON);
+            Globals.DEBUG_ON = !Globals.DEBUG_ON;
+            console.log(Globals.DEBUG_ON);
+        });
+        this.input.keyboard.on('keyup_H', function (event) {
+            Globals.DEBUG_ON = !Globals.DEBUG_ON;
+            console.log(Globals.DEBUG_ON);
         });
 
         this.input.keyboard.on('keydown_B', function (event) {
             player.setAcceleration(0, 0);
             player.setVelocity(0, 0);
-            scene.switch('BattleScene'); // Start the battle scene
+            self.hitPlayer();
         });
+
+        this.input.keyboard.on('keydown_C', function (event) {
+          self.switchToConversationScreen();
+        });
+
+    }
+
+    public switchToConversationScreen() {
+        this.player.setAcceleration(0, 0).setVelocity(0, 0);
+        this.scene.switch('ConversationScene'); // Start the battle scene
+    }
+
+    private switchToBattleScreen() {
+        console.log("battleScreen")
+        this.wasInBattleScreen = true;
+        this.scene.switch('BattleScene'); // Start the battle scene
     }
 
     update(time: number, delta: number): void {
         super.update(time, delta);
+        if(this.wasInBattleScreen)
+        {
+            this.wasInBattleScreen = false;
+            this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
+            this.player.setVelocity(0,0);
+            this.player.setAcceleration(0,0);
+            console.log("reset was in screen");
+        }
+        this.gracePeriod-=delta;
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
-        this.constrainVelocity(this.player, 100);
+        this.constrainVelocity(this.player, 400);
         let y = this.player.body.velocity.y * 100;
         let x = this.player.body.velocity.x * 100;
         if (x != 0 && y != 0) {
@@ -214,12 +284,26 @@ export class OverWorldScene extends BaseTileMapScene {
 
     }
 
+    private hitPlayer(): void {
+        console.log("Player hit");
+        let otherPlayerId = null;
+        for (const id of this.otherPlayers.keys()) {
+            if (id !== Websocket.io.id) {
+                otherPlayerId = id;
+                break;
+            }
+        }
+        //todo: this should be the id passed
+        Websocket.io.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, {otherPlayerId: otherPlayerId});
+    }
+
     private sendPlayerMoved(): void {
+        // console.log("send player moved");
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_MOVED, this.getCurrentPlayerData());
     }
 
     private getCurrentPlayerData(): PlayerInfo {
-        let playerData = new PlayerInfo(new Position(this.player.x, this.player.y));
+        let playerData = new PlayerInfo(Websocket.io.id, new Position(this.player.x, this.player.y));
         return playerData;
     }
 }
