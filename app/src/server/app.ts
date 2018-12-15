@@ -11,6 +11,7 @@ import {PlayerInfo, Position} from "../shared/playerInfo";
 import {CombatWrapper} from "../gj_japanese_manor/combatWrapper";
 import {The_Naughty_Nerd} from "../shared/playerCombat";
 import {CombatData} from "../shared/data";
+import apply = Reflect.apply;
 
 export class App {
 
@@ -86,14 +87,26 @@ export class App {
             });
 
             socket.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (o: CombatWrapper) => {
-                // Log.log('received player combat event ' + JSON.stringify(o));
-                // let enemyPlayer = this.players.get(o.enemyId);
-                // Log.log(enemyPlayer);
-                // if(!enemyPlayer){
-                //     Log.log("Could not find player " + o.enemyId);
-                //     return;
-                // }
-                // this.sockets.get(o.enemyId).emit('send_event_to_other_player', {payload: 'blub'});
+                Log.log('received player combat event ' + JSON.stringify(o));
+
+                let player1Id = o.defenderObject.id;
+                let player1 = this.players.get(player1Id);
+                let player2Id = o.attackerObject.id;
+                let player2 = this.players.get(player2Id);
+
+                let player1Socket = this.sockets.get(player1Id);
+                let player2Socket = this.sockets.get(player2Id);
+
+                // let combat = new CombatWrapper(player2, player1, "You are first", "");
+                // let data1 = new CombatData();
+                // data1.combat = o;
+                // data1.otherPlayer = player2;
+                // socket.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, data1);
+                //
+                // let data2 = new CombatData();
+                // data2.combat = combat;
+                // data2.otherPlayer = player;
+                // this.sockets.get(otherPlayer.id).emit(SharedConstants.EVENT_PLAYER_START_BATTLE, data2);
 
             });
 
