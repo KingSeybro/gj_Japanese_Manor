@@ -12,7 +12,7 @@ export class BaseTileMapScene extends Phaser.Scene {
     protected map: Phaser.Tilemaps.Tilemap;
     protected layers: Map<number, Phaser.Tilemaps.StaticTilemapLayer>;
     protected collideableLayers: Phaser.Tilemaps.StaticTilemapLayer[];
-    protected tiles: Map<string, Phaser.Tilemaps.Tileset>;
+    protected tiles: Phaser.Tilemaps.Tileset[];
     protected tilesMapping: Map<number, string>;
 
     protected imagesToLoad: string[];
@@ -20,7 +20,7 @@ export class BaseTileMapScene extends Phaser.Scene {
     constructor(config: string | Phaser.Scenes.Settings.Config, imagesToLoad: string[]) {
         super(config);
         this.layers = new Map<number, Phaser.Tilemaps.StaticTilemapLayer>();
-        this.tiles = new Map<string, Phaser.Tilemaps.Tileset>();
+        this.tiles = [];
         this.tilesMapping = new Map<number, string>();
         this.imagesToLoad = imagesToLoad;
         this.collideableLayers = [];
@@ -47,17 +47,19 @@ export class BaseTileMapScene extends Phaser.Scene {
         });
         this.map = this.make.tilemap({key: keyMap});
 
+
         for (let i = 0; i < this.map.tilesets.length; i++) {
             const tileset = this.map.tilesets[i];
             let newTileset = this.map.addTilesetImage(tileset.name, tileset.name, Constants.TILE_SIZE, Constants.TILE_SIZE);
-            this.tiles.set(tileset.name, newTileset);
+            this.tiles.push(newTileset);
             this.tilesMapping.set(i, tileset.name);
         }
 
         for (let i = 0; i < this.map.layers.length; i++) {
             const layer = this.map.layers[i];
             let keyTile = this.tilesMapping.get(i);
-            let staticTilemapLayer = this.map.createStaticLayer(i, this.tiles.get(keyTile), 0, 0);
+            // @ts-ignore
+            let staticTilemapLayer = this.map.createStaticLayer(i, this.tiles, 0, 0);
             this.layers.set(i, staticTilemapLayer);
         }
     }

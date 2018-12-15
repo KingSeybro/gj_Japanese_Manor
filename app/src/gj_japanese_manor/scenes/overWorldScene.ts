@@ -30,7 +30,6 @@ export class OverWorldScene extends BaseTileMapScene {
         }, ['background_tiles']);
         this.otherPlayers = new Map<string, Phaser.Physics.Arcade.Sprite>();
         this.layers = new Map<number, Phaser.Tilemaps.StaticTilemapLayer>();
-        this.tiles = new Map<string, Phaser.Tilemaps.Tileset>();
         this.tilesMapping = new Map<number, string>();
     }
 
@@ -58,7 +57,7 @@ export class OverWorldScene extends BaseTileMapScene {
             .setDrag(500, 500);
         this.player.body.stopVelocityOnCollide = true;
 
-        this.setUpCollisionLayer([1, 2], this.player);
+        this.setUpCollisionLayer([1], this.player);
 
         this.initializeInput();
         this.cameras.main.setZoom(2);
