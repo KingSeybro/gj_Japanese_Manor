@@ -1,42 +1,42 @@
 import {Item} from "./item";
 
-export class PlayerCombat{
+export class PlayerCombat {
 
     //Name to be Displayed
-    public name: String;
+    public name: string;
     //Unique ID
-    public id: String;
+    public id: string;
     //Defensive Value between 10-14
-    public def: Number;
+    public def: number;
     //Defensive Value inlcuding Modifiers
-    public finalDef: Number;
+    public finalDef: number;
     //Armor Value between 14-18
-    public arm: Number;
+    public arm: number;
     //Armor Value including Modifiers
-    public finalArm: Number;
+    public finalArm: number;
     //Damage Inflicted by Character ranges between 10-14
-    public damageDone: Number;
+    public damageDone: number;
     //Damage Value including Modifiers
-    public finalDamageDone: Number;
+    public finalDamageDone: number;
     //Attack Value used to hit, ranges between 5-7
-    public attack: Number;
+    public attack: number;
     //Attack Value including Modifiers
-    public finalAttack: Number;
+    public finalAttack: number;
     //SocialStanding aka Healthpoints ranging from 14-20
-    public socialStanding: Number;
+    public socialStanding: number;
     //SocialStanding including Modifiers
-    public finalSocialStanding: Number;
+    public finalSocialStanding: number;
     //Focus aka ActionPoints ranging from 6-8
-    public  focus: Number;
+    public focus: number;
     //Focus including Modifiers
-    public finalFocus: Number;
+    public finalFocus: number;
     //CurrentFocus that is refilled to maximum focus at the beginning of each round
-    public currentFocus: Number;
+    public currentFocus: number;
     //Items and Boni carried
     public items: Item[];
 
 
-    constructor(name: String, id: String, def: Number, arm: Number, damageDone: Number, attack: Number, socialStanding: Number, focus: Number) {
+    constructor(name: string, id: string, def: number, arm: number, damageDone: number, attack: number, socialStanding: number, focus: number) {
         this.name = name;
         this.id = id;
         this.def = def;
@@ -53,15 +53,15 @@ export class PlayerCombat{
         this.currentFocus = focus;
     }
 
-    public basicAttack(enemyPlayer: PlayerCombat):void{
-        let focusCost: Number = 1;
-            //Player rolls 2d6 + attack vs Defensive Value
-            // if ATK Roll > Defensive Roll = Hit
-            // finalDamageDone + 2d6 - ARM = damage done to Social Standing
-        var attackRoll: Number = this.diceRolling(2);
-        if (attackRoll + this.finalAttack >= enemyPlayer.finalDef){
-            var damageRoll: Number = this.diceRolling(2);
-            if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm){
+    public basicAttack(enemyPlayer: PlayerCombat): void {
+        let focusCost: number = 1;
+        //Player rolls 2d6 + attack vs Defensive Value
+        // if ATK Roll > Defensive Roll = Hit
+        // finalDamageDone + 2d6 - ARM = damage done to Social Standing
+        var attackRoll: number = this.diceRolling(2);
+        if (attackRoll + this.finalAttack >= enemyPlayer.finalDef) {
+            var damageRoll: number = this.diceRolling(2);
+            if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm) {
                 enemyPlayer.finalSocialStanding = this.finalSocialStanding - (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
             } else {
                 //NO Damage is DONE
@@ -70,17 +70,18 @@ export class PlayerCombat{
             //The ENEMY IS MISSED
         }
         this.currentFocus = this.currentFocus - focusCost;
-     }
+    }
+
     //Addition 1D6 for hitting
-    public accurateAttack(enemyPlayer: PlayerCombat):void{
-        let focusCost: Number = 2;
+    public accurateAttack(enemyPlayer: PlayerCombat): void {
+        let focusCost: number = 2;
         //Player rolls 3d6 + attack vs Defensive Value
         // if ATK Roll > Defensive Roll = Hit
         // finalDamageDone + 2d6 - ARM = damage done to Social Standing
-        var attackRoll: Number = this.diceRolling(3);
-        if (attackRoll + this.finalAttack >= enemyPlayer.finalDef){
-            var damageRoll: Number = this.diceRolling(2);
-            if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm){
+        var attackRoll: number = this.diceRolling(3);
+        if (attackRoll + this.finalAttack >= enemyPlayer.finalDef) {
+            var damageRoll: number = this.diceRolling(2);
+            if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm) {
                 enemyPlayer.finalSocialStanding = this.finalSocialStanding - (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
             } else {
                 //NO Damage is DONE
@@ -90,16 +91,17 @@ export class PlayerCombat{
         }
         this.currentFocus = this.currentFocus - focusCost;
     }
+
     //Additional 1d6 for Damage
-    public powerfulAttack(enemyPlayer: PlayerCombat):void{
-        let focusCost: Number = 2;
+    public powerfulAttack(enemyPlayer: PlayerCombat): void {
+        let focusCost: number = 2;
         //Player rolls 2d6 + attack vs Defensive Value
         // if ATK Roll > Defensive Roll = Hit
         // finalDamageDone + 3d6 - ARM = damage done to Social Standing
-        var attackRoll: Number = this.diceRolling(2);
-        if (attackRoll + this.finalAttack >= enemyPlayer.finalDef){
-            var damageRoll: Number = this.diceRolling(3);
-            if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm){
+        var attackRoll: number = this.diceRolling(2);
+        if (attackRoll + this.finalAttack >= enemyPlayer.finalDef) {
+            var damageRoll: number = this.diceRolling(3);
+            if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm) {
                 enemyPlayer.finalSocialStanding = this.finalSocialStanding - (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
             } else {
                 //NO Damage is DONE
@@ -109,16 +111,17 @@ export class PlayerCombat{
         }
         this.currentFocus = this.currentFocus - focusCost;
     }
+
     // Additional 1d6 for hitting and for damage
-    public combinedAttack(enemyPlayer: PlayerCombat):void{
-        let focusCost: Number = 3;
+    public combinedAttack(enemyPlayer: PlayerCombat): void {
+        let focusCost: number = 3;
         //Player rolls 3d6 + attack vs Defensive Value
         // if ATK Roll > Defensive Roll = Hit
         // finalDamageDone + 3d6 - ARM = damage done to Social Standing
-        var attackRoll: Number = this.diceRolling(2);
-        if (attackRoll + this.finalAttack >= enemyPlayer.finalDef){
-            var damageRoll: Number = this.diceRolling(2);
-            if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm){
+        var attackRoll: number = this.diceRolling(2);
+        if (attackRoll + this.finalAttack >= enemyPlayer.finalDef) {
+            var damageRoll: number = this.diceRolling(2);
+            if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm) {
                 enemyPlayer.finalSocialStanding = this.finalSocialStanding - (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
             } else {
                 //NO Damage is DONE
@@ -130,7 +133,7 @@ export class PlayerCombat{
     }
 
 
-    public receiveItem(itemReceived: Item){
+    public receiveItem(itemReceived: Item) {
         this.items.push(itemReceived);
         this.finalFocus = this.finalFocus + itemReceived.focusMod;
         this.finalDef = this.finalDef + itemReceived.defMod;
@@ -141,13 +144,9 @@ export class PlayerCombat{
     }
 
 
+    public diceRolling(numberofDice: number): number {
 
-
-
-
-    public diceRolling(numberofDice: Number):Number {
-
-        var rollResult: Number = 0;
+        var rollResult: number = 0;
 
         for (let i = 0; i < numberofDice; i++) {
             rollResult = rollResult + 1 + Math.floor(Math.random() * 6);
