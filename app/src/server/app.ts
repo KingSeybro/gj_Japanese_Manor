@@ -6,9 +6,8 @@ import {createServer, Server} from "http";
 import * as socketIo from 'socket.io';
 import {Socket} from 'socket.io';
 import {Log} from "./log";
-import {Player} from "./player";
 import {SharedConstants} from "../shared/sharedConstants";
-import {PlayerInfo} from "../shared/playerInfo";
+import {PlayerInfo, Position} from "../shared/playerInfo";
 import {CombatWrapper} from "../gj_japanese_manor/combatWrapper";
 
 export class App {
@@ -18,16 +17,16 @@ export class App {
     private io: SocketIO.Server;
     private port: number;
 
-    private players: Map<string, Player>;
+    private players: Map<string, PlayerInfo>;
     private sockets: Map<string, SocketIO.Socket>;
 
     constructor(port: number) {
         this.app = express();
         this.config();
         this.server = createServer(this.app);
-	this.io = socketIo(this.server, {path: '/klujam18server/'});
+        this.io = socketIo(this.server, {path: '/klujam18server/'});
         this.port = port;
-        this.players = new Map<string, Player>();
+        this.players = new Map<string, PlayerInfo>();
         this.sockets = new Map<string, Socket>()
         this.listen();
     }
@@ -35,14 +34,15 @@ export class App {
     private listen(): void {
         Log.log("Listen called");
         let port = this.port;
-	this.server.listen({port: port, path: '/', serverClient: false}, () => {
+        this.server.listen({port: port, path: '/', serverClient: false}, () => {
             Log.log('Running server on port ' + port);
         });
 
         this.io.on('connection', (socket: Socket) => {
             const connId = socket.conn.id;
             Log.log('Client connected ' + connId);
-            let player = new Player();
+            let position = new Position(-10, -10);
+            let player = new PlayerInfo(connId, position);
             player.id = connId;
             this.sockets.set(connId, socket);
             this.players.set(connId, player);
@@ -54,15 +54,15 @@ export class App {
 
             socket.on(SharedConstants.EVENT_PLAYER_MOVED, (m: PlayerInfo) => {
                 // Log.log('Received movement update ' + JSON.stringify(m));
-                player.x = m.position.x;
-                player.y = m.position.y;
+                player.position.x = m.position.x;
+                player.position.y = m.position.y;
                 this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, player)
             });
 
             socket.on(SharedConstants.EVENT_PLAYER_JOINED, (m: PlayerInfo) => {
                 Log.log('Received player joined ' + JSON.stringify(m));
-                player.x = m.position.x;
-                player.y = m.position.y;
+                player.position.x = m.position.x;
+                player.position.y = m.position.y;
                 for (const otherPlayerEntry of this.players.keys()) {
                     let otherPlayer = this.players.get(otherPlayerEntry);
                     Log.log('Update socket ' + connId + ' with info of other player ' + otherPlayer);
@@ -75,7 +75,7 @@ export class App {
                 Log.log('received generic event ' + JSON.stringify(o));
                 let enemyPlayer = this.players.get(o.enemyId);
                 Log.log(enemyPlayer);
-                if(!enemyPlayer){
+                if (!enemyPlayer) {
                     Log.log("Could not find player " + o.enemyId);
                     return;
                 }
@@ -93,6 +93,23 @@ export class App {
                 // }
                 // this.sockets.get(o.enemyId).emit('send_event_to_other_player', {payload: 'blub'});
 
+            });
+
+            socket.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: any) => {
+                Log.log('Received start battle between ' + connId + ' and ' + o.otherPlayerId);
+                let otherPlayer = this.players.get(o.otherPlayerId);
+                if (player.inCombat || !otherPlayer || otherPlayer.inCombat) {
+                    //TODO: we could send back to the socket that we have no idea who the other id is
+                    Log.log("ERROR - could not find other player");
+                    return;
+                }
+                player.inCombat = true;
+                otherPlayer.inCombat = true;
+                this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, player);
+                this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, otherPlayer);
+
+                socket.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, otherPlayer);
+                this.sockets.get(otherPlayer.id).emit(SharedConstants.EVENT_PLAYER_START_BATTLE, player);
             });
 
 

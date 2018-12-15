@@ -1,9 +1,12 @@
 export class PlayerInfo {
     public position: Position
+    public inCombat: boolean;
+    public id: string;
 
-
-    constructor(position: Position) {
+    constructor(id: string, position: Position) {
         this.position = position;
+        this.inCombat = false;
+        this.id = id;
     }
 }
 

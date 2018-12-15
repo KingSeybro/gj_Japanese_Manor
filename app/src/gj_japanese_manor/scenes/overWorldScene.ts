@@ -80,12 +80,12 @@ export class OverWorldScene extends BaseTileMapScene {
 
         const self = this;
 
-        Websocket.io.on(SharedConstants.EVENT_PLAYER_UPDATE, (p: any) => {
+        Websocket.io.on(SharedConstants.EVENT_PLAYER_UPDATE, (p: PlayerInfo) => {
 
             if (p.id !== Websocket.io.id) {
-                // console.log("player update" + JSON.stringify(p));
+                console.log("player update" + JSON.stringify(p));
                 if (!self.otherPlayers.get(p.id)) {
-                    let otherPlayer = this.physics.add.sprite(p.x, p.y, 'player');
+                    let otherPlayer = this.physics.add.sprite(p.position.x, p.position.y, 'player');
                     otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
                         .setCollideWorldBounds(true)
                         .setDrag(500, 500);
@@ -96,8 +96,8 @@ export class OverWorldScene extends BaseTileMapScene {
 
                 } else {
                     // console.log("update " + p.id);
-                    self.otherPlayers.get(p.id).y = p.y;
-                    self.otherPlayers.get(p.id).x = p.x;
+                    self.otherPlayers.get(p.id).y = p.position.y;
+                    self.otherPlayers.get(p.id).x = p.position.x;
                 }
             }
 
@@ -105,17 +105,28 @@ export class OverWorldScene extends BaseTileMapScene {
 
         Websocket.io.on(SharedConstants.EVENT_PLAYER_DISCONNECTED, (p: any) => {
             console.log('Disconnected player ' + p);
-            self.otherPlayers.get(p).destroy();
-            self.otherPlayers.delete(p);
+            let otherPlayer = self.otherPlayers.get(p);
+            if (!otherPlayer) {
+                otherPlayer.destroy();
+                self.otherPlayers.delete(p);
+            }
         });
 
-        Websocket.io.emit(SharedConstants.EVENT_PLAYER_JOINED, this.getCurrentPlayerData());
-        this.sendPlayerMoved();
+        Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (otherPlayer: PlayerInfo) => {
+            console.log('Other player ' + otherPlayer.id + ' wants to start a battle');
+            this.scene.switch('BattleScene');
+        });
+
 
         // Generic event sample
         // let enemyId = self.otherPlayers.entries()[0].id;
-        let enemyId = 'test';
-        Websocket.io.emit('generic_event', {enemyId: enemyId})
+        // let enemyId = 'test';
+        // Websocket.io.emit('generic_event', {enemyId: enemyId})
+
+        //actions create finished
+        Websocket.io.emit(SharedConstants.EVENT_PLAYER_JOINED, this.getCurrentPlayerData());
+        this.sendPlayerMoved();
+
 
     }
 
@@ -159,6 +170,7 @@ export class OverWorldScene extends BaseTileMapScene {
         let player = this.player;
         let camera = this.cameras.main;
         let scene = this.scene;
+        let self = this;
 
         // Creates object for input with WASD kets
         this.moveKeys = this.input.keyboard.addKeys({
@@ -206,14 +218,18 @@ export class OverWorldScene extends BaseTileMapScene {
             camera.setZoom(camera.zoom - 0.1);
         });
         this.input.keyboard.on('keyup_O', function (event) {
-           Globals.DEBUG_ON = !Globals.DEBUG_ON;
-           console.log(Globals.DEBUG_ON);
+            Globals.DEBUG_ON = !Globals.DEBUG_ON;
+            console.log(Globals.DEBUG_ON);
+        });
+        this.input.keyboard.on('keyup_H', function (event) {
+            Globals.DEBUG_ON = !Globals.DEBUG_ON;
+            console.log(Globals.DEBUG_ON);
         });
 
         this.input.keyboard.on('keydown_B', function (event) {
             player.setAcceleration(0, 0);
             player.setVelocity(0, 0);
-            scene.switch('BattleScene'); // Start the battle scene
+            self.hitPlayer();
         });
 
     }
@@ -244,13 +260,26 @@ export class OverWorldScene extends BaseTileMapScene {
 
     }
 
+    private hitPlayer(): void {
+        console.log("Player hit");
+        let otherPlayerId = null;
+        for (const id of this.otherPlayers.keys()) {
+            if (id !== Websocket.io.id) {
+                otherPlayerId = id;
+                break;
+            }
+        }
+        //todo: this should be the id passed
+        Websocket.io.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, {otherPlayerId: otherPlayerId});
+    }
+
     private sendPlayerMoved(): void {
-    	console.log("send player moved");
+        console.log("send player moved");
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_MOVED, this.getCurrentPlayerData());
     }
 
     private getCurrentPlayerData(): PlayerInfo {
-        let playerData = new PlayerInfo(new Position(this.player.x, this.player.y));
+        let playerData = new PlayerInfo(Websocket.io.id, new Position(this.player.x, this.player.y));
         return playerData;
     }
 }
