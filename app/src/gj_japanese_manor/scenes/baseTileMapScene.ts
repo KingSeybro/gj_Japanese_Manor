@@ -49,6 +49,7 @@ export class BaseTileMapScene extends Phaser.Scene {
 
         for (let i = 0; i < this.map.tilesets.length; i++) {
             const tileset = this.map.tilesets[i];
+            debugger;
             let newTileset = this.map.addTilesetImage(tileset.name, tileset.name, Constants.TILE_SIZE, Constants.TILE_SIZE);
             this.tiles.set(tileset.name, newTileset);
             this.tilesMapping.set(i, tileset.name);

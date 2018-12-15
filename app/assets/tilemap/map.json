@@ -35,11 +35,11 @@
         {
          "columns":7,
          "firstgid":1,
-         "image":"tilemap\/background_tiles.png",
+         "image":"background_tiles.png",
          "imageheight":2048,
          "imagewidth":1792,
          "margin":0,
-         "name":"tilest_1",
+         "name":"background_tiles",
          "spacing":0,
          "tilecount":56,
          "tileheight":256,
