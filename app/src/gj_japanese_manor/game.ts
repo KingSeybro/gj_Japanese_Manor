@@ -16,7 +16,7 @@ const config: GameConfig = {
     width: 800,
     height: 600,
     type: Phaser.AUTO,
-    pixelArt: true,
+    pixelArt: false,
     parent: "game",
     scene: [OverWorldScene, BattleScene,ConversationScene],
     physics: {

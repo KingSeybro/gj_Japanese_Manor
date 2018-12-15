@@ -226,6 +226,7 @@ export class OverWorldScene extends BaseTileMapScene {
         });
         this.input.keyboard.on('keydown_Z', function (event) {
             camera.setZoom(camera.zoom + 0.1);
+            console.log(camera.zoom);
         });
         this.input.keyboard.on('keydown_T', function (event) {
             camera.setZoom(camera.zoom - 0.1);
