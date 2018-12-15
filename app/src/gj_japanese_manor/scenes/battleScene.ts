@@ -20,7 +20,9 @@ export class BattleScene extends Phaser.Scene {
     }
 
     preload(): void {
-
+        this.load.image('bg', Assets.url('backgrounds','JM_Back_HS.png'));
+        this.load.image('jb_char', Assets.url('characters','Jailbait Sketch.png'));
+        this.load.image('fool_char', Assets.url('characters','Fool Sketch.png'));
     }
 
     create(): void {
