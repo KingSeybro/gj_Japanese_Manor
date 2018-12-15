@@ -181,6 +181,7 @@ export class BattleScene extends Phaser.Scene {
     }
 
     private executeAttack(a:string, self, attacker, defender) {
+        console.log("execute attack");
         let myturn = Globals.data.combat.attackerObject.id === Websocket.io.id;
         if (myturn) {
             self.lock = true;
@@ -193,18 +194,21 @@ export class BattleScene extends Phaser.Scene {
             }
 
             let combat: CombatWrapper = attackFile.combatFunction.call(attacker, defender);//actual attack
-
+            console.log("teasdfsdf");
 
 
             let summaryString = attackFile.dialogForAttack;
             let attackString = attackFile.name;
             combat.summaryString = attackFile.descriptionOfAttack;
-            let def = combat.defenderObject;
-            combat.defenderObject = combat.attackerObject ;
-            combat.attackerObject = def;
+            let def = createPlayerCombatFromStructure(combat.attackerObject).createMinimumDataObj();
+            let att = createPlayerCombatFromStructure(combat.defenderObject).createMinimumDataObj();
+            combat.defenderObject = def;
+            combat.attackerObject = att;
+
             Globals.data.combat = combat;
+            console.log('send data will wait now', combat);
             Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, combat);
-            console.log('send data will wait now');
+            console.log('send data will wait now', combat);
             let hitText ="";
             if(combat.attackHit){
                 hitText += "You have hit the enemy with an attack and her social standing is reduced by "+combat.damageDealt+" points.";
