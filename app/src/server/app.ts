@@ -9,6 +9,7 @@ import {Log} from "./log";
 import {Player} from "./player";
 import {SharedConstants} from "../shared/sharedConstants";
 import {PlayerInfo} from "../shared/playerInfo";
+import {CombatWrapper} from "../gj_japanese_manor/combatWrapper";
 
 export class App {
 
@@ -24,7 +25,7 @@ export class App {
         this.app = express();
         this.config();
         this.server = createServer(this.app);
-        this.io = socketIo(this.server);
+	this.io = socketIo(this.server, {path: '/klujam18server/'});
         this.port = port;
         this.players = new Map<string, Player>();
         this.sockets = new Map<string, Socket>()
@@ -34,7 +35,7 @@ export class App {
     private listen(): void {
         Log.log("Listen called");
         let port = this.port;
-        this.server.listen({port: port, path: '/', serverClient: false}, () => {
+	this.server.listen({port: port, path: '/', serverClient: false}, () => {
             Log.log('Running server on port ' + port);
         });
 
@@ -59,7 +60,7 @@ export class App {
             });
 
             socket.on(SharedConstants.EVENT_PLAYER_JOINED, (m: PlayerInfo) => {
-                Log.log('Received movement update ' + JSON.stringify(m));
+                Log.log('Received player joined ' + JSON.stringify(m));
                 player.x = m.position.x;
                 player.y = m.position.y;
                 for (const otherPlayerEntry of this.players.keys()) {
@@ -81,6 +82,19 @@ export class App {
                 this.sockets.get(o.enemyId).emit('send_event_to_other_player', {payload: 'blub'});
 
             });
+
+            socket.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (o: CombatWrapper) => {
+                // Log.log('received player combat event ' + JSON.stringify(o));
+                // let enemyPlayer = this.players.get(o.enemyId);
+                // Log.log(enemyPlayer);
+                // if(!enemyPlayer){
+                //     Log.log("Could not find player " + o.enemyId);
+                //     return;
+                // }
+                // this.sockets.get(o.enemyId).emit('send_event_to_other_player', {payload: 'blub'});
+
+            });
+
 
             socket.on('disconnect', () => {
 

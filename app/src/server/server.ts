@@ -3,7 +3,10 @@ import {Request, Response} from "express";
 import {App} from "./app";
 import {Log} from "./log";
 
-const PORT = 3000;
+const PORT = parseInt(process.env.PORT) || 3000;
+
+Log.log("start server now");
+
 var serverApp = new App(PORT);
 var app: express.Application = serverApp.app;
 
