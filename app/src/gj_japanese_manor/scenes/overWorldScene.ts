@@ -21,22 +21,20 @@ export class OverWorldScene extends BaseTileMapScene {
 
 
     public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
-    private inOverworld: boolean;
 
     constructor() {
         super({
             key: "OverWorldScene"
-        }, ['overworld', 'Inside_A4', 'Inside_A2', 'Outside_B']);
+        }, ['background_tiles']);
         this.otherPlayers = new Map<string, Phaser.Physics.Arcade.Sprite>();
         this.layers = new Map<number, Phaser.Tilemaps.StaticTilemapLayer>();
         this.tiles = new Map<string, Phaser.Tilemaps.Tileset>();
         this.tilesMapping = new Map<number, string>();
-        this.inOverworld = true;
     }
 
     preload(): void {
         super.preload();
-        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'prototype.json'));
+        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
         this.physics.world.setBounds(0, 0, 9001, 9001);
     }
@@ -134,8 +132,7 @@ export class OverWorldScene extends BaseTileMapScene {
             });
         }
         console.log("now");
-        if(this.inOverworld)
-            this.switchToBattleScreen();
+        this.switchToBattleScreen();
     }
 
     constrainVelocity(sprite, maxVelocity) {
