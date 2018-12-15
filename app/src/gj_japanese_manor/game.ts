@@ -9,6 +9,7 @@
 import "phaser";
 import {OverWorldScene} from "./scenes/overWorldScene";
 import {BattleScene} from "./scenes/battleScene";
+import {ConversationScene} from "./scenes/conversationSampleScene";
 
 // main game configuration
 const config: GameConfig = {
@@ -17,7 +18,7 @@ const config: GameConfig = {
     type: Phaser.AUTO,
     pixelArt: true,
     parent: "game",
-    scene: [OverWorldScene, BattleScene],
+    scene: [OverWorldScene, BattleScene,ConversationScene],
     physics: {
         default: "arcade",
         arcade: {

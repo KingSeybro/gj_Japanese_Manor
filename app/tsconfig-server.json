@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
+    "lib": ["dom","es2017","scripthost"],
+    "target": "ES2017",
+    "module": "CommonJs",
     "noImplicitAny": false,
     "sourceMap": true,
-    "outDir": "build"
+    "outDir": "build",
+    "moduleResolution": "node"
   },
   "exclude": [
     "node_modules",

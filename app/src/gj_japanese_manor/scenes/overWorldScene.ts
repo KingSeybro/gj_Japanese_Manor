@@ -193,6 +193,12 @@ export class OverWorldScene extends BaseTileMapScene {
             player.setVelocity(0, 0);
             scene.switch('BattleScene'); // Start the battle scene
         });
+
+        this.input.keyboard.on('keydown_C', function (event) {
+            player.setAcceleration(0, 0);
+            player.setVelocity(0, 0);
+            scene.switch('ConversationScene'); // Start the battle scene
+        });
     }
 
     update(time: number, delta: number): void {
@@ -212,6 +218,7 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     private sendPlayerMoved(): void {
+    	console.log("send player moved");
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_MOVED, this.getCurrentPlayerData());
     }
 
