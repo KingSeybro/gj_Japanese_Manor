@@ -89,6 +89,7 @@ export class PlayerCombat {
             if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm) {
                 enemyPlayer.finalSocialStanding = this.finalSocialStanding - (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
                 finalDamageDone = (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
+                console.log("dd: "+finalDamageDone);
             } else {
                 //NO Damage is DONE
             }
@@ -407,7 +408,11 @@ export function createPlayerCombatFromStructure(obj: any): PlayerCombat {
         default:
             console.log('could not read property type')
     }
-    for (let k in obj) instance[k] = obj[k];
+    for (let k in obj){
+        if(k!=="attacksAndSpells"){
+            instance[k] = obj[k];
+        }
+    }
     return instance;
 }
 

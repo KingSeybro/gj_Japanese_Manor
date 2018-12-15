@@ -67,7 +67,10 @@ export class BattleScene extends Phaser.Scene {
                 let attacker = createPlayerCombatFromStructure(Globals.data.combat.attackerObject);
                 let defender = createPlayerCombatFromStructure(Globals.data.combat.defenderObject);
                 attacker.basicAttack(defender);
-                // attacker.attacksAndSpells[0].combatFunction(defender); //TODO choose which attack
+                attacker.attacksAndSpells[0].combatFunction.call(attacker,defender);
+
+                console.log(defender);
+
 
                 let combat = new CombatWrapper(defender, attacker, "basic attack done", "basic attack done");
                 Globals.data.combat = combat;
