@@ -43,7 +43,7 @@ export class OverWorldScene extends Phaser.Scene {
 
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('prototype.json'));
 
-        this.load.image('player', Assets.url('phaser.png'));
+        this.load.image('player', Assets.url('game', 'phaser.png'));
         this.physics.world.setBounds(0, 0, 9001, 9001);
     }
 
@@ -55,6 +55,7 @@ export class OverWorldScene extends Phaser.Scene {
             key: Assets.TILES_OVERWORLD_MAP
         });
         this.map = this.make.tilemap({key: Assets.TILES_OVERWORLD_MAP});
+        // debugger;
         this.tiles = this.map.addTilesetImage("Overworld_Tileset (2)", "overworld");
         this.tiles1 = this.map.addTilesetImage("Inside_A4", "Inside_A4");
         this.tiles2 = this.map.addTilesetImage("Inside_A2", "Inside_A2");
