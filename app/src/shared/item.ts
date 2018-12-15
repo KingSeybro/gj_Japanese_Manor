@@ -1,7 +1,8 @@
 export class Item{
 
     public name: String;
-    public id: String;
+    public id: Number;
+    public imageID: String;
     public defMod: Number;
     public armMod: Number;
     public damageMod: Number;
@@ -10,9 +11,10 @@ export class Item{
     public focusMod: Number;
 
 
-    constructor(name: String, id: String, defMod: Number, armMod: Number, damageMod: Number, attackMod: Number, socialMod: Number, focusMod: Number) {
+    constructor(name: String, id: Number, imageID: String, defMod: Number, armMod: Number, damageMod: Number, attackMod: Number, socialMod: Number, focusMod: Number) {
         this.name = name;
         this.id = id;
+        this.imageID = imageID;
         this.defMod = defMod;
         this.armMod = armMod;
         this.damageMod = damageMod;
@@ -20,4 +22,6 @@ export class Item{
         this.socialMod = socialMod;
         this.focusMod = focusMod;
     }
+
+
 }
