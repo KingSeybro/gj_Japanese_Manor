@@ -1,11 +1,11 @@
 import {Assets} from "../assets";
 import {Constants} from "../constants";
-import {Conversation} from "../converastion";
+import {Conversation, ConversationNode} from "../converastion";
 
 export class ConversationScene extends Phaser.Scene {
     private conv: Phaser.GameObjects.Text;
     private options: Phaser.GameObjects.Text;
-    private node: any;
+    private node: ConversationNode;
     private conversation: Conversation;
 
 

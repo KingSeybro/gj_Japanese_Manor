@@ -1,12 +1,12 @@
 export class Conversation {
-    private conv: any[];
+    private conv: ConversationNode[];
 
 
     constructor(json) {
         this.conv = [];
         for (let i = 0; i < json.length; i++) {
             let regExp = /\[\[(.*)\|(.*)\]\]/g;
-            let options = [];
+            let options: ConversationNodeOption[] = [];
             let match;
             do {
                 match = regExp.exec(json[i].body);
@@ -37,7 +37,16 @@ export class Conversation {
         }
         return;
     }
+}
 
+export class ConversationNode{
+    title: string;
+    text: string;
+    options :ConversationNodeOption[];
 
+}
 
+export class ConversationNodeOption{
+    value: string;
+    text: string;
 }
