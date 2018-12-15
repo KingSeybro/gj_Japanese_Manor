@@ -236,6 +236,7 @@ export class OverWorldScene extends BaseTileMapScene {
         });
         this.input.keyboard.on('keydown_Z', function (event) {
             camera.setZoom(camera.zoom + 0.1);
+            console.log(camera.zoom);
         });
         this.input.keyboard.on('keydown_T', function (event) {
             camera.setZoom(camera.zoom - 0.1);
@@ -258,6 +259,11 @@ export class OverWorldScene extends BaseTileMapScene {
             self.switchToConversationScreen();
         });
 
+        this.input.keyboard.on('keydown_N', function (event) {
+            player.setAcceleration(0, 0);
+            player.setVelocity(0, 0);
+            scene.switch('DialogueScene'); // Start the battle scene
+        });
     }
 
     public switchToConversationScreen() {
