@@ -11,6 +11,7 @@ import {BaseTileMapScene} from "./baseTileMapScene";
 import {Globals} from "../globals";
 import {Websocket} from "../websocket";
 import {CombatData} from "../../shared/data";
+import {SceneHelper} from "./sceneHelper";
 
 export class OverWorldScene extends BaseTileMapScene {
 
@@ -266,7 +267,8 @@ export class OverWorldScene extends BaseTileMapScene {
 
     public switchToConversationScreen() {
         this.player.setAcceleration(0, 0).setVelocity(0, 0);
-        this.scene.switch('ConversationScene'); // Start the battle scene
+        //this.scene.switch('ConversationScene'); // Start the convo scene
+        this.scene.start('ConversationScene',new SceneHelper(1,1)); // Start the convo scene
     }
 
     update(time: number, delta: number): void {

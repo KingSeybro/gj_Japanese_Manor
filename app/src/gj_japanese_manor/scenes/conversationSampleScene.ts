@@ -2,6 +2,7 @@ import {Assets} from "../assets";
 import {Constants} from "../constants";
 import {Conversation, ConversationNode} from "../converastion";
 import {DialogBox} from "../dialogbox";
+import {SceneHelper} from "./sceneHelper";
 
 export class ConversationScene extends Phaser.Scene {
     private conv: Phaser.GameObjects.Text;
@@ -20,27 +21,70 @@ export class ConversationScene extends Phaser.Scene {
 
     preload(): void {
 
-            this.load.image('bg_back_s', Assets.url('backgrounds','JM_Back_S.png'));
-            this.load.image('jb_char', Assets.url('characters','Jailbait Sketch.png'));
+        this.load.image('bedroomBG', Assets.url('backgrounds','JM_Back_BR.png'));
+        this.load.image('cherryblossomBG', Assets.url('backgrounds','JM_Back_CB.png'));
+        this.load.image('diningroomBG', Assets.url('backgrounds','JM_Back_DR.png'));
+        this.load.image('fountainBG', Assets.url('backgrounds','JM_Back_F.png'));
+        this.load.image('hotspringBG', Assets.url('backgrounds','JM_Back_HS.png'));
+        this.load.image('kitchenBG', Assets.url('backgrounds','JM_Back_Kit.png'));
+        this.load.image('libraryBG', Assets.url('backgrounds','JM_Back_Lib.png'));
+        this.load.image('luftschiffBG', Assets.url('backgrounds','JM_Back_LS.png'));
+        this.load.image('salonBG', Assets.url('backgrounds','JM_Back_S.png'));
 
-            this.load.json('conversation', Assets.url('conversations','ButlerConversation.json'));
-            this.finished = false;
+
+        this.load.image('char_butler', Assets.url('characters','Butler Sketch.png'));
+        this.load.image('char_mother', Assets.url('characters','Mother Sketch.png'));
+        this.load.image('char_darcy', Assets.url('characters','Mr Darcy San Sketch.png'));
+
+        this.load.image('char_jailbait', Assets.url('characters','Jailbait Sketch.png'));
+        this.load.image('char_nerd', Assec3Ats.url('characters','Naughty Nerd Sketch.png'));
+        this.load.image('char_samurai', Assets.url('characters','Zhe sexy samurai Sketch.png'));
+        this.load.image('char_fool', Assets.url('characters','Fool Sketch.png'));
+
+        this.load.json('conversation_butler', Assets.url('conversations','ButlerConversation.json'));
+        this.load.json('conversation_mother', Assets.url('conversations','MotherConversation.json'));
+        this.load.json('conversation_darcy', Assets.url('conversations','GrafConversation.json'));
+
+        this.finished = false;
     }
 
-    create(): void {
+    create(sh:SceneHelper): void {
         console.log("created convo screen");
-        this.conversation = new Conversation(this.cache.json.get('conversation'));
-        this.node = this.conversation.getNextNode();
-        // this.conv = this.add.text(16, 16, "", { fontSize: '40px', fill: '#FFFF' });
-        // this.options = this.add.text(16, 64, "", { fontSize: '40px', fill: '#FFFF' });
-        // this.addimage('bg_1');
-        this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'bg_back_s');
-        //let x = this.add.image(500,400,'jb_char',0.2);
-        let face = this.add.sprite(this.game.renderer.width*(2/3), this.game.renderer.height*(3/5), "jb_char");
+
+
+        switch(sh._background){
+            case 1: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'bedroomBG'); break;
+            case 2: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'cherryblossomBG'); break;
+            case 3: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'diningroomBG'); break;
+            case 4: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'fountainBG'); break;
+            case 5: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'hotspringBG'); break;
+            case 6: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'kitchenBG'); break;
+            case 7: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'libraryBG'); break;
+            case 8: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'luftschiffBG'); break;
+            case 9: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'salonBG'); break;
+        }
+
+        let npcChar:any;
+        switch(sh._char){
+            case 1:  npcChar = this.add.sprite(this.game.renderer.width*(2/3), this.game.renderer.height*(3/5), "char_mother");
+                     this.conversation = new Conversation(this.cache.json.get('conversation_mother'));
+                     break;
+            case 2:  npcChar = this.add.sprite(this.game.renderer.width*(2/3), this.game.renderer.height*(3/5), "char_butler");
+                    this.conversation = new Conversation(this.cache.json.get('conversation_butler'));
+                    break;
+            case 3:  npcChar = this.add.sprite(this.game.renderer.width*(2/3), this.game.renderer.height*(3/5), "char_darcy");
+                    this.conversation = new Conversation(this.cache.json.get('conversation_darcy'));
+                    break;
+        }
+
         //set the width of the sprite
-        face.displayWidth = 430;
+        npcChar.displayWidth = 430;
         //scale evenly
-        face.scaleY = face.scaleX;
+        npcChar.scaleY = npcChar.scaleX;
+
+
+        this.node = this.conversation.getNextNode();
+
         let scene = this.scene;
         let self=this;
         this.setConversationNode(this.conversation.getNextNode()); //initial node
