@@ -29,12 +29,12 @@ export class OverWorldScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.image("overworld", Assets.url('overworld.png'));
-        this.load.image("Inside_A4", Assets.url('Inside_A4.png'));
-        this.load.image("Inside_A2", Assets.url('Inside_A2.png'));
-        this.load.image("Outside_B", Assets.url('Outside_B.png'));
+        this.load.image("overworld", Assets.url('tilemap','overworld.png'));
+        this.load.image("Inside_A4", Assets.url('tilemap','Inside_A4.png'));
+        this.load.image("Inside_A2", Assets.url('tilemap','Inside_A2.png'));
+        this.load.image("Outside_B", Assets.url('tilemap','Outside_B.png'));
 
-        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('prototype.json'));
+        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap','prototype.json'));
 
         this.load.image('player', Assets.url('game', 'phaser.png'));
         this.physics.world.setBounds(0, 0, 9001, 9001);
@@ -69,6 +69,8 @@ export class OverWorldScene extends Phaser.Scene {
 
         this.player = this.physics.add.sprite(400, 300, 'player');
         this.player.setOrigin(0.5, 0.5).setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE).setCollideWorldBounds(true).setDrag(500, 500);
+
+        this.player.body.allowRotation = true;
 
         for (let i = 0; i < this.collideableLayers.length; i++) {
             this.collideableLayers[i].setCollisionByProperty({collides: true});
