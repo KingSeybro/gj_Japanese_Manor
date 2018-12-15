@@ -62,7 +62,7 @@ export class PlayerCombat {
         this.type = type;
     }
 
-   public returnCombatWrapper(passing: Function, enemyPlayer: PlayerCombat): CombatWrapper {
+   public returnCombatWrapper(passing: Function, enemyPlayer: PlayerCombat, attackHit: boolean, damageDone: number): CombatWrapper {
        let attackSummary:string;
        let attackname:string;
 
@@ -73,7 +73,7 @@ export class PlayerCombat {
            }
        }
 
-       return new CombatWrapper(this, enemyPlayer,attackSummary, attackname);
+       return new CombatWrapper(this, enemyPlayer,attackSummary, attackname, attackHit, damageDone);
 
    }
 
@@ -83,12 +83,14 @@ export class PlayerCombat {
         // if ATK Roll > Defensive Roll = Hit
         // finalDamageDone + 2d6 - ARM = damage done to Social Standing
         var attackRoll: number = this.diceRolling(2);
-        var finalDamageDone: number = 0;
+        var finalDamageInflicted: number = 0;
+        let attackHit: boolean = false;
         if (attackRoll + this.finalAttack >= enemyPlayer.finalDef) {
+            attackHit = true;
             var damageRoll: number = this.diceRolling(2);
             if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm) {
                 enemyPlayer.finalSocialStanding = this.finalSocialStanding - (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
-                finalDamageDone = (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
+                finalDamageInflicted = (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
             } else {
                 //NO Damage is DONE
             }
@@ -98,7 +100,7 @@ export class PlayerCombat {
         this.currentFocus = this.currentFocus - focusCost;
 
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.basicAttack, enemyPlayer);
+        return this.returnCombatWrapper(this.basicAttack, enemyPlayer, attackHit, finalDamageInflicted);
 
     }
 
@@ -109,10 +111,14 @@ export class PlayerCombat {
         // if ATK Roll > Defensive Roll = Hit
         // finalDamageDone + 2d6 - ARM = damage done to Social Standing
         var attackRoll: number = this.diceRolling(3);
+        var finalDamageInflicted: number = 0;
+        let attackHit: boolean = false;
         if (attackRoll + this.finalAttack >= enemyPlayer.finalDef) {
+            attackHit = true;
             var damageRoll: number = this.diceRolling(2);
             if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm) {
                 enemyPlayer.finalSocialStanding = this.finalSocialStanding - (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
+                finalDamageInflicted =  (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
             } else {
                 //NO Damage is DONE
             }
@@ -121,7 +127,7 @@ export class PlayerCombat {
         }
         this.currentFocus = this.currentFocus - focusCost;
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.accurateAttack, enemyPlayer);
+        return this.returnCombatWrapper(this.accurateAttack, enemyPlayer, attackHit, finalDamageInflicted);
 
     }
 
@@ -132,10 +138,14 @@ export class PlayerCombat {
         // if ATK Roll > Defensive Roll = Hit
         // finalDamageDone + 3d6 - ARM = damage done to Social Standing
         let attackRoll: number = this.diceRolling(2);
+        var finalDamageInflicted: number = 0;
+        let attackHit: boolean = false;
         if (attackRoll + this.finalAttack >= enemyPlayer.finalDef) {
+            attackHit = true;
             let damageRoll: number = this.diceRolling(3);
             if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm) {
                 enemyPlayer.finalSocialStanding = this.finalSocialStanding - (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
+                finalDamageInflicted = (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
             } else {
                 //NO Damage is DONE
             }
@@ -145,7 +155,7 @@ export class PlayerCombat {
         this.currentFocus = this.currentFocus - focusCost;
 
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.powerfulAttack, enemyPlayer);
+        return this.returnCombatWrapper(this.powerfulAttack, enemyPlayer, attackHit, finalDamageInflicted);
 
 
     }
@@ -156,11 +166,15 @@ export class PlayerCombat {
         //Player rolls 3d6 + attack vs Defensive Value
         // if ATK Roll > Defensive Roll = Hit
         // finalDamageDone + 3d6 - ARM = damage done to Social Standing
-        let attackRoll: number = this.diceRolling(2);
+        var finalDamageInflicted: number = 0;
+        let attackHit: boolean = false;
+        let attackRoll: number = this.diceRolling(3);
         if (attackRoll + this.finalAttack >= enemyPlayer.finalDef) {
-            let damageRoll: number = this.diceRolling(2);
+            attackHit = true;
+            let damageRoll: number = this.diceRolling(3);
             if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm) {
                 enemyPlayer.finalSocialStanding = this.finalSocialStanding - (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
+                finalDamageInflicted = (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
             } else {
                 //NO Damage is DONE
             }
@@ -170,7 +184,7 @@ export class PlayerCombat {
         this.currentFocus = this.currentFocus - focusCost;
 
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.combinedAttack, enemyPlayer);
+        return this.returnCombatWrapper(this.combinedAttack, enemyPlayer, attackHit, finalDamageInflicted);
     }
 
     //Call this after the END of each Combat
@@ -245,20 +259,20 @@ export class The_Fool extends PlayerCombat{
         this.currentFocus = this.currentFocus - focusCost;
 
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.debuffArmSpell, enemyPlayer);
+        return this.returnCombatWrapper(this.debuffArmSpell, enemyPlayer, true, 0);
     }
 
     //Multiple Basic Attacks randomized between 3-6
     public ultimateAttack(enemyPlayer: PlayerCombat): CombatWrapper {
        let amountsofAttacks: Number = 3 + Math.floor(Math.random() * 6);
-
+        let finalDamageInflicted: number = 0;
        for (let i=0; i <= amountsofAttacks; i++){
-           this.basicAttack(enemyPlayer);
+           finalDamageInflicted = finalDamageInflicted + this.basicAttack(enemyPlayer).damageDealt;
            this.currentFocus = this.currentFocus + 1;
        }
 
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.ultimateAttack, enemyPlayer);
+        return this.returnCombatWrapper(this.ultimateAttack, enemyPlayer, true, finalDamageInflicted);
     }
 }
 
@@ -281,7 +295,7 @@ export class The_Jailbait extends PlayerCombat{
         enemyPlayer.socialStanding = enemyPlayer.socialStanding - 3 - (this.finalDamageDone - this.damageDone);
         this.currentFocus = this.currentFocus - focusCost;
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.fixedDamageSpell, enemyPlayer);
+        return this.returnCombatWrapper(this.fixedDamageSpell, enemyPlayer, true,  (3 + (this.finalDamageDone - this.damageDone)));
     }
 
     //DeBuffspell that gives the Opponent -2 ARM for the Combat
@@ -290,7 +304,7 @@ export class The_Jailbait extends PlayerCombat{
         enemyPlayer.finalArm = enemyPlayer.finalArm-2;
         this.currentFocus = this.currentFocus - focusCost;
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.debuffArmSpell, enemyPlayer);
+        return this.returnCombatWrapper(this.debuffArmSpell, enemyPlayer, true, 0);
     }
     // Nanni reduces the the current focus by 3, reduces permanent focus by 1 and casts her fixed damage spell for free!
     public ultimateAttack(enemyPlayer: PlayerCombat): CombatWrapper{
@@ -300,12 +314,12 @@ export class The_Jailbait extends PlayerCombat{
             enemyPlayer.currentFocus = 0;
         }
         enemyPlayer.finalFocus = enemyPlayer.finalFocus-1;
-        this.fixedDamageSpell(enemyPlayer);
+        let finalDamageInflicted: number = this.fixedDamageSpell(enemyPlayer).damageDealt;
         this.currentFocus = this.currentFocus+3;
 
         this.ultimateAttackIsUsable = false;
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.ultimateAttack, enemyPlayer);
+        return this.returnCombatWrapper(this.ultimateAttack, enemyPlayer, true, finalDamageInflicted);
 
     }
 }
@@ -333,7 +347,7 @@ export class The_Naughty_Nerd extends PlayerCombat {
         this.finalDamageDone = this.finalDamageDone + 2;
         this.currentFocus = this.currentFocus - focusCost;
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.damageBuffSpell, enemyPlayer);
+        return this.returnCombatWrapper(this.damageBuffSpell, enemyPlayer, true, 0);
     }
 
 
@@ -343,17 +357,18 @@ export class The_Naughty_Nerd extends PlayerCombat {
         this.finalDef = this.finalDef + 2;
         this.currentFocus = this.currentFocus - focusCost;
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.defBuffSpell, enemyPlayer);
+        return this.returnCombatWrapper(this.defBuffSpell, enemyPlayer, true, 0);
     }
 
     //Klaranette reduces her current health by half but deals half her health +2 to the enemy!
     public ultimateAttack(enemyPlayer: PlayerCombat): CombatWrapper {
             this.socialStanding = this.socialStanding / 2;
+            let finalDamageInflicted: number = this.socialStanding+2;
             enemyPlayer.finalSocialStanding = this.socialStanding+2;
             this.finalSocialStanding = this.socialStanding;
             this.ultimateAttackIsUsable = false;
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.ultimateAttack, enemyPlayer);
+        return this.returnCombatWrapper(this.ultimateAttack, enemyPlayer, true, finalDamageInflicted);
     }
 }
 
@@ -374,11 +389,11 @@ export class The_Sexy_Samurai extends PlayerCombat {
     public ultimateAttack(enemyPlayer: PlayerCombat): CombatWrapper {
         this.finalArm = this.finalArm+2;
         this.arm = this.arm+2;
-        this.combinedAttack(enemyPlayer);
+        let finalDamageInflicted: number = this.combinedAttack(enemyPlayer).damageDealt;
         this.currentFocus = this.currentFocus+3;
         this.ultimateAttackIsUsable = false;
         //TODO: FOR VEIT
-        return this.returnCombatWrapper(this.ultimateAttack, enemyPlayer);
+        return this.returnCombatWrapper(this.ultimateAttack, enemyPlayer, true, finalDamageInflicted);
     }
 }
 
