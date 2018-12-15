@@ -37,7 +37,7 @@
     "dev": "webpack --mode development && webpack-dev-server --mode development",
     "build": "webpack --mode production && webpack-dev-server --mode production",
     "serverbuild": "ts-node --config tsconfig-server.json src/server/server.ts",
-    "serverdev": "./node_modules/nodemon/bin/nodemon.js"
+    "serverdev": "nodemon"
   },
   "repository": {
     "type": "git",
