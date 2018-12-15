@@ -37,7 +37,7 @@ export class OverWorldScene extends BaseTileMapScene {
         super.preload();
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
-        this.physics.world.setBounds(0, 0, 9001, 9001);
+        this.physics.world.setBounds(0, 0, 500*Constants.TILE_SIZE, 500*Constants.TILE_SIZE);
     }
 
     create(): void {
@@ -57,10 +57,10 @@ export class OverWorldScene extends BaseTileMapScene {
             .setDrag(500, 500);
         this.player.body.stopVelocityOnCollide = true;
 
-        this.setUpCollisionLayer([1], this.player);
+        this.setUpCollisionLayer([0], this.player);
 
         this.initializeInput();
-        this.cameras.main.setZoom(2);
+        this.cameras.main.setZoom(Constants.DEFAULT_ZOOM);
 
         if (Globals.DEBUG_ON) {
             const debugGraphics = this.add.graphics().setAlpha(0.75);
@@ -183,16 +183,16 @@ export class OverWorldScene extends BaseTileMapScene {
 
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_W', function (event) {
-            player.setAccelerationY(-400);
+            player.setAccelerationY(-Constants.ACCELERATION);
         });
         this.input.keyboard.on('keydown_S', function (event) {
-            player.setAccelerationY(400);
+            player.setAccelerationY(Constants.ACCELERATION);
         });
         this.input.keyboard.on('keydown_A', function (event) {
-            player.setAccelerationX(-400);
+            player.setAccelerationX(-Constants.ACCELERATION);
         });
         this.input.keyboard.on('keydown_D', function (event) {
-            player.setAccelerationX(400);
+            player.setAccelerationX(Constants.ACCELERATION);
         });
         // Stops player acceleration on uppress of WASD keys
         this.input.keyboard.on('keyup_W', function (event) {
@@ -275,7 +275,7 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     private sendPlayerMoved(): void {
-        console.log("send player moved");
+        // console.log("send player moved");
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_MOVED, this.getCurrentPlayerData());
     }
 

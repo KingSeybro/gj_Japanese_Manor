@@ -8,5 +8,7 @@ export class Constants {
 
 
     public static readonly SERVER_URL = url;
+    public static readonly ACCELERATION = 60000;
+    public static readonly DEFAULT_ZOOM = 0.3;
 
 }
