@@ -15,8 +15,8 @@ import {ConversationScene} from "./scenes/conversationSampleScene";
 
 // main game configuration
 const config: GameConfig = {
-    width: 800,
-    height: 600,
+    width: 1280,
+    height: 720,
     type: Phaser.AUTO,
     pixelArt: true,
     parent: "game",
