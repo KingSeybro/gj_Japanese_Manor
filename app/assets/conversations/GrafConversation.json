@@ -1,0 +1,102 @@
+[
+	{
+		"title": "StartGraf",
+		"tags": "Graf StartGraf",
+		"body": "Good evening, my lady. \n[[Good evening, Graf Von Azabu.|GrafGood01]]\n[[Good evening, Sir.|GrafNeutral01]]\n[[Good evening, Wentzel.|GrafBad01]]",
+		"position": {
+			"x": 808,
+			"y": -76
+		},
+		"colorID": 0
+	},
+	{
+		"title": "GrafGood01",
+		"tags": "Graf",
+		"body": "You may call me Wentzel, my lady. \n[[You may call me anytime, my lord.|GrafGood02]]\n[[Thank you, my lord. |GrafNeutral02]]\n[[I prefer Graf Von Azabu|GrafBad02]]",
+		"position": {
+			"x": 208,
+			"y": 192
+		},
+		"colorID": 0
+	},
+	{
+		"title": "GrafBad01",
+		"tags": "Graf",
+		"body": "That's Graf Von Azabu for you. \n[[Pardon, my lord. I meant no disrespect.|GrafNeutral02]]\n[[That's Graf Von Azabu for you MY LADY!|GrafBad02]]\n[[Fine by me, Graf Von Azabu.|GrafBad02]]",
+		"position": {
+			"x": 1346,
+			"y": 189
+		},
+		"colorID": 0
+	},
+	{
+		"title": "GrafNeutral01",
+		"tags": "Graf",
+		"body": "You may call me Wentzel, my lady. \n[[Thank you, Wentzel. I'm honored.|GrafGood02]]\n[[Thank you, my lord.|GrafNeutral02]]\n[[I prefer Graf von Azabu.|GrafBad02]]",
+		"position": {
+			"x": 815,
+			"y": 211
+		},
+		"colorID": 0
+	},
+	{
+		"title": "GrafGood02",
+		"tags": "Graf",
+		"body": "Are you enjoying the party, my lady? \n[[Yes, especially present company.|GrafGoodEnding]]\n[[Yes, thank you for the invitation, Wentzel. |GrafGoodEnding]]\n[[Yes, especially the cherry blossoms, my lord.|GrafNeutralEnding]]",
+		"position": {
+			"x": 214,
+			"y": 567
+		},
+		"colorID": 0
+	},
+	{
+		"title": "GrafNeutral02",
+		"tags": "Graf",
+		"body": "Are you enjoying the party, my lady? \n[[Yes, especially present company.|GrafNeutralEnding]]\n[[Yes, thank you for the invitation, Wentzel.|GrafNeutralEnding]]\n[[Yes, especially the cherry blossoms, my lord.|GrafBadEnding]]",
+		"position": {
+			"x": 830,
+			"y": 577
+		},
+		"colorID": 0
+	},
+	{
+		"title": "GrafBad02",
+		"tags": "Graf",
+		"body": "You have quite the mouth on you.\n[[You could say I have a silver tongue.|GrafNeutralending]]\n[[You'll like it once we're married, Graf.|GrafBadEnding]]\n[[I bet you like that about me though.|GrafBadEnding]]",
+		"position": {
+			"x": 1381,
+			"y": 560
+		},
+		"colorID": 0
+	},
+	{
+		"title": "GrafGoodEnding",
+		"tags": "Graf GrafEnding GoodEnding",
+		"body": "Well, I'm charmed. I hope you enjoy your stay.",
+		"position": {
+			"x": 215,
+			"y": 844
+		},
+		"colorID": 6
+	},
+	{
+		"title": "GrafNeutralEnding",
+		"tags": "Graf GrafEnding NeutralEnding",
+		"body": "Well, please enjoy your visit. ",
+		"position": {
+			"x": 843,
+			"y": 862
+		},
+		"colorID": 0
+	},
+	{
+		"title": "GrafBadEnding",
+		"tags": "Graf GrafEnding BadEnding",
+		"body": "I'll tell Fräulein Hilf to call your carriage. ",
+		"position": {
+			"x": 1376,
+			"y": 847
+		},
+		"colorID": 5
+	}
+]
