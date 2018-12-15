@@ -59,9 +59,10 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     create(playerObject:SelectedPlayer): void {
+        console.log('OverWorldScene created called');
 
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
-        let id = Websocket.init();
+        let id = Websocket.init(this.game);
         switch (playerObject.type) {
             case The_Fool.TYPE:
                 this.selectedPlayer = new The_Fool(id);
@@ -289,8 +290,8 @@ export class OverWorldScene extends BaseTileMapScene {
 
     public switchToConversationScreen() {
         this.player.setAcceleration(0, 0).setVelocity(0, 0);
-        //this.scene.switch('ConversationScene'); // Start the convo scene
-        this.scene.start('ConversationScene',new SceneHelper(1,1)); // Start the convo scene
+        this.scene.pause('OverWorldScene');
+        this.scene.launch('ConversationScene',new SceneHelper(1,1)); // Start the convo scene
     }
 
     update(time: number, delta: number): void {

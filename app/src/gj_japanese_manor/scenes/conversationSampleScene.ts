@@ -3,6 +3,8 @@ import {Constants} from "../constants";
 import {Conversation, ConversationNode} from "../converastion";
 import {DialogBox} from "../dialogbox";
 import {SceneHelper} from "./sceneHelper";
+import {Websocket} from "../websocket";
+import SceneManager = Phaser.Scenes.SceneManager;
 
 export class ConversationScene extends Phaser.Scene {
     private conv: Phaser.GameObjects.Text;
@@ -85,7 +87,7 @@ export class ConversationScene extends Phaser.Scene {
 
         this.node = this.conversation.getNextNode();
 
-        let scene = this.scene;
+        let scene = this.game.scene;
         let self=this;
         this.setConversationNode(this.conversation.getNextNode()); //initial node
         this.input.keyboard.on('keydown_A', function (event) {
@@ -93,16 +95,14 @@ export class ConversationScene extends Phaser.Scene {
                 self.setConversationNode(self.conversation.getNextNode(self.node.options[0].value));
             }
             else{
-                scene.switch('OverWorldScene'); // Start the main scene
-                scene.remove("ConversationScene");
+                self.switchToOverworld(scene)
             }
         });
         this.input.keyboard.on('keydown_B', function (event) {
             if(!self.finished){
                 self.setConversationNode(self.conversation.getNextNode(self.node.options[1].value));
             } else{
-                scene.switch('OverWorldScene'); // Start the main scene
-                scene.remove("ConversationScene");
+                self.switchToOverworld(scene)
             }
         });
         this.input.keyboard.on('keydown_C', function (event) {
@@ -110,18 +110,22 @@ export class ConversationScene extends Phaser.Scene {
                 self.setConversationNode(self.conversation.getNextNode(self.node.options[2].value));
             }
             else{
-                scene.switch('OverWorldScene'); // Start the main scene
-                scene.remove("ConversationScene");
+                self.switchToOverworld(scene)
             }
+            self.game.scene.dump();
         });
         this.input.keyboard.on('keydown_X', function (event) {
             if(self.finished!==true){
         }
         else {
-                scene.switch('OverWorldScene'); // Start the main scene
-                scene.remove("ConversationScene");
+                self.switchToOverworld(scene);
             }
         });
+    }
+
+    private switchToOverworld(scene: SceneManager){
+        scene.resume('OverWorldScene');
+        scene.remove("ConversationScene");
     }
 
     setConversationNode(value: any) {
@@ -132,7 +136,6 @@ export class ConversationScene extends Phaser.Scene {
              if(this.dbox!==undefined){
                  this.dbox.toggleWindow();
              }
-
 
         if(this.node.options.length==0){
             if(this.node.outcome==undefined){
