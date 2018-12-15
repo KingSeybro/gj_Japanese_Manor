@@ -9,6 +9,8 @@ import {Log} from "./log";
 import {SharedConstants} from "../shared/sharedConstants";
 import {PlayerInfo, Position} from "../shared/playerInfo";
 import {CombatWrapper} from "../gj_japanese_manor/combatWrapper";
+import {The_Naughty_Nerd} from "../shared/playerCombat";
+import {CombatData} from "../shared/data";
 
 export class App {
 
@@ -108,8 +110,19 @@ export class App {
                 this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, player);
                 this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, otherPlayer);
 
-                socket.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, otherPlayer);
-                this.sockets.get(otherPlayer.id).emit(SharedConstants.EVENT_PLAYER_START_BATTLE, player);
+                let player1Obj = new The_Naughty_Nerd(player.id);
+                let player2Obj = new The_Naughty_Nerd(otherPlayer.id);
+
+                let combat = new CombatWrapper(player1Obj, player2Obj, "You are first", "");
+                let data1 = new CombatData();
+                data1.combat = combat;
+                data1.otherPlayer = otherPlayer;
+                socket.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, data1);
+
+                let data2 = new CombatData();
+                data2.combat = combat;
+                data2.otherPlayer = player;
+                this.sockets.get(otherPlayer.id).emit(SharedConstants.EVENT_PLAYER_START_BATTLE, data2);
             });
 
 
