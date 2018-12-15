@@ -10,6 +10,7 @@ import {PlayerInfo, Position} from "../../shared/playerInfo";
 import {BaseTileMapScene} from "./baseTileMapScene";
 import {Globals} from "../globals";
 import {Websocket} from "../websocket";
+import {CombatData} from "../../shared/data";
 
 export class OverWorldScene extends BaseTileMapScene {
 
@@ -113,8 +114,8 @@ export class OverWorldScene extends BaseTileMapScene {
             }
         });
 
-        Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (otherPlayer: PlayerInfo) => {
-            console.log('Other player ' + otherPlayer.id + ' wants to start a battle');
+        Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: CombatData) => {
+            console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
             this.scene.switch('BattleScene');
         });
 
@@ -145,7 +146,6 @@ export class OverWorldScene extends BaseTileMapScene {
                 value = self.otherPlayers[key];
             });
         }
-        console.log("now");
         if(this.gracePeriod <=0)
             this.switchToBattleScreen();
     }
