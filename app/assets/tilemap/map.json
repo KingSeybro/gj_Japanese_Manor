@@ -32,10 +32,103 @@
  "tiledversion":"1.2.1",
  "tileheight":256,
  "tilesets":[
+{ "columns":7,
+ "image":"background_tiles.png",
+ "imageheight":2048,
+ "imagewidth":1792,
+ "margin":0,
+ "name":"background_tiles",
+ "spacing":0,
+ "tilecount":56,
+ "tiledversion":"1.2.1",
+ "tileheight":256,
+ "tiles":[
         {
-         "firstgid":1,
-         "source":"tilemap\/tilest_1.tsx"
+         "id":9,
+         "properties":[
+                {
+                 "name":"collides",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":10,
+         "properties":[
+                {
+                 "name":"collides",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":11,
+         "properties":[
+                {
+                 "name":"collides",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":12,
+         "properties":[
+                {
+                 "name":"collides",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":16,
+         "properties":[
+                {
+                 "name":"collides",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":17,
+         "properties":[
+                {
+                 "name":"collides",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":18,
+         "properties":[
+                {
+                 "name":"collides",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":19,
+         "properties":[
+                {
+                 "name":"collides",
+                 "type":"bool",
+                 "value":true
+                }]
+        }, 
+        {
+         "id":36,
+         "properties":[
+                {
+                 "name":"collides",
+                 "type":"bool",
+                 "value":true
+                }]
         }],
+ "tilewidth":256,
+ "type":"tileset",
+ "version":1.2
+}
+		],
  "tilewidth":256,
  "type":"map",
  "version":1.2,
