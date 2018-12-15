@@ -36,7 +36,7 @@ export class OverWorldScene extends Phaser.Scene {
 
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('prototype.json'));
 
-        this.load.image('player', Assets.url('phaser.png'));
+        this.load.image('player', Assets.url('game', 'phaser.png'));
         this.physics.world.setBounds(0, 0, 9001, 9001);
     }
 
@@ -62,6 +62,7 @@ export class OverWorldScene extends Phaser.Scene {
             // @ts-ignore
             this.map.createDynamicLayer('stuff', this.tilesets)
         ];
+
 
 
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
