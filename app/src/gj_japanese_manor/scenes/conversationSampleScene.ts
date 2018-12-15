@@ -18,9 +18,11 @@ export class ConversationScene extends Phaser.Scene {
     }
 
     preload(): void {
-            this.load.json('conversation', Assets.url('conversations','TestConversation.json'));
+
             this.load.image('bg_back_s', Assets.url('backgrounds','JM_Back_S.png'));
             this.load.image('jb_char', Assets.url('characters','Jailbait Sketch.png'));
+
+            this.load.json('conversation', Assets.url('conversations','ButlerConversation.json'));
     }
 
     create(): void {

@@ -149,7 +149,6 @@ export class OverWorldScene extends BaseTileMapScene {
             var value;
             var self = this;
             for (let [key, v] of this.otherPlayers) {
-                console.log(key);
                 if (v == object2) {
                     value = key;
                 }
@@ -161,7 +160,6 @@ export class OverWorldScene extends BaseTileMapScene {
             var value;
             var self = this;
             for (let [key, v] of this.otherPlayers) {
-                console.log(key);
                 if (v == object1) {
                     value = key;
                 }
