@@ -26,11 +26,13 @@ export class OverWorldScene extends Phaser.Scene {
     private layer3: Phaser.Tilemaps.StaticTilemapLayer;
     private io: SocketIOClient.Socket;
 
+    public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
 
     constructor() {
         super({
             key: "OverWorldScene"
         });
+        this.otherPlayers = new Map<string, Phaser.Physics.Arcade.Sprite>();
     }
 
     preload(): void {
@@ -52,7 +54,7 @@ export class OverWorldScene extends Phaser.Scene {
         this.map = this.make.tilemap({
             key: Assets.TILES_OVERWORLD_MAP
         });
-        this.map = this.make.tilemap({ key: Assets.TILES_OVERWORLD_MAP });
+        this.map = this.make.tilemap({key: Assets.TILES_OVERWORLD_MAP});
         this.tiles = this.map.addTilesetImage("Overworld_Tileset (2)", "overworld");
         this.tiles1 = this.map.addTilesetImage("Inside_A4", "Inside_A4");
         this.tiles2 = this.map.addTilesetImage("Inside_A2", "Inside_A2");
@@ -85,11 +87,24 @@ export class OverWorldScene extends Phaser.Scene {
             console.log("Could not connect to server " + Constants.SERVER_URL);
         }
 
+        const self = this;
         this.io.on(SharedConstants.EVENT_PLAYER_UPDATE, (p: any) => {
             if (p.id !== this.io.id) {
                 console.log("player update" + JSON.stringify(p));
+                if (!self.otherPlayers.get(p.id)) {
+                    let otherPlayer = this.physics.add.sprite(p.x, p.y, 'player');
+                    otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE);
+                    self.otherPlayers.set(p.id, otherPlayer);
+                } else {
+                    console.log("update " + p.id);
+                    self.otherPlayers.get(p.id).y = p.y;
+                    self.otherPlayers.get(p.id).x = p.x;
+                }
             }
+
         });
+
+        this.sendPlayerMoved();
 
     }
 
@@ -181,9 +196,13 @@ export class OverWorldScene extends Phaser.Scene {
             this.player.rotation = Math.atan2(y, x);
         }
         if (this.player.body.speed !== 0) {
-            let playerData = new PlayerInfo(new Position(this.player.x, this.player.y));
-            this.io.emit(SharedConstants.EVENT_PLAYER_MOVED, playerData);
+            this.sendPlayerMoved();
         }
 
+    }
+
+    private sendPlayerMoved(): void {
+        let playerData = new PlayerInfo(new Position(this.player.x, this.player.y));
+        this.io.emit(SharedConstants.EVENT_PLAYER_MOVED, playerData);
     }
 }
