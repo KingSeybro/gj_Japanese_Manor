@@ -80,13 +80,13 @@ export class OverWorldScene extends BaseTileMapScene {
         Websocket.io.on(SharedConstants.EVENT_PLAYER_UPDATE, (p: any) => {
 
             if (p.id !== Websocket.io.id) {
-                console.log("player update" + JSON.stringify(p));
+                // console.log("player update" + JSON.stringify(p));
                 if (!self.otherPlayers.get(p.id)) {
                     let otherPlayer = this.physics.add.sprite(p.x, p.y, 'player');
                     otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE);
                     self.otherPlayers.set(p.id, otherPlayer);
                 } else {
-                    console.log("update " + p.id);
+                    // console.log("update " + p.id);
                     self.otherPlayers.get(p.id).y = p.y;
                     self.otherPlayers.get(p.id).x = p.x;
                 }
