@@ -11,7 +11,7 @@ import {BaseTileMapScene} from "./baseTileMapScene";
 import {Globals} from "../globals";
 import {Websocket} from "../websocket";
 import {CombatData} from "../../shared/data";
-import {PlayerCombat, The_Fool, The_Naughty_Nerd} from "../../shared/playerCombat";
+import {PlayerCombat, The_Fool, The_Jailbait, The_Naughty_Nerd, The_Sexy_Samurai} from "../../shared/playerCombat";
 import {SelectedPlayer} from "../selectedPlayer";
 
 export class OverWorldScene extends BaseTileMapScene {
@@ -57,7 +57,24 @@ export class OverWorldScene extends BaseTileMapScene {
     create(playerObject:SelectedPlayer): void {
 
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
-        vat id = Websocket.init();
+        let id = Websocket.init();
+        switch (playerObject.type) {
+            case The_Fool.TYPE:
+                this.selectedPlayer = new The_Fool(id);
+                break;
+            case The_Sexy_Samurai.TYPE:
+                this.selectedPlayer = new The_Sexy_Samurai(id);
+                break;
+            case The_Naughty_Nerd.TYPE:
+                this.selectedPlayer = new The_Naughty_Nerd(id);
+                break;
+            case The_Jailbait.TYPE:
+                this.selectedPlayer = new The_Jailbait(id);
+                break;
+            default:
+                this.selectedPlayer = new The_Jailbait(id);
+                break;
+        }
 
         this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
         this.initMap(Assets.TILES_OVERWORLD_MAP);
