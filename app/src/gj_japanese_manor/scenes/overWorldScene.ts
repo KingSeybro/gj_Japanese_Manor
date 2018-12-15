@@ -8,22 +8,16 @@ import {Constants} from "../constants";
 import * as socketIo from "socket.io-client";
 import {SharedConstants} from "../../shared/sharedConstants";
 import {Position, PlayerInfo} from "../../shared/playerInfo";
+import {BaseTileMapScene} from "./baseTileMapScene";
+import {cpus} from "os";
+import {Globals} from "../globals";
 
-export class OverWorldScene extends Phaser.Scene {
+export class OverWorldScene extends BaseTileMapScene {
 
     public static readonly TILESET_NAME = 'Overworld_Tileset';
-    private map: Phaser.Tilemaps.Tilemap;
-    private layer0: Phaser.Tilemaps.StaticTilemapLayer;
-    private layer1: Phaser.Tilemaps.DynamicTilemapLayer;
-    private layer2: Phaser.Tilemaps.StaticTilemapLayer;
-    private tiles: Phaser.Tilemaps.Tileset;
+
     private moveKeys: object;
     private player: Phaser.Physics.Arcade.Sprite;
-    private tiles1: Phaser.Tilemaps.Tileset;
-    private layer4: Phaser.Tilemaps.StaticTilemapLayer;
-    private tiles2: Phaser.Tilemaps.Tileset;
-    private tiles3: Phaser.Tilemaps.Tileset;
-    private layer3: Phaser.Tilemaps.StaticTilemapLayer;
     private io: SocketIOClient.Socket;
 
     public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
@@ -31,40 +25,24 @@ export class OverWorldScene extends Phaser.Scene {
     constructor() {
         super({
             key: "OverWorldScene"
-        });
+        }, ['overworld', 'Inside_A4', 'Inside_A2', 'Outside_B']);
         this.otherPlayers = new Map<string, Phaser.Physics.Arcade.Sprite>();
+        this.layers = new Map<number, Phaser.Tilemaps.StaticTilemapLayer>();
+        this.tiles = new Map<string, Phaser.Tilemaps.Tileset>();
+        this.tilesMapping = new Map<number, string>();
     }
 
     preload(): void {
-        this.load.image("overworld", Assets.url('overworld.png'));
-        this.load.image("Inside_A4", Assets.url('Inside_A4.png'));
-        this.load.image("Inside_A2", Assets.url('Inside_A2.png'));
-        this.load.image("Outside_B", Assets.url('Outside_B.png'));
-
+        super.preload();
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('prototype.json'));
-
         this.load.image('player', Assets.url('game', 'phaser.png'));
         this.physics.world.setBounds(0, 0, 9001, 9001);
     }
 
     create(): void {
+        super.create();
         this.io = socketIo(Constants.SERVER_URL);
         this.io.connect();
-
-        this.map = this.make.tilemap({
-            key: Assets.TILES_OVERWORLD_MAP
-        });
-        this.map = this.make.tilemap({key: Assets.TILES_OVERWORLD_MAP});
-        // debugger;
-        this.tiles = this.map.addTilesetImage("Overworld_Tileset (2)", "overworld");
-        this.tiles1 = this.map.addTilesetImage("Inside_A4", "Inside_A4");
-        this.tiles2 = this.map.addTilesetImage("Inside_A2", "Inside_A2");
-        this.tiles3 = this.map.addTilesetImage("Outside_B", "Outside_B");
-        this.layer0 = this.map.createStaticLayer(0, this.tiles, 0, 0);
-        this.layer1 = this.map.createDynamicLayer(1, this.tiles1, 0, 0);
-        this.layer2 = this.map.createStaticLayer(2, this.tiles2, 0, 0);
-        this.layer3 = this.map.createStaticLayer(3, this.tiles3, 0, 0);
-        this.layer4 = this.map.createStaticLayer(4, this.tiles, 0, 0);
 
 
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -72,14 +50,20 @@ export class OverWorldScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(400, 300, 'player');
         this.player.setOrigin(0.5, 0.5).setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE).setCollideWorldBounds(true).setDrag(500, 500);
 
-        this.layer1.setCollisionByProperty({collides: true});
-        this.physics.add.collider(this.player, this.layer1);
+        let collisionLayer = this.layers.get(1);
+        collisionLayer.setCollisionByProperty({collides: true});
+        this.physics.add.collider(this.player, collisionLayer);
 
         this.initializeInput();
         this.cameras.main.setZoom(2);
 
-        if (Constants.DEBUG_ON) {
+        if (Globals.DEBUG_ON) {
             const debugGraphics = this.add.graphics().setAlpha(0.75);
+            // collisionLayer.renderDebug(debugGraphics, {
+            //     tileColor: null, // Color of non-colliding tiles
+            //     collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+            //     faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+            // });
 
         }
         if (this.io.connected) {
@@ -108,7 +92,6 @@ export class OverWorldScene extends Phaser.Scene {
         this.sendPlayerMoved();
 
     }
-
 
     constrainVelocity(sprite, maxVelocity) {
         if (!sprite || !sprite.body)
@@ -177,6 +160,10 @@ export class OverWorldScene extends Phaser.Scene {
         });
         this.input.keyboard.on('keydown_T', function (event) {
             camera.setZoom(camera.zoom - 0.1);
+        });
+        this.input.keyboard.on('keyup_O', function (event) {
+           Globals.DEBUG_ON = !Globals.DEBUG_ON;
+           console.log(Globals.DEBUG_ON);
         });
 
         this.input.keyboard.on('keydown_B', function (event) {
