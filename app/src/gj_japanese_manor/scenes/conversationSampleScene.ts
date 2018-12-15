@@ -42,6 +42,8 @@ export class ConversationScene extends Phaser.Scene {
         let scene = this.scene;
         let self=this;
         this.setConversationNode(this.conversation.getNextNode()); //initial node
+
+
         this.input.keyboard.on('keydown_A', function (event) {
             self.setConversationNode(self.conversation.getNextNode(self.node.options[0].value));
         });
