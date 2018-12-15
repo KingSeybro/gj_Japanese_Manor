@@ -57,6 +57,21 @@ export class PlayerCombat {
         this.currentFocus = focus;
     }
 
+   public returnCombatWrapper(passing: Function, enemyPlayer: PlayerCombat): CombatWrapper {
+       let attackSummary:string;
+       let attackname:string;
+
+       for (let i=0; i < this.attacksAndSpells.length;i++){
+           if (this.attacksAndSpells[i].combatFunction == passing){
+               attackSummary = this.attacksAndSpells[i].descriptionOfAttack;
+               attackname = this.attacksAndSpells[i].name;
+           }
+       }
+
+       return new CombatWrapper(this, enemyPlayer,attackSummary, attackname);
+
+   }
+
     public basicAttack(enemyPlayer: PlayerCombat): void {
         let focusCost: number = 1;
         //Player rolls 2d6 + attack vs Defensive Value
@@ -77,18 +92,8 @@ export class PlayerCombat {
         }
         this.currentFocus = this.currentFocus - focusCost;
 
-        let attackSummary:string;
-        let attackname:string;
-
-        for (let i=0; i < this.attacksAndSpells.length;i++){
-            if (this.attacksAndSpells[i].combatFunction == this.basicAttack){
-                attackSummary = this.attacksAndSpells[i].descriptionOfAttack;
-                attackname = this.attacksAndSpells[i].name;
-            }
-        }
-
-        let combatWrapper: CombatWrapper = new CombatWrapper(this, enemyPlayer,attackSummary, attackname);
-        //TODO: Handle CombatWrapper
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.basicAttack, enemyPlayer);
 
     }
 
@@ -110,6 +115,9 @@ export class PlayerCombat {
             //The ENEMY IS MISSED
         }
         this.currentFocus = this.currentFocus - focusCost;
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.accurateAttack, enemyPlayer);
+
     }
 
     //Additional 1d6 for Damage
@@ -130,6 +138,11 @@ export class PlayerCombat {
             //The ENEMY IS MISSED
         }
         this.currentFocus = this.currentFocus - focusCost;
+
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.powerfulAttack, enemyPlayer);
+
+
     }
 
     // Additional 1d6 for hitting and for damage
@@ -150,6 +163,9 @@ export class PlayerCombat {
             //The ENEMY IS MISSED
         }
         this.currentFocus = this.currentFocus - focusCost;
+
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.combinedAttack, enemyPlayer);
     }
 
     //Call this after the END of each Combat
@@ -212,6 +228,9 @@ export class The_Fool extends PlayerCombat{
         let focusCost: number = 2;
         enemyPlayer.finalArm = enemyPlayer.finalArm-2;
         this.currentFocus = this.currentFocus - focusCost;
+
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.debuffArmSpell, enemyPlayer);
     }
     
     //Multiple Basic Attacks randomized between 3-6
@@ -222,7 +241,9 @@ export class The_Fool extends PlayerCombat{
            this.basicAttack(enemyPlayer);
            this.currentFocus = this.currentFocus + 1;
        }
-              
+
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.ultimateAttack, enemyPlayer);
     }
 }
 
@@ -242,6 +263,8 @@ export class The_Jailbait extends PlayerCombat{
         let focusCost: number= 3;
         enemyPlayer.socialStanding = enemyPlayer.socialStanding - 3 - (this.finalDamageDone - this.damageDone);
         this.currentFocus = this.currentFocus - focusCost;
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.fixedDamageSpell, enemyPlayer);
     }
 
     //DeBuffspell that gives the Opponent -2 ARM for the Combat
@@ -249,6 +272,8 @@ export class The_Jailbait extends PlayerCombat{
         let focusCost: number = 2;
         enemyPlayer.finalArm = enemyPlayer.finalArm-2;
         this.currentFocus = this.currentFocus - focusCost;
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.debuffArmSpell, enemyPlayer);
     }
     // Nanni reduces the the current focus by 3, reduces permanent focus by 1 and casts her fixed damage spell for free!
     public ultimateAttack(enemyPlayer: PlayerCombat){
@@ -260,6 +285,9 @@ export class The_Jailbait extends PlayerCombat{
         enemyPlayer.finalFocus = enemyPlayer.finalFocus-1;
         this.fixedDamageSpell(enemyPlayer);
         this.currentFocus = this.currentFocus+3;
+
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.ultimateAttack, enemyPlayer);
         
     }
 }
@@ -285,6 +313,8 @@ export class The_Naughty_Nerd extends PlayerCombat {
         let focusCost: number = 2;
         this.finalDamageDone = this.finalDamageDone + 2;
         this.currentFocus = this.currentFocus - focusCost;
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.damageBuffSpell, enemyPlayer);
     }
 
 
@@ -293,6 +323,8 @@ export class The_Naughty_Nerd extends PlayerCombat {
         let focusCost: number = 2;
         this.finalDef = this.finalDef + 2;
         this.currentFocus = this.currentFocus - focusCost;
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.defBuffSpell, enemyPlayer);
     }
 
     //Klaranette reduces her current health by half but deals half her health +2 to the enemy!
@@ -300,6 +332,8 @@ export class The_Naughty_Nerd extends PlayerCombat {
             this.socialStanding = this.socialStanding / 2;
             enemyPlayer.finalSocialStanding = this.socialStanding+2;
             this.finalSocialStanding = this.socialStanding;
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.ultimateAttack, enemyPlayer);
     }
 }
 
@@ -320,6 +354,8 @@ export class The_Sexy_Samurai extends PlayerCombat {
         this.arm = this.arm+2;
         this.combinedAttack(enemyPlayer);
         this.currentFocus = this.currentFocus+3;
+        //TODO: FOR VEIT
+        let combatWrapper: CombatWrapper = this.returnCombatWrapper(this.ultimateAttack, enemyPlayer);
     }
 }
 
