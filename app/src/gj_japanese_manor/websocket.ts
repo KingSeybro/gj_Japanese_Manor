@@ -33,6 +33,7 @@ export class Websocket {
             Helper.switchToStartScreen(scene);
         });
         Websocket.io.on('connect_error', function (p: any) {
+            //TODO: fix this not working properly stop the devserver to simulate that
             console.log('disconnect to ws server');
             Websocket.connected = false;
             Helper.switchToStartScreen(scene);

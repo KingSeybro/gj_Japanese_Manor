@@ -5,6 +5,7 @@ import {DialogBox} from "../dialogbox";
 import {SceneHelper} from "./sceneHelper";
 import {Websocket} from "../websocket";
 import SceneManager = Phaser.Scenes.SceneManager;
+import {Helper} from "./helper";
 
 export class ConversationScene extends Phaser.Scene {
     private conv: Phaser.GameObjects.Text;
@@ -96,8 +97,8 @@ export class ConversationScene extends Phaser.Scene {
     }
 
     private switchToOverworld(scene: SceneManager){
-        scene.resume('OverWorldScene');
-        scene.stop("ConversationScene");
+        Helper.resumeOverWorldScene(scene, 'ConversationScene');
+
     }
 
     setConversationNode(value: any) {
