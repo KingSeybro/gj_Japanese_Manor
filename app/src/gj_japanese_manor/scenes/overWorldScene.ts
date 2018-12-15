@@ -116,6 +116,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
         Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: CombatData) => {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
+            Globals.data = o;
             this.scene.switch('BattleScene');
         });
 
