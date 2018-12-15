@@ -207,6 +207,7 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     private sendPlayerMoved(): void {
+    	console.log("send player moved");
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_MOVED, this.getCurrentPlayerData());
     }
 

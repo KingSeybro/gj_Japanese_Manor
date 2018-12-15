@@ -3,7 +3,7 @@ import {Request, Response} from "express";
 import {App} from "./app";
 import {Log} from "./log";
 
-const PORT = 3000;
+const PORT = 3001;
 var serverApp = new App(PORT);
 var app: express.Application = serverApp.app;
 
