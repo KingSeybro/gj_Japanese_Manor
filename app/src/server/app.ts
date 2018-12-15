@@ -24,7 +24,7 @@ export class App {
         this.app = express();
         this.config();
         this.server = createServer(this.app);
-        this.io = socketIo(this.server);
+	this.io = socketIo(this.server, {path: '/klujam18server/'});
         this.port = port;
         this.players = new Map<string, Player>();
         this.sockets = new Map<string, Socket>()
@@ -34,7 +34,7 @@ export class App {
     private listen(): void {
         Log.log("Listen called");
         let port = this.port;
-        this.server.listen({port: port, path: '/', serverClient: false}, () => {
+	this.server.listen({port: port, path: '/', serverClient: false}, () => {
             Log.log('Running server on port ' + port);
         });
 
@@ -52,7 +52,7 @@ export class App {
             });
 
             socket.on(SharedConstants.EVENT_PLAYER_MOVED, (m: PlayerInfo) => {
-                // Log.log('Received movement update ' + JSON.stringify(m));
+                Log.log('Received movement update ' + JSON.stringify(m));
                 player.x = m.position.x;
                 player.y = m.position.y;
                 this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, player)

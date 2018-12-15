@@ -6,7 +6,7 @@ export class Websocket {
     public static io: SocketIOClient.Socket;
 
     public static init(): void {
-        this.io = socketIo(Constants.SERVER_URL);
+    this.io = socketIo(Constants.SERVER_URL, {secure: true, path: '/klujam18server/socket.io/', transports: ['websocket'], upgrade: false});
         this.io.connect();
     }
 
