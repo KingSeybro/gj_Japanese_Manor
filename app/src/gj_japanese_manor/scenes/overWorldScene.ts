@@ -108,8 +108,8 @@ export class OverWorldScene extends BaseTileMapScene {
             }
         });
 
-        Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (p: any) => {
-            console.log('Other wants to start a battle');
+        Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (otherPlayer: PlayerInfo) => {
+            console.log('Other player ' + otherPlayer.id + ' wants to start a battle');
             this.scene.switch('BattleScene');
         });
 
@@ -237,7 +237,7 @@ export class OverWorldScene extends BaseTileMapScene {
         console.log("Player hit");
         let otherPlayerId = null;
         for (const id of this.otherPlayers.keys()) {
-            if(id !== Websocket.io.id){
+            if (id !== Websocket.io.id) {
                 otherPlayerId = id;
                 break;
             }

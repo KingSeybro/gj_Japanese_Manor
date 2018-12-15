@@ -107,9 +107,9 @@ export class App {
                 otherPlayer.inCombat = true;
                 this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, player);
                 this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, otherPlayer);
-                socket.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, {});
 
-                this.sockets.get(otherPlayer.id).emit(SharedConstants.EVENT_PLAYER_START_BATTLE, {});
+                socket.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, otherPlayer);
+                this.sockets.get(otherPlayer.id).emit(SharedConstants.EVENT_PLAYER_START_BATTLE, player);
             });
 
 
