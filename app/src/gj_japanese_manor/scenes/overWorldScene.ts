@@ -144,7 +144,8 @@ export class OverWorldScene extends BaseTileMapScene {
             });
         }
         console.log("now");
-        this.switchToBattleScreen();
+        if(this.gracePeriod <=0)
+            this.switchToBattleScreen();
     }
 
     constrainVelocity(sprite, maxVelocity) {
@@ -245,6 +246,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
     update(time: number, delta: number): void {
         super.update(time, delta);
+        this.gracePeriod-=delta;
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
         this.constrainVelocity(this.player, 100);
