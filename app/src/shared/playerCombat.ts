@@ -186,7 +186,7 @@ export class The_Fool extends PlayerCombat{
         this.attacksAndSpells.push(new AttackFile("Honorable Gent", this.powerfulAttack, "A powerful attack dealing more damage", "Reginald, please take care of this goose”; Reginald: “I is honored m’lady"));
         this.attacksAndSpells.push(new AttackFile("Most Powerful Southern Bloodline!", this.combinedAttack, "An expensive attack that is both powerful and accurate", ""));
         this.attacksAndSpells.push(new AttackFile("Swoon", this.debuffArmSpell, "Daisy disarms her opponent with her charm and reduces their Armor.", "I feel featherbrained – thank ye for catchin’ me, doll" ));
-        this.attacksAndSpells.push(new AttackFile("Monkey Army", this.ultimateAttack, "Daisy unleashes her Army of Monkeys from the Bathouse", "Let’s see how y’all like my spirit animal."));
+        this.attacksAndSpells.push(new AttackFile("Monkey Army", this.ultimateAttack, "Daisy unleashes her Army of Monkeys from the Bathhouse", "Let’s see how y’all like my spirit animal."));
     }
 
 
@@ -196,11 +196,17 @@ export class The_Fool extends PlayerCombat{
         enemyPlayer.finalArm = enemyPlayer.finalArm-2;
         this.currentFocus = this.currentFocus - focusCost;
     }
-
+    
+    //Multiple Basic Attacks randomized between 3-6
     public ultimateAttack(enemyPlayer: PlayerCombat){
-
+       let amountsofAttacks: Number = 3 + Math.floor(Math.random() * 6);
+       
+       for (let i=0; i <= amountsofAttacks; i++){
+           this.basicAttack(enemyPlayer);
+           this.currentFocus = this.currentFocus + 1;
+       }
+              
     }
-
 }
 
 export class The_Jailbait extends PlayerCombat{
@@ -208,16 +214,14 @@ export class The_Jailbait extends PlayerCombat{
     constructor(id: string) {
         super("Nanni Spielmänner", id, 13, 14, 12, 6, 18, 8);
         this.attacksAndSpells.push(new AttackFile("Hex of Frailty", this.basicAttack, "A basic spell", "Are you aware of your body’s process of decomposition." ));
-        this.attacksAndSpells.push(new AttackFile("Curse of Despair", this.dotSpell, "A curse that deals fixed damage", "See that doll I made? It looks just like you."));
+        this.attacksAndSpells.push(new AttackFile("Curse of Despair", this.fixedDamageSpell, "A curse that deals fixed damage", "See that doll I made? It looks just like you."));
         this.attacksAndSpells.push(new AttackFile("Obsidian Curse of the Butterfly", this.debuffArmSpell, "A spell that reduces your opponents Armor", "I felt a butterfly flap its wings in Argentina. The Doom of Damocles hangs over you now!"));
         this.attacksAndSpells.push(new AttackFile("Aegis of the Oni", this.debuffArmSpell, "Nanni calls upon the Oni to increase her Defense and Armor", "The Oni protect us!" ));
-        this.attacksAndSpells.push(new AttackFile("Tempest of the Last Witch of Azabu ", this.ultimateAttack, "Calling upon her Ultimate Power Nanni reveals her true self!", "-"));
+        this.attacksAndSpells.push(new AttackFile("Tempest of the Last Witch of Azabu ", this.ultimateAttack, "Calling upon her Ultimate Power Nanni reveals her true self!", "Tremble before the power of the last Witch, as my power saps your strength!"));
     }
 
     //this is a powerful spell, that does fixed damage
-
-
-    public dotSpell(enemyPlayer: PlayerCombat){
+    public fixedDamageSpell(enemyPlayer: PlayerCombat){
         let focusCost: number= 3;
         enemyPlayer.socialStanding = enemyPlayer.socialStanding - 3 - (this.finalDamageDone - this.damageDone);
         this.currentFocus = this.currentFocus - focusCost;
@@ -229,9 +233,17 @@ export class The_Jailbait extends PlayerCombat{
         enemyPlayer.finalArm = enemyPlayer.finalArm-2;
         this.currentFocus = this.currentFocus - focusCost;
     }
-    //TODO
+    // Nanni reduces the the current focus by 3, reduces permanent focus by 1 and casts her fixed damage spell for free!
     public ultimateAttack(enemyPlayer: PlayerCombat){
-
+        if (enemyPlayer.currentFocus > 3) {
+            enemyPlayer.currentFocus = enemyPlayer.currentFocus-3
+        } else {
+            enemyPlayer.currentFocus = 0;
+        }
+        enemyPlayer.finalFocus = enemyPlayer.finalFocus-1;
+        this.fixedDamageSpell(enemyPlayer);
+        this.currentFocus = this.currentFocus+3;
+        
     }
 }
 
@@ -246,7 +258,7 @@ export class The_Naughty_Nerd extends PlayerCombat {
             "“Early in the day – right when dawn kisses the sky – you should give me tongue.” \n" +
             "“I’m a lusty wench – put your hand up my skirt and – pinch my bottom, hoss.” \n"));
         this.attacksAndSpells.push(new AttackFile("Uncanny Knowledge", this.damageBuffSpell, "Words are weapons in the right hands, gain additional damage", "Don’t you know the secret of life? … 42!"));
-        this.attacksAndSpells.push(new AttackFile("Seven Seals Unleashed", this.ultimateAttack, "Kalaranette breaks the last seal and reveals her books true knowledge!", "-"));
+        this.attacksAndSpells.push(new AttackFile("Seven Seals Unleashed", this.ultimateAttack, "Kalaranette breaks the last seal and reveals her book's true knowledge!", "-"));
     }
 
     //this is a dot spell, fixed damage for a few rounds
@@ -266,9 +278,11 @@ export class The_Naughty_Nerd extends PlayerCombat {
         this.currentFocus = this.currentFocus - focusCost;
     }
 
-    //TODO
+    //Klaranette reduces her current health by half but deals half her health +2 to the enemy!
     public ultimateAttack(enemyPlayer: PlayerCombat) {
-
+            this.socialStanding = this.socialStanding / 2;
+            enemyPlayer.finalSocialStanding = this.socialStanding+2;
+            this.finalSocialStanding = this.socialStanding;
     }
 }
 
@@ -280,12 +294,15 @@ export class The_Sexy_Samurai extends PlayerCombat {
         this.attacksAndSpells.push(new AttackFile("Iron Cross Slash of Blossoms", this.accurateAttack, "A accurate cross slash", "See how you’ll look with a slashed kimono."));
         this.attacksAndSpells.push(new AttackFile("Blood and Iron", this.powerfulAttack, "A powerful attack, invoking the spirit of Bismarck", "Now you wear the mark of Schneiden Von Solingens upon your SOUL!"));
         this.attacksAndSpells.push(new AttackFile("Tempest of Blazing Fury", this.combinedAttack, "Unleashing a torrent of blades Franziska ruffles the feathers of her opponents with this powerful and accurate attack.", "This will blow you away!"));
-        this.attacksAndSpells.push(new AttackFile("Panzerkampfwagen VI Tiger", this.ultimateAttack, "Calling upon her German Spirit Animal she summons a Panzerkampfwagen Tiger I.", "You’re fired"));
+        this.attacksAndSpells.push(new AttackFile("Panzerkampfwagen VI Tiger", this.ultimateAttack, "Calling upon her German Spirit Animal she summons a Panzerkampfwagen Tiger I and takes on its abilities!", "You’re fired"));
     }
 
-    //TODO
+    //She takes on the Ability of her Spirit Animal the Panzerkampfwagen and gains additional permanent Armor and attacks her powerful attack twice!
     public ultimateAttack(enemyPlayer: PlayerCombat) {
-
+        this.finalArm = this.finalArm+2;
+        this.arm = this.arm+2;
+        this.combinedAttack(enemyPlayer);
+        this.currentFocus = this.currentFocus+3;
     }
 }
 
