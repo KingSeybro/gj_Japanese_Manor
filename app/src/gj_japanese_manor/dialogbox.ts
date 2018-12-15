@@ -164,27 +164,27 @@ export class DialogBox {
     // Creates the close dialog window button
     _createCloseModalButton() {
         var self = this;
-        this.closeBtn = this.scene.make.text({
-            x: +this._getGameWidth() - this.padding - 14,
-            y: +this._getGameHeight() - this.windowHeight - this.padding + 3,
-            text: 'X',
-            style: {
-                font: 'bold 12px Arial',
-                fill: this.closeBtnColor
-            }
-        });
-        this.closeBtn.setInteractive();
-
-        this.closeBtn.on('pointerover', function () {
-            this.setTint(0xff0000);
-        });
-        this.closeBtn.on('pointerout', function () {
-            this.clearTint();
-        });
-        this.closeBtn.on('pointerdown', function () {
-            self.toggleWindow();
-            // if (self.timedEvent) self.timedEvent.remove();
-            if (self.text) self.text.destroy();
-        });
+        // this.closeBtn = this.scene.make.text({
+        //     x: +this._getGameWidth() - this.padding - 14,
+        //     y: +this._getGameHeight() - this.windowHeight - this.padding + 3,
+        //     text: 'X',
+        //     style: {
+        //         font: 'bold 12px Arial',
+        //         fill: this.closeBtnColor
+        //     }
+        // });
+        // this.closeBtn.setInteractive();
+        //
+        // this.closeBtn.on('pointerover', function () {
+        //     this.setTint(0xff0000);
+        // });
+        // this.closeBtn.on('pointerout', function () {
+        //     this.clearTint();
+        // });
+        // this.closeBtn.on('pointerdown', function () {
+        //     self.toggleWindow();
+        //     // if (self.timedEvent) self.timedEvent.remove();
+        //     if (self.text) self.text.destroy();
+        // });
     }
 }

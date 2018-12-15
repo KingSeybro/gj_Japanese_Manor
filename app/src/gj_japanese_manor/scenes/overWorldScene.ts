@@ -123,7 +123,7 @@ export class OverWorldScene extends BaseTileMapScene {
                 otherPlayer.destroy();
                 self.otherPlayers.delete(p);
             }
-        });
+        });+
 
         Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: CombatData) => {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');

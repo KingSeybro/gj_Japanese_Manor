@@ -32,7 +32,7 @@ export class DialogueScene extends Phaser.Scene {
         var b = new DialogBox(this);
         b.setText("blabla", false);
         b._createWindow();
-        // // @ts-ignore
+        // // @ts-ignorxcvcxxye
         // console.log(game);
         //
         // // @ts-ignore

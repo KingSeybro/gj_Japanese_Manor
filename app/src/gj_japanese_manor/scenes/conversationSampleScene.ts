@@ -1,12 +1,14 @@
 import {Assets} from "../assets";
 import {Constants} from "../constants";
 import {Conversation, ConversationNode} from "../converastion";
+import {DialogBox} from "../dialogbox";
 
 export class ConversationScene extends Phaser.Scene {
     private conv: Phaser.GameObjects.Text;
     private options: Phaser.GameObjects.Text;
     public node: ConversationNode;
     private conversation: Conversation;
+    public dbox : DialogBox;
 
 
     constructor() {
@@ -30,9 +32,9 @@ export class ConversationScene extends Phaser.Scene {
         // this.addimage('bg_1');
         this.add.image(400,300,'bg_back_s');
         //let x = this.add.image(500,400,'jb_char',0.2);
-        let face = this.add.sprite(500, 400, "jb_char");
+        let face = this.add.sprite(500, 330, "jb_char");
         //set the width of the sprite
-        face.displayWidth = 100;
+        face.displayWidth = 300;
         //scale evenly
         face.scaleY = face.scaleX;
         let scene = this.scene;
@@ -61,8 +63,13 @@ export class ConversationScene extends Phaser.Scene {
             optionstext += options[i]+") "+this.node.options[i].text;
             optionstext += "\n\n";
         }
-        this.conv.setText(this.node.text);
-        this.options.setText(optionstext);
+        if(this.dbox!==undefined){
+            this.dbox.toggleWindow();
+        }
+        this.dbox = new DialogBox(this);
+        //this.dbox.setText(""+this.node.text+"\n"+optionstext, false);
+        this.dbox.dialog = ""+this.node.text+"\n"+optionstext;
+        this.dbox._createWindow();
     }
 
 
