@@ -18,6 +18,7 @@ export class App {
     private port: number;
 
     private players: Map<string, Player>;
+    private sockets: Map<string, SocketIO.Socket>;
 
     constructor(port: number) {
         this.app = express();
@@ -26,6 +27,7 @@ export class App {
         this.io = socketIo(this.server);
         this.port = port;
         this.players = new Map<string, Player>();
+        this.sockets = new Map<string, Socket>()
         this.listen();
     }
 
@@ -41,6 +43,7 @@ export class App {
             Log.log('Client connected ' + connId);
             let player = new Player();
             player.id = connId;
+            this.sockets.set(connId, socket);
             this.players.set(connId, player);
 
             socket.on('message', (m: String) => {
@@ -67,10 +70,23 @@ export class App {
                 this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, player)
             });
 
+            socket.on('generic_event', (o: any) => {
+                Log.log('received generic event ' + JSON.stringify(o));
+                let enemyPlayer = this.players.get(o.enemyId);
+                Log.log(enemyPlayer);
+                if(!enemyPlayer){
+                    Log.log("Could not find player " + o.enemyId);
+                    return;
+                }
+                this.sockets.get(o.enemyId).emit('send_event_to_other_player', {payload: 'blub'});
+
+            });
+
             socket.on('disconnect', () => {
 
                 Log.log('Client disconnected ' + connId);
                 this.players.delete(connId);
+                this.sockets.delete(connId);
                 this.io.emit(SharedConstants.EVENT_PLAYER_DISCONNECTED, connId);
             });
         });

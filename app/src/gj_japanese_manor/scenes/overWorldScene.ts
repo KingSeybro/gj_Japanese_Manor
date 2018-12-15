@@ -108,6 +108,11 @@ export class OverWorldScene extends BaseTileMapScene {
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_JOINED, this.getCurrentPlayerData());
         this.sendPlayerMoved();
 
+        // Generic event sample
+        // let enemyId = self.otherPlayers.entries()[0].id;
+        let enemyId = 'test';
+        Websocket.io.emit('generic_event', {enemyId: enemyId})
+
     }
 
     constrainVelocity(sprite, maxVelocity) {
