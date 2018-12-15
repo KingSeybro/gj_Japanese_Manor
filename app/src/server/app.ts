@@ -34,7 +34,7 @@ export class App {
     private listen(): void {
         Log.log("Listen called");
         let port = this.port;
-	this.server.listen({port: port, path: '/klujam18server/', serverClient: false}, () => {
+	this.server.listen({port: port, path: '/', serverClient: false}, () => {
             Log.log('Running server on port ' + port);
         });
 
