@@ -39,7 +39,7 @@ export class OverWorldScene extends BaseTileMapScene {
         super.preload();
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
-        this.physics.world.setBounds(0, 0, 500*Constants.TILE_SIZE, 500*Constants.TILE_SIZE);
+        this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
     }
 
 
@@ -52,7 +52,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
-        this.player = this.physics.add.sprite(Math.random()*4000, Math.random()*3000, 'player');
+        this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'player');
         this.player
             .setOrigin(0.5, 0.5)
             .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
@@ -91,7 +91,7 @@ export class OverWorldScene extends BaseTileMapScene {
                     otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
                         .setCollideWorldBounds(true)
                         .setDrag(500, 500);
-                        otherPlayer.body.stopVelocityOnCollide=true;
+                    otherPlayer.body.stopVelocityOnCollide = true;
                     //self.physics.add.collider(otherPlayer, self.player);
                     self.otherPlayers.set(p.id, otherPlayer);
                     self.physics.add.overlap(self.player, otherPlayer, this.collideCallback, null, self);
@@ -133,32 +133,30 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     private collideCallback(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
-        if(object1 == this.player){
-            console.log("o1");
+        if (object1 == this.player) {
             var value;
-            var self =this;
+            var self = this;
             for (let [key, v] of this.otherPlayers) {
                 console.log(key);
-                if(v==object2){
+                if (v == object2) {
                     value = key;
                 }
             }
-            Object.keys(this.otherPlayers).forEach(function(key) {
+            Object.keys(this.otherPlayers).forEach(function (key) {
 
             });
-        }else if(object2 == this.player){
-            console.log("o2");
+        } else if (object2 == this.player) {
             var value;
-            var self =this;
+            var self = this;
             for (let [key, v] of this.otherPlayers) {
                 console.log(key);
-                if(v==object1){
+                if (v == object1) {
                     value = key;
                 }
             }
         }
-        if(this.gracePeriod <=0)
-            this.switchToBattleScreen(value);
+        if (this.gracePeriod <= 0)
+            this.hitPlayer(value);
     }
 
     constrainVelocity(sprite, maxVelocity) {
@@ -242,11 +240,10 @@ export class OverWorldScene extends BaseTileMapScene {
         this.input.keyboard.on('keydown_B', function (event) {
             player.setAcceleration(0, 0);
             player.setVelocity(0, 0);
-            self.hitPlayer();
         });
 
         this.input.keyboard.on('keydown_C', function (event) {
-          self.switchToConversationScreen();
+            self.switchToConversationScreen();
         });
 
     }
@@ -256,23 +253,16 @@ export class OverWorldScene extends BaseTileMapScene {
         this.scene.switch('ConversationScene'); // Start the battle scene
     }
 
-    private switchToBattleScreen(key :string) {
-        console.log(key);
-        this.wasInBattleScreen = true;
-        this.scene.switch('BattleScene'); // Start the battle scene
-    }
-
     update(time: number, delta: number): void {
         super.update(time, delta);
-        if(this.wasInBattleScreen)
-        {
+        if (this.wasInBattleScreen) {
             this.wasInBattleScreen = false;
             this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
-            this.player.setVelocity(0,0);
-            this.player.setAcceleration(0,0);
+            this.player.setVelocity(0, 0);
+            this.player.setAcceleration(0, 0);
             console.log("reset was in screen");
         }
-        this.gracePeriod-=delta;
+        this.gracePeriod -= delta;
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
         this.constrainVelocity(this.player, 400);
@@ -287,17 +277,9 @@ export class OverWorldScene extends BaseTileMapScene {
 
     }
 
-    private hitPlayer(): void {
-        console.log("Player hit");
-        let otherPlayerId = null;
-        for (const id of this.otherPlayers.keys()) {
-            if (id !== Websocket.io.id) {
-                otherPlayerId = id;
-                break;
-            }
-        }
-        //todo: this should be the id passed
-        Websocket.io.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, {otherPlayerId: otherPlayerId});
+    private hitPlayer(key: string): void {
+        console.log("Player hit " + key);
+        Websocket.io.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, {otherPlayerId: key});
     }
 
     private sendPlayerMoved(): void {
