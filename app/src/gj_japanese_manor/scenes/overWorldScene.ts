@@ -16,6 +16,7 @@ import {SceneHelper} from "./sceneHelper";
 
 import {PlayerCombat, The_Fool, The_Jailbait, The_Naughty_Nerd, The_Sexy_Samurai} from "../../shared/playerCombat";
 import {SelectedPlayer} from "../selectedPlayer";
+import {debug} from "util";
 
 
 export class OverWorldScene extends BaseTileMapScene {
@@ -55,14 +56,13 @@ export class OverWorldScene extends BaseTileMapScene {
         });*/
 
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
-
     }
 
     create(playerObject:SelectedPlayer): void {
         console.log('OverWorldScene created called');
 
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
-        let id = Websocket.init(this.game);
+        let id = Websocket.init(this.game.scene);
         switch (playerObject.type) {
             case The_Fool.TYPE:
                 this.selectedPlayer = new The_Fool(id);
@@ -152,7 +152,8 @@ export class OverWorldScene extends BaseTileMapScene {
         Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: CombatData) => {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
             Globals.data = o;
-            this.scene.start('BattleScene',o);
+            this.scene.pause('OverWorldScene');
+            this.scene.launch('BattleScene',o); // Start the convo scene
         });
 
 
@@ -305,7 +306,11 @@ export class OverWorldScene extends BaseTileMapScene {
         }
         this.gracePeriod -= delta;
         // Camera follows player ( can be set in create )
-        this.cameras.main.startFollow(this.player);
+        if(this.cameras.main) {
+            this.cameras.main.startFollow(this.player);
+        } else {
+            console.log("this.cameras was undefined");
+        }
         this.constrainVelocity(this.player, 400);
         let y = this.player.body.velocity.y * 100;
         let x = this.player.body.velocity.x * 100;

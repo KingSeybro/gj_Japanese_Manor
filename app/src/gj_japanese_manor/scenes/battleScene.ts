@@ -14,6 +14,8 @@ import {
 } from "../../shared/playerCombat";
 import {CombatData} from "../../shared/data";
 import {DialogBox} from "../dialogbox";
+import {Helper} from "./helper";
+import SceneManager = Phaser.Scenes.SceneManager;
 
 export class BattleScene extends Phaser.Scene {
 
@@ -145,11 +147,12 @@ export class BattleScene extends Phaser.Scene {
                 console.log("lost");
             }
 
-            scene.switch('OverWorldScene');
+            this.switchToOverworld(this.game.scene);
             Globals.data.combat = null;
         });
 
         this.createHudText(o);
+
 
     }
 
@@ -242,4 +245,7 @@ export class BattleScene extends Phaser.Scene {
         super.update(time, delta);
     }
 
+    private switchToOverworld(scene: SceneManager){
+        Helper.resumeOverWorldScene(scene, 'BattleScene');
+    }
 }

@@ -72,12 +72,8 @@ export class BaseTileMapScene extends Phaser.Scene {
      * @param {Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | Phaser.GameObjects.Group | Phaser.GameObjects.Group[]} object1
      */
     protected setUpCollisionLayer(ids: number[], object1: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | Phaser.GameObjects.Group | Phaser.GameObjects.Group[]) {
-        if (this.collideableLayers.length == 0) {
-            for (const id of ids) {
-                this.collideableLayers.push(this.layers.get(id));
-            }
-        } else {
-            console.error("Setup collision layer called twice will not init layers again");
+        for (const id of ids) {
+            this.collideableLayers.push(this.layers.get(id));
         }
 
         for (let i = 0; i < this.collideableLayers.length; i++) {

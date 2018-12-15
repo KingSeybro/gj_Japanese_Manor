@@ -5,6 +5,7 @@ import {DialogBox} from "../dialogbox";
 import {SceneHelper} from "./sceneHelper";
 import {Websocket} from "../websocket";
 import SceneManager = Phaser.Scenes.SceneManager;
+import {Helper} from "./helper";
 
 export class ConversationScene extends Phaser.Scene {
     private conv: Phaser.GameObjects.Text;
@@ -90,42 +91,14 @@ export class ConversationScene extends Phaser.Scene {
         let scene = this.game.scene;
         let self=this;
         this.setConversationNode(this.conversation.getNextNode()); //initial node
-        this.input.keyboard.on('keydown_A', function (event) {
-            if(!self.finished){
-                self.setConversationNode(self.conversation.getNextNode(self.node.options[0].value));
-            }
-            else{
-                self.switchToOverworld(scene)
-            }
-        });
-        this.input.keyboard.on('keydown_B', function (event) {
-            if(!self.finished){
-                self.setConversationNode(self.conversation.getNextNode(self.node.options[1].value));
-            } else{
-                self.switchToOverworld(scene)
-            }
-        });
-        this.input.keyboard.on('keydown_C', function (event) {
-            if(!self.finished) {
-                self.setConversationNode(self.conversation.getNextNode(self.node.options[2].value));
-            }
-            else{
-                self.switchToOverworld(scene)
-            }
-            self.game.scene.dump();
-        });
-        this.input.keyboard.on('keydown_X', function (event) {
-            if(self.finished!==true){
-        }
-        else {
-                self.switchToOverworld(scene);
-            }
-        });
+        this.input.keyboard.on('keydown_A', eventHandler(self, scene));
+        this.input.keyboard.on('keydown_B', eventHandler(self, scene));
+        this.input.keyboard.on('keydown_C', eventHandler(self, scene));
     }
 
     private switchToOverworld(scene: SceneManager){
-        scene.resume('OverWorldScene');
-        scene.stop("ConversationScene");
+        Helper.resumeOverWorldScene(scene, 'ConversationScene');
+
     }
 
     setConversationNode(value: any) {
@@ -168,4 +141,16 @@ export class ConversationScene extends Phaser.Scene {
     update(time: number, delta: number): void {
         super.update(time, delta);
     }
+}
+
+function eventHandler(self, scene) {
+    return function (event) {
+        if(!self.finished) {
+            self.setConversationNode(self.conversation.getNextNode(self.node.options[2].value));
+        }
+        else{
+            self.switchToOverworld(scene)
+        }
+    }
+
 }
