@@ -1,4 +1,5 @@
 import {Item} from "./item";
+import {CombatWrapper} from "../gj_japanese_manor/combatWrapper";
 
 export class PlayerCombat {
 
@@ -54,6 +55,8 @@ export class PlayerCombat {
         this.finalSocialStanding = socialStanding;
         this.finalFocus = focus;
         this.currentFocus = focus;
+        this.attacksAndSpells = []
+        this.items = []
     }
 
     public basicAttack(enemyPlayer: PlayerCombat): void {
@@ -62,10 +65,12 @@ export class PlayerCombat {
         // if ATK Roll > Defensive Roll = Hit
         // finalDamageDone + 2d6 - ARM = damage done to Social Standing
         var attackRoll: number = this.diceRolling(2);
+        var finalDamageDone: number = 0;
         if (attackRoll + this.finalAttack >= enemyPlayer.finalDef) {
             var damageRoll: number = this.diceRolling(2);
             if (damageRoll + this.finalDamageDone > enemyPlayer.finalArm) {
                 enemyPlayer.finalSocialStanding = this.finalSocialStanding - (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
+                finalDamageDone = (damageRoll + this.finalDamageDone - enemyPlayer.finalArm);
             } else {
                 //NO Damage is DONE
             }
@@ -73,6 +78,20 @@ export class PlayerCombat {
             //The ENEMY IS MISSED
         }
         this.currentFocus = this.currentFocus - focusCost;
+
+        let attackSummary:string;
+        let attackname:string;
+
+        for (let i=0; i < this.attacksAndSpells.length;i++){
+            if (this.attacksAndSpells[i].combatFunction == this.basicAttack){
+                attackSummary = this.attacksAndSpells[i].descriptionOfAttack;
+                attackname = this.attacksAndSpells[i].name;
+            }
+        }
+
+        let combatWrapper: CombatWrapper = new CombatWrapper(this, enemyPlayer,attackSummary, attackname);
+        //TODO: Handle CombatWrapper
+
     }
 
     //Addition 1D6 for hitting

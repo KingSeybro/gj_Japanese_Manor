@@ -10,6 +10,7 @@ import {PlayerInfo, Position} from "../../shared/playerInfo";
 import {BaseTileMapScene} from "./baseTileMapScene";
 import {Globals} from "../globals";
 import {Websocket} from "../websocket";
+import {CombatData} from "../../shared/data";
 
 export class OverWorldScene extends BaseTileMapScene {
 
@@ -45,12 +46,15 @@ export class OverWorldScene extends BaseTileMapScene {
             console.log("now!");
             scene.switch('StartScene'); // Start the main scene
         });*/
+
+        this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
+
     }
 
     create(playerObject): void {
         console.log(playerObject);
 
-        this.physics.world.setBounds(0, 0, 500*Constants.TILE_SIZE, 500*Constants.TILE_SIZE);
+        this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
         Websocket.init();
 
         this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
@@ -59,7 +63,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
-        this.player = this.physics.add.sprite(Math.random()*400, Math.random()*300, 'player');
+        this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'player');
         this.player
             .setOrigin(0.5, 0.5)
             .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
@@ -67,7 +71,7 @@ export class OverWorldScene extends BaseTileMapScene {
             .setDrag(500, 500);
         this.player.body.stopVelocityOnCollide = true;
 
-        this.setUpCollisionLayer([0], this.player);
+        this.setUpCollisionLayer([1], this.player);
 
         this.initializeInput();
         this.cameras.main.setZoom(Constants.DEFAULT_ZOOM);
@@ -98,7 +102,7 @@ export class OverWorldScene extends BaseTileMapScene {
                     otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
                         .setCollideWorldBounds(true)
                         .setDrag(500, 500);
-                        otherPlayer.body.stopVelocityOnCollide=true;
+                    otherPlayer.body.stopVelocityOnCollide = true;
                     //self.physics.add.collider(otherPlayer, self.player);
                     self.otherPlayers.set(p.id, otherPlayer);
                     self.physics.add.overlap(self.player, otherPlayer, this.collideCallback, null, self);
@@ -121,8 +125,8 @@ export class OverWorldScene extends BaseTileMapScene {
             }
         });
 
-        Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (otherPlayer: PlayerInfo) => {
-            console.log('Other player ' + otherPlayer.id + ' wants to start a battle');
+        Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: CombatData) => {
+            console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
             this.scene.switch('BattleScene');
         });
 
@@ -140,22 +144,30 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     private collideCallback(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
-        if(object1 == this.player){
+        if (object1 == this.player) {
             var value;
-            var self =this;
-            Object.keys(this.otherPlayers).forEach(function(key) {
-                value = self.otherPlayers[key];
+            var self = this;
+            for (let [key, v] of this.otherPlayers) {
+                console.log(key);
+                if (v == object2) {
+                    value = key;
+                }
+            }
+            Object.keys(this.otherPlayers).forEach(function (key) {
+
             });
-        }else if(object2 == this.player){
+        } else if (object2 == this.player) {
             var value;
-            var self =this;
-            Object.keys(this.otherPlayers).forEach(function(key) {
-                value = self.otherPlayers[key];
-            });
+            var self = this;
+            for (let [key, v] of this.otherPlayers) {
+                console.log(key);
+                if (v == object1) {
+                    value = key;
+                }
+            }
         }
-        console.log("now");
-        if(this.gracePeriod <=0)
-            this.switchToBattleScreen();
+        if (this.gracePeriod <= 0)
+            this.hitPlayer(value);
     }
 
     constrainVelocity(sprite, maxVelocity) {
@@ -239,11 +251,10 @@ export class OverWorldScene extends BaseTileMapScene {
         this.input.keyboard.on('keydown_B', function (event) {
             player.setAcceleration(0, 0);
             player.setVelocity(0, 0);
-            self.hitPlayer();
         });
 
         this.input.keyboard.on('keydown_C', function (event) {
-          self.switchToConversationScreen();
+            self.switchToConversationScreen();
         });
 
     }
@@ -253,23 +264,16 @@ export class OverWorldScene extends BaseTileMapScene {
         this.scene.switch('ConversationScene'); // Start the battle scene
     }
 
-    private switchToBattleScreen() {
-        console.log("battleScreen")
-        this.wasInBattleScreen = true;
-        this.scene.switch('BattleScene'); // Start the battle scene
-    }
-
     update(time: number, delta: number): void {
         super.update(time, delta);
-        if(this.wasInBattleScreen)
-        {
+        if (this.wasInBattleScreen) {
             this.wasInBattleScreen = false;
             this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
-            this.player.setVelocity(0,0);
-            this.player.setAcceleration(0,0);
+            this.player.setVelocity(0, 0);
+            this.player.setAcceleration(0, 0);
             console.log("reset was in screen");
         }
-        this.gracePeriod-=delta;
+        this.gracePeriod -= delta;
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
         this.constrainVelocity(this.player, 400);
@@ -284,17 +288,9 @@ export class OverWorldScene extends BaseTileMapScene {
 
     }
 
-    private hitPlayer(): void {
-        console.log("Player hit");
-        let otherPlayerId = null;
-        for (const id of this.otherPlayers.keys()) {
-            if (id !== Websocket.io.id) {
-                otherPlayerId = id;
-                break;
-            }
-        }
-        //todo: this should be the id passed
-        Websocket.io.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, {otherPlayerId: otherPlayerId});
+    private hitPlayer(key: string): void {
+        console.log("Player hit " + key);
+        Websocket.io.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, {otherPlayerId: key});
     }
 
     private sendPlayerMoved(): void {
