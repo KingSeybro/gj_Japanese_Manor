@@ -144,7 +144,8 @@ export class OverWorldScene extends BaseTileMapScene {
             });
         }
         console.log("now");
-        this.switchToBattleScreen();
+        if(this.gracePeriod <=0)
+            this.switchToBattleScreen();
     }
 
     constrainVelocity(sprite, maxVelocity) {
@@ -231,9 +232,13 @@ export class OverWorldScene extends BaseTileMapScene {
             self.hitPlayer();
         });
 
+        this.input.keyboard.on('keydown_C', function (event) {
+          self.switchToConversationScreen();
+        });
+
     }
 
-    private switchToConversationScreen() {
+    public switchToConversationScreen() {
         this.player.setAcceleration(0, 0).setVelocity(0, 0);
         this.scene.switch('ConversationScene'); // Start the battle scene
     }
@@ -245,6 +250,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
     update(time: number, delta: number): void {
         super.update(time, delta);
+        this.gracePeriod-=delta;
         // Camera follows player ( can be set in create )
         this.cameras.main.startFollow(this.player);
         this.constrainVelocity(this.player, 400);
