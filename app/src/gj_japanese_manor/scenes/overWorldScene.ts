@@ -6,6 +6,8 @@
 import {Assets} from "../assets";
 import {Constants} from "../constants";
 import * as socketIo from "socket.io-client";
+import {SharedConstants} from "../../shared/sharedConstants";
+import {Position, PlayerInfo} from "../../shared/playerInfo";
 
 export class OverWorldScene extends Phaser.Scene {
 
@@ -36,11 +38,7 @@ export class OverWorldScene extends Phaser.Scene {
     create(): void {
         this.io = socketIo(Constants.SERVER_URL);
         this.io.connect();
-        if (this.io.connected) {
-            console.log("Connected to server " + Constants.SERVER_URL);
-        } else {
-            console.log("Could not connect to server " + Constants.SERVER_URL);
-        }
+
         this.map = this.make.tilemap({
             key: Assets.TILES_OVERWORLD_MAP
         });
@@ -68,6 +66,17 @@ export class OverWorldScene extends Phaser.Scene {
                 faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
             });
         }
+        if (this.io.connected) {
+            console.log("Connected to server " + Constants.SERVER_URL);
+        } else {
+            console.log("Could not connect to server " + Constants.SERVER_URL);
+        }
+
+        this.io.on(SharedConstants.EVENT_PLAYER_UPDATE, (p: any) => {
+            if (p.id !== this.io.id) {
+                console.log("player update" + JSON.stringify(p));
+            }
+        });
 
     }
 
@@ -158,5 +167,10 @@ export class OverWorldScene extends Phaser.Scene {
         if (x != 0 && y != 0) {
             this.player.rotation = Math.atan2(y, x);
         }
+        if (this.player.body.speed !== 0) {
+            let playerData = new PlayerInfo(new Position(this.player.x, this.player.y));
+            this.io.emit(SharedConstants.EVENT_PLAYER_MOVED, playerData);
+        }
+
     }
 }
