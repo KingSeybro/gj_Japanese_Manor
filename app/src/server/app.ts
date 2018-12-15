@@ -87,35 +87,26 @@ export class App {
             });
 
             socket.on(SharedConstants.EVENT_PLAYER_COMBATACTION, (o: CombatWrapper) => {
-                Log.log('received player combat event ' + JSON.stringify(o));
-
-                let player1Id = o.defenderObject.id;
-                let player1 = this.players.get(player1Id);
-                let player2Id = o.attackerObject.id;
-                let player2 = this.players.get(player2Id);
-
-                let player1Socket = this.sockets.get(player1Id);
-                let player2Socket = this.sockets.get(player2Id);
-
-                // let combat = new CombatWrapper(player2, player1, "You are first", "");
-                // let data1 = new CombatData();
-                // data1.combat = o;
-                // data1.otherPlayer = player2;
-                // socket.emit(SharedConstants.EVENT_PLAYER_START_BATTLE, data1);
-                //
-                // let data2 = new CombatData();
-                // data2.combat = combat;
-                // data2.otherPlayer = player;
-                // this.sockets.get(otherPlayer.id).emit(SharedConstants.EVENT_PLAYER_START_BATTLE, data2);
-
+                Log.log('received player combat event from id  ' + connId + ' to ' + o.attackerObject.id);
+                // Log.log(JSON.stringify(o));
+                let otherSocket = this.sockets.get(o.attackerObject.id);
+                otherSocket.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, o);
             });
 
             socket.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: any) => {
                 Log.log('Received start battle between ' + connId + ' and ' + o.otherPlayerId);
                 let otherPlayer = this.players.get(o.otherPlayerId);
-                if (player.inCombat || !otherPlayer || otherPlayer.inCombat) {
+                if (!otherPlayer) {
                     //TODO: we could send back to the socket that we have no idea who the other id is
                     Log.log("ERROR - could not find other player");
+                    return;
+                }
+                if(otherPlayer.inCombat) {
+                    Log.log("ERROR other player in combat");
+                    return;
+                }
+                if(player.inCombat) {
+                    Log.log("ERROR player in combat");
                     return;
                 }
                 player.inCombat = true;
