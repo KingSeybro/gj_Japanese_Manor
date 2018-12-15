@@ -213,6 +213,15 @@ export class PlayerCombat {
         return rollResult;
     }
 
+    /**
+     * Hack to copy only properties
+     * @returns {PlayerCombat}
+     */
+    public createMinimumDataObj(): PlayerCombat{
+        // @ts-ignore
+        let clone = {...this};
+        return clone;
+    }
 }
 
 export class The_Fool extends PlayerCombat{
