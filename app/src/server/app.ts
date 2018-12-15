@@ -45,7 +45,8 @@ export class App {
             const connId = socket.conn.id;
             Log.log('Client connected ' + connId);
             let position = new Position(-10, -10);
-            let player = new PlayerInfo(connId, position);
+            //there is a naughty nerd in everybody here
+            let player = new PlayerInfo(connId, position, The_Naughty_Nerd.TYPE);
             player.id = connId;
             this.sockets.set(connId, socket);
             this.players.set(connId, player);
