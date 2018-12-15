@@ -3,7 +3,7 @@ import {CombatWrapper} from "../gj_japanese_manor/combatWrapper";
 
 export class PlayerCombat {
 
-    public ultimateAttackIsEnabled: boolean = false;
+    public ultimateAttackIsUsable: boolean = true;
 
     public attacksAndSpells: AttackFile[];
     //Name to be Displayed
@@ -221,11 +221,11 @@ export class The_Fool extends PlayerCombat{
 
     constructor(id: string) {
         super("Daisy Washington III Esq.", id, 12, 19, 11, 6, 16, 6, The_Fool.TYPE);
-        this.attacksAndSpells.push(new AttackFile("Faux Pas", this.basicAttack, "A basic attack", "Oh, I’m terribly sorry for spoiling your ensemble." ));
-        this.attacksAndSpells.push(new AttackFile("Honorable Gent", this.powerfulAttack, "A powerful attack dealing more damage", "Reginald, please take care of this goose”; Reginald: “I is honored m’lady"));
-        this.attacksAndSpells.push(new AttackFile("Most Powerful Southern Bloodline!", this.combinedAttack, "An expensive attack that is both powerful and accurate", ""));
-        this.attacksAndSpells.push(new AttackFile("Swoon", this.debuffArmSpell, "Daisy disarms her opponent with her charm and reduces their Armor.", "I feel featherbrained – thank ye for catchin’ me, doll" ));
-        this.attacksAndSpells.push(new AttackFile("Monkey Army", this.ultimateAttack, "Daisy unleashes her Army of Monkeys from the Bathhouse", "Let’s see how y’all like my spirit animal."));
+        this.attacksAndSpells.push(new AttackFile("Faux Pas", this.basicAttack, "A basic attack", "Oh, I’m terribly sorry for spoiling your ensemble.", 1 ));
+        this.attacksAndSpells.push(new AttackFile("Honorable Gent", this.powerfulAttack, "A powerful attack dealing more damage", "Reginald, please take care of this goose”; Reginald: “I is honored m’lady", 2));
+        this.attacksAndSpells.push(new AttackFile("Most Powerful Southern Bloodline!", this.combinedAttack, "An expensive attack that is both powerful and accurate", "", 3));
+        this.attacksAndSpells.push(new AttackFile("Swoon", this.debuffArmSpell, "Daisy disarms her opponent with her charm and reduces their Armor.", "I feel featherbrained – thank ye for catchin’ me, doll" , 2));
+        this.attacksAndSpells.push(new AttackFile("Monkey Army", this.ultimateAttack, "Daisy unleashes her Army of Monkeys from the Bathhouse", "Let’s see how y’all like my spirit animal.", 0));
     }
 
 
@@ -259,11 +259,11 @@ export class The_Jailbait extends PlayerCombat{
 
     constructor(id: string) {
         super("Nanni Spielmänner", id, 13, 14, 12, 6, 18, 8, The_Jailbait.TYPE);
-        this.attacksAndSpells.push(new AttackFile("Hex of Frailty", this.basicAttack, "A basic spell", "Are you aware of your body’s process of decomposition." ));
-        this.attacksAndSpells.push(new AttackFile("Curse of Despair", this.fixedDamageSpell, "A curse that deals fixed damage", "See that doll I made? It looks just like you."));
-        this.attacksAndSpells.push(new AttackFile("Obsidian Curse of the Butterfly", this.debuffArmSpell, "A spell that reduces your opponents Armor", "I felt a butterfly flap its wings in Argentina. The Doom of Damocles hangs over you now!"));
-        this.attacksAndSpells.push(new AttackFile("Aegis of the Oni", this.debuffArmSpell, "Nanni calls upon the Oni to increase her Defense and Armor", "The Oni protect us!" ));
-        this.attacksAndSpells.push(new AttackFile("Tempest of the Last Witch of Azabu ", this.ultimateAttack, "Calling upon her Ultimate Power Nanni reveals her true self!", "Tremble before the power of the last Witch, as my power saps your strength!"));
+        this.attacksAndSpells.push(new AttackFile("Hex of Frailty", this.basicAttack, "A basic spell", "Are you aware of your body’s process of decomposition.", 1 ));
+        this.attacksAndSpells.push(new AttackFile("Curse of Despair", this.fixedDamageSpell, "A curse that deals fixed damage", "See that doll I made? It looks just like you.", 3));
+        this.attacksAndSpells.push(new AttackFile("Obsidian Curse of the Butterfly", this.debuffArmSpell, "A spell that reduces your opponents Armor", "I felt a butterfly flap its wings in Argentina. The Doom of Damocles hangs over you now!", 2));
+        this.attacksAndSpells.push(new AttackFile("Aegis of the Oni", this.debuffArmSpell, "Nanni calls upon the Oni to increase her Defense and Armor", "The Oni protect us!" ,2 ));
+        this.attacksAndSpells.push(new AttackFile("Tempest of the Last Witch of Azabu ", this.ultimateAttack, "Calling upon her Ultimate Power Nanni reveals her true self!", "Tremble before the power of the last Witch, as my power saps your strength!", 0));
     }
 
     //this is a powerful spell, that does fixed damage
@@ -294,6 +294,7 @@ export class The_Jailbait extends PlayerCombat{
         this.fixedDamageSpell(enemyPlayer);
         this.currentFocus = this.currentFocus+3;
 
+        this.ultimateAttackIsUsable = false;
         //TODO: FOR VEIT
         return this.returnCombatWrapper(this.ultimateAttack, enemyPlayer);
 
@@ -306,13 +307,13 @@ export class The_Naughty_Nerd extends PlayerCombat {
 
     constructor(id: string) {
         super("Klaranette Zeitung", id, 16, 16, 11, 6, 14, 7, The_Naughty_Nerd.TYPE);
-        this.attacksAndSpells.push(new AttackFile("Hushed Rumor", this.basicAttack, "A basic rumor", "Have you heard what the Graf’s mother said about you?"));
-        this.attacksAndSpells.push(new AttackFile("Sticks and Stones...", this.accurateAttack, "An accurate scathing retort.", "... may break my bones, but chains and whips excite me!"));
+        this.attacksAndSpells.push(new AttackFile("Hushed Rumor", this.basicAttack, "A basic rumor", "Have you heard what the Graf’s mother said about you?", 1));
+        this.attacksAndSpells.push(new AttackFile("Sticks and Stones...", this.accurateAttack, "An accurate scathing retort.", "... may break my bones, but chains and whips excite me!", 2));
         this.attacksAndSpells.push(new AttackFile("Shroud of Haiku", this.defBuffSpell, "Hidden behind weaves of knowledge and words, Kalaranette raises her Defense", "“You and Ben Franklin – share some similarities – namely syphilis.” \n" +
             "“Early in the day – right when dawn kisses the sky – you should give me tongue.” \n" +
-            "“I’m a lusty wench – put your hand up my skirt and – pinch my bottom, hoss.” \n"));
-        this.attacksAndSpells.push(new AttackFile("Uncanny Knowledge", this.damageBuffSpell, "Words are weapons in the right hands, gain additional damage", "Don’t you know the secret of life? … 42!"));
-        this.attacksAndSpells.push(new AttackFile("Seven Seals Unleashed", this.ultimateAttack, "Kalaranette breaks the last seal and reveals her book's true knowledge!", "-"));
+            "“I’m a lusty wench – put your hand up my skirt and – pinch my bottom, hoss.” \n",2 ));
+        this.attacksAndSpells.push(new AttackFile("Uncanny Knowledge", this.damageBuffSpell, "Words are weapons in the right hands, gain additional damage", "Don’t you know the secret of life? … 42!", 2));
+        this.attacksAndSpells.push(new AttackFile("Seven Seals Unleashed", this.ultimateAttack, "Kalaranette breaks the last seal and reveals her book's true knowledge!", "-", 0));
     }
 
     //this is a dot spell, fixed damage for a few rounds
@@ -341,6 +342,7 @@ export class The_Naughty_Nerd extends PlayerCombat {
             this.socialStanding = this.socialStanding / 2;
             enemyPlayer.finalSocialStanding = this.socialStanding+2;
             this.finalSocialStanding = this.socialStanding;
+            this.ultimateAttackIsUsable = false;
         //TODO: FOR VEIT
         return this.returnCombatWrapper(this.ultimateAttack, enemyPlayer);
     }
@@ -352,11 +354,11 @@ export class The_Sexy_Samurai extends PlayerCombat {
 
     constructor(id: string) {
         super("Franziska Schneiden Von Solingens", id, 15, 18, 13, 8, 14, 6, The_Sexy_Samurai.TYPE);
-        this.attacksAndSpells.push(new AttackFile("Flying Sparrow", this.basicAttack, "A basic attack", "Swift justice!"));
-        this.attacksAndSpells.push(new AttackFile("Iron Cross Slash of Blossoms", this.accurateAttack, "A accurate cross slash", "See how you’ll look with a slashed kimono."));
-        this.attacksAndSpells.push(new AttackFile("Blood and Iron", this.powerfulAttack, "A powerful attack, invoking the spirit of Bismarck", "Now you wear the mark of Schneiden Von Solingens upon your SOUL!"));
-        this.attacksAndSpells.push(new AttackFile("Tempest of Blazing Fury", this.combinedAttack, "Unleashing a torrent of blades Franziska ruffles the feathers of her opponents with this powerful and accurate attack.", "This will blow you away!"));
-        this.attacksAndSpells.push(new AttackFile("Panzerkampfwagen VI Tiger", this.ultimateAttack, "Calling upon her German Spirit Animal she summons a Panzerkampfwagen Tiger I and takes on its abilities!", "You’re fired"));
+        this.attacksAndSpells.push(new AttackFile("Flying Sparrow", this.basicAttack, "A basic attack", "Swift justice!", 1));
+        this.attacksAndSpells.push(new AttackFile("Iron Cross Slash of Blossoms", this.accurateAttack, "A accurate cross slash", "See how you’ll look with a slashed kimono.", 2));
+        this.attacksAndSpells.push(new AttackFile("Blood and Iron", this.powerfulAttack, "A powerful attack, invoking the spirit of Bismarck", "Now you wear the mark of Schneiden Von Solingens upon your SOUL!",2 ));
+        this.attacksAndSpells.push(new AttackFile("Tempest of Blazing Fury", this.combinedAttack, "Unleashing a torrent of blades Franziska ruffles the feathers of her opponents with this powerful and accurate attack.", "This will blow you away!",3 ));
+        this.attacksAndSpells.push(new AttackFile("Panzerkampfwagen VI Tiger", this.ultimateAttack, "Calling upon her German Spirit Animal she summons a Panzerkampfwagen Tiger I and takes on its abilities!", "You’re fired", 0));
     }
 
     //She takes on the Ability of her Spirit Animal the Panzerkampfwagen and gains additional permanent Armor and attacks her powerful attack twice!
@@ -365,6 +367,7 @@ export class The_Sexy_Samurai extends PlayerCombat {
         this.arm = this.arm+2;
         this.combinedAttack(enemyPlayer);
         this.currentFocus = this.currentFocus+3;
+        this.ultimateAttackIsUsable = false;
         //TODO: FOR VEIT
         return this.returnCombatWrapper(this.ultimateAttack, enemyPlayer);
     }
@@ -407,11 +410,13 @@ export function createPlayerCombatFromStructure(obj: any): PlayerCombat {
     public combatFunction: Function;
     public descriptionOfAttack: string;
     public dialogForAttack: string;
+    public attackCost: number;
 
-    constructor(name: string, combatFunction: Function, descriptionOfAttack: string, dialogForAttack: string) {
+    constructor(name: string, combatFunction: Function, descriptionOfAttack: string, dialogForAttack: string, attackCost: number) {
         this.name = name;
         this.combatFunction = combatFunction;
         this.descriptionOfAttack = descriptionOfAttack;
         this.dialogForAttack = dialogForAttack;
+        this.attackCost = attackCost;
     }
 }
