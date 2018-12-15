@@ -4,7 +4,7 @@ if (location.hostname === "localhost" || location.hostname === "127.0.0.1" || lo
 }
 
 export class Constants {
-    public static readonly TILE_SIZE = 16;
+    public static readonly TILE_SIZE = 256;
 
 
     public static readonly SERVER_URL = url;
