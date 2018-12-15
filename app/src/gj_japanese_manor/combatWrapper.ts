@@ -1,4 +1,4 @@
-import {PlayerCombat} from "../shared/playerCombat";
+import {createPlayerCombatFromStructure, PlayerCombat} from "../shared/playerCombat";
 
 export class CombatWrapper {
 
@@ -8,9 +8,17 @@ export class CombatWrapper {
     public attackName: string;
 
     constructor(attackerObject: PlayerCombat, defenderObject: PlayerCombat, summaryString: string, attackName: string) {
-        this.attackerObject = attackerObject;
-        this.defenderObject = defenderObject;
+        this.attackerObject = attackerObject.createMinimumDataObj();
+        this.defenderObject = defenderObject.createMinimumDataObj();
         this.summaryString = summaryString;
         this.attackName = attackName;
+    }
+
+    public getAttackerObject(): PlayerCombat {
+        return createPlayerCombatFromStructure(this.attackerObject);
+    }
+
+    public getDefenderObject(): PlayerCombat {
+        return createPlayerCombatFromStructure(this.defenderObject);
     }
 }

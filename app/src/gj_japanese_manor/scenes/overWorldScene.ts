@@ -11,7 +11,12 @@ import {BaseTileMapScene} from "./baseTileMapScene";
 import {Globals} from "../globals";
 import {Websocket} from "../websocket";
 import {CombatData} from "../../shared/data";
+
 import {SceneHelper} from "./sceneHelper";
+
+import {PlayerCombat, The_Fool, The_Jailbait, The_Naughty_Nerd, The_Sexy_Samurai} from "../../shared/playerCombat";
+import {SelectedPlayer} from "../selectedPlayer";
+
 
 export class OverWorldScene extends BaseTileMapScene {
 
@@ -26,6 +31,7 @@ export class OverWorldScene extends BaseTileMapScene {
     private gracePeriod: number;
     private static DEFAULT_GRACE_PERIOD: number = 2000;
     private wasInBattleScreen: boolean;
+    private selectedPlayer: PlayerCombat;
 
     constructor() {
         super({
@@ -52,11 +58,27 @@ export class OverWorldScene extends BaseTileMapScene {
 
     }
 
-    create(playerObject): void {
-        console.log(playerObject);
+    create(playerObject:SelectedPlayer): void {
 
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
-        Websocket.init();
+        let id = Websocket.init();
+        switch (playerObject.type) {
+            case The_Fool.TYPE:
+                this.selectedPlayer = new The_Fool(id);
+                break;
+            case The_Sexy_Samurai.TYPE:
+                this.selectedPlayer = new The_Sexy_Samurai(id);
+                break;
+            case The_Naughty_Nerd.TYPE:
+                this.selectedPlayer = new The_Naughty_Nerd(id);
+                break;
+            case The_Jailbait.TYPE:
+                this.selectedPlayer = new The_Jailbait(id);
+                break;
+            default:
+                this.selectedPlayer = new The_Jailbait(id);
+                break;
+        }
 
         this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
         this.initMap(Assets.TILES_OVERWORLD_MAP);
@@ -129,7 +151,7 @@ export class OverWorldScene extends BaseTileMapScene {
         Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: CombatData) => {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
             Globals.data = o;
-            this.scene.switch('BattleScene');
+            this.scene.start('BattleScene',o);
         });
 
 
@@ -306,7 +328,6 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     private getCurrentPlayerData(): PlayerInfo {
-        let playerData = new PlayerInfo(Websocket.io.id, new Position(this.player.x, this.player.y));
-        return playerData;
+        return new PlayerInfo(Websocket.io.id, new Position(this.player.x, this.player.y),this.selectedPlayer.type);
     }
 }

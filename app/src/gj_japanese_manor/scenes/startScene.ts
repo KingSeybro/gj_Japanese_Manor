@@ -1,9 +1,9 @@
 ///<reference path="../../phaser.d.ts"/>
-import {Assets} from "../assets";
-import {Constants} from "../constants";
-import {text} from "body-parser";
+import {The_Fool, The_Jailbait, The_Naughty_Nerd, The_Sexy_Samurai} from "../../shared/playerCombat";
+import {SelectedPlayer} from "../selectedPlayer";
 
 export class StartScene extends Phaser.Scene {
+    private types: string[] = [The_Sexy_Samurai.TYPE, The_Naughty_Nerd.TYPE, The_Jailbait.TYPE, The_Fool.TYPE];
 
 
     constructor() {
@@ -69,10 +69,11 @@ export class StartScene extends Phaser.Scene {
                 }
                 iter = iter + 1;
             }
-            var playerObjectClicked = new Object({
-                number: clickedPlayerIndex,
-                string: playerTextures[clickedPlayerIndex]
-            });
+            let playerObjectClicked = new SelectedPlayer(
+                 clickedPlayerIndex,
+                playerTextures[clickedPlayerIndex],
+                this.types[clickedPlayerIndex]
+            );
             console.log("playbutton pressed");
             // you have to check if an Button beneath was chosen
             scene.start('OverWorldScene', playerObjectClicked);
