@@ -138,8 +138,10 @@ export class ConversationScene extends Phaser.Scene {
              let optionstext = "";
              let options = ["A","B","C","D"];
 
-            this.audio = new Audio(this.cache.audio.get(this.node.title));
-            this.audio.play();
+            //this.audio = new Audio(this.cache.audio.get(this.node.title));
+            //this.audio = this.sound.add(this.cache.audio.get(this.node.title));
+
+            this.sound.play(this.node.title);
 
              if(this.dbox!==undefined){
                  this.dbox.toggleWindow();
