@@ -140,7 +140,7 @@ export class ConversationScene extends Phaser.Scene {
 
             //this.audio = new Audio(this.cache.audio.get(this.node.title));
             //this.audio = this.sound.add(this.cache.audio.get(this.node.title));
-
+            this.sound.stopAll();
             this.sound.play(this.node.title);
 
              if(this.dbox!==undefined){
