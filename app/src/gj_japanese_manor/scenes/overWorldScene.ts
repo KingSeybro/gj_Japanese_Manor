@@ -2,6 +2,7 @@
  * @author       Digitsensitive <digit.sensitivee@gmail.com>
  * @copyright    2018 Digitsensitive
  * @license      Digitsensitive
+ * sdfsds
  */
 import {Assets} from "../assets";
 import {Constants} from "../constants";
@@ -47,6 +48,10 @@ export class OverWorldScene extends BaseTileMapScene {
         super.preload();
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
+        this.load.image('char_jailbait_small', Assets.url('characters','small','Jailbait Sprite Front.png'));
+        this.load.image('char_nerd_small', Assets.url('characters','small','Nerd Sprite Front.png'));
+        this.load.image('char_samurai_small', Assets.url('characters','small','Sporty Sprite Front.png'));
+        this.load.image('char_fool_small', Assets.url('characters','small','Fool Sprite Front.png'));
 
         console.log("preload overworld screen");
         let scene = this.scene;
@@ -60,34 +65,45 @@ export class OverWorldScene extends BaseTileMapScene {
 
     create(playerObject:SelectedPlayer): void {
         console.log('OverWorldScene created called');
-
+        //this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'player');
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
         let id = Websocket.init(this.game.scene);
+        this.initMap(Assets.TILES_OVERWORLD_MAP);
+
         switch (playerObject.type) {
             case The_Fool.TYPE:
                 this.selectedPlayer = new The_Fool(id);
+                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_fool_small');
+                console.log("Fool");
                 break;
             case The_Sexy_Samurai.TYPE:
                 this.selectedPlayer = new The_Sexy_Samurai(id);
+                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_samurai_small');
+                console.log("Samurai");
+
                 break;
             case The_Naughty_Nerd.TYPE:
                 this.selectedPlayer = new The_Naughty_Nerd(id);
+                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_nerd_small');
+                console.log("Nerd");
+
                 break;
             case The_Jailbait.TYPE:
                 this.selectedPlayer = new The_Jailbait(id);
+                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_jailbait_small');
+                console.log("The_Jailbait");
                 break;
             default:
                 this.selectedPlayer = new The_Jailbait(id);
+                console.log("Default Jailbait");
                 break;
         }
 
         this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
-        this.initMap(Assets.TILES_OVERWORLD_MAP);
 
 
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
-        this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'player');
         this.player
             .setOrigin(0.5, 0.5)
             .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
