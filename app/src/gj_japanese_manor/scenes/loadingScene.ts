@@ -2,6 +2,7 @@
 import {The_Fool, The_Jailbait, The_Naughty_Nerd, The_Sexy_Samurai} from "../../shared/playerCombat";
 import {SelectedPlayer} from "../selectedPlayer";
 import {SoundAssetGlobals} from "../soundAssetGlobals";
+import {DialogBox} from "../dialogbox";
 
 export class LoadingScene extends Phaser.Scene {
     private types: string[] = [The_Sexy_Samurai.TYPE, The_Naughty_Nerd.TYPE, The_Jailbait.TYPE, The_Fool.TYPE];
@@ -60,6 +61,10 @@ export class LoadingScene extends Phaser.Scene {
     private spellThreeNanni;
 
     private ultimateDaisy;
+
+    public dbox: DialogBox;
+
+    public stringStart: string[];
 
     public ultimateArrayForSounds: Map<string, string[]>;
 
@@ -322,13 +327,42 @@ export class LoadingScene extends Phaser.Scene {
 
         console.log("created start screen");
         let scene = this.scene;
+        this.stringStart = [];
+        this.stringStart[0] = "In the Spring of 1893, a party of young ladies from the Peers’ School of Imperial Japan take a journey to the grand estate of Graf Wentzel von Azabu and his mother to attend a viewing of the cherry blossoms in his ornamental garden. The Graf, whose father recently passed away, is the empire’s most eligible bachelor.";
+        this.stringStart[1] = "Among the group eagerly vying for the Graf’s attention are\n" +
+            "\n" +
+            "Lady Daisy Washington III of Upper Turkeytown, Alambama – daughter of the English tutor at the Peers School, fresh off the boat and not at all wise to the ways of her new home.\n" +
+            "\n" +
+            "Miss Nanni Spielmänner – the youngest student. Small in stature, but profound in nature, Nanni shares her corporal form with the disfigured ghost Oiwa, a centuries old wrathful spirit seeking vengeance for love spurned.\n";
 
+        this.stringStart[2] = "Fraulein Klaranette Zeitung – strong candidate for the Oukii Prize – the empire’s highest award for academic achievement and contribution to world peace. She is a specialist in casus belli.\n" +
+            "\n" +
+            "Baroness Franziska Schneiden Von Solingens – elite debutant, and child of the Satsuma Rebellion, secretly trained in Kenjitsu from a very young age by the Junsa Kyōshūjo gekiken corps which went underground in 1881. ";
+        this.stringStart[3] = "[Daisy]                 “Well I sure hope the Gräfin likes my gift. I plumb nelly forgot to bring it! I declare, if it weren’t for Reginald, I’d be lookin like who shot Lizzie!”\n" +
+            "\n" +
+            "[Nanni]                (mumbles under her breath) “Who says you don’t already….”";
+        this.stringStart[4] = "[Klaranette]        I brought the finest box of persimmons money can buy. The Gräfin’s favourite, according to my sources.\n" +
+            "\n" +
+            "[Franziska]          I heard she loves them because she’s making a sweet sticky bog of rotten fruit in the garden in which to drown all the young suitors who try to court her son. You may have sealed your fate, Klaranette!";
         this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'startLoadingBackground').setDepth(0);
 
+        this.renderActionText(this.stringStart[0]);
+            // this.game.scene.start('StartScene', this.ultimateArrayForSounds); // Start the battle scene
+            // this.game.scene.stop('LoadingScene');
 
-            this.game.scene.start('StartScene', this.ultimateArrayForSounds); // Start the battle scene
-            this.game.scene.stop('LoadingScene');
+        let self = this;
+        var i = 1;
+        this.input.keyboard.on('keydown', function (event) {
+            //already press do nothing
+            if (i <=4) {
+                self.dbox.setText(self.stringStart[i], false);
 
+            } else {
+                self.game.scene.start('StartScene', self.ultimateArrayForSounds); // Start the battle scene
+                self.game.scene.stop('LoadingScene');
+            }
+            i++;
+        });
 
         console.log("playbutton pressed");
 
@@ -345,6 +379,14 @@ export class LoadingScene extends Phaser.Scene {
 
     addPlayer(i, anzahlPlayer, texture, scaleX, scaleY) {
         return this.add.image((i + 1) * (this.game.renderer.width / (anzahlPlayer + 1)), 4 * this.game.renderer.height / 5, texture).setScale(scaleX, scaleY);
+    }
+
+    renderActionText(text: string) {
+        if(!this.dbox){
+            this.dbox = new DialogBox(this);
+            this.dbox._createWindow();
+        }
+        this.dbox.setText(text, false);
     }
 
 }
