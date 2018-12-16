@@ -44,7 +44,7 @@ export class ConversationScene extends Phaser.Scene {
 
         this.load.image('char_jailbait', Assets.url('characters','Jailbait Sketch.png'));
         this.load.image('char_nerd', Assets.url('characters','Naughty Nerd Sketch.png'));
-        this.load.image('char_samurai', Assets.url('characters','Zhe sexy samurai Sketch.png'));
+        this.load.image('char_samurai', Assets.url('characters','Zhe sexy samurai sketch.png'));
         this.load.image('char_fool', Assets.url('characters','Fool Sketch.png'));
 
         this.load.json('conversation_butler', Assets.url('conversations','ButlerConversation.json'));
