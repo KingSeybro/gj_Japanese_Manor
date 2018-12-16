@@ -16,6 +16,16 @@ import {DialogBox} from "../dialogbox";
 import {Helper} from "./helper";
 import SceneManager = Phaser.Scenes.SceneManager;
 
+export class BattleSceneHelper {
+    public combatWrap: CombatData;
+    public globalSoundarray: Map<string, string[]>;
+
+    constructor(combatWrap: CombatData, globalSoundarray: Map<string, string[]>) {
+        this.combatWrap = combatWrap;
+        this.globalSoundarray = globalSoundarray;
+    }
+}
+
 export class BattleScene extends Phaser.Scene {
 
     public meObject: PlayerCombat;
@@ -27,6 +37,8 @@ export class BattleScene extends Phaser.Scene {
     public hudBG: Map<String, Phaser.GameObjects.Graphics>;
     private selection: Map<String, AttackFile>;
     private combat: CombatWrapper;
+    private globalsoundArray: Map<string, string[]>;
+
     constructor() {
         //TODO SET PLAYER OBJECTS
         super({
@@ -56,7 +68,9 @@ export class BattleScene extends Phaser.Scene {
     }
 
 
-    create(o: CombatData): void {
+    create(battleSceneHelper: BattleSceneHelper): void {
+        let o=battleSceneHelper.combatWrap;
+        this.globalsoundArray = battleSceneHelper.globalSoundarray;
         this.combat=o.combat;
 
         switch (Math.floor(BattleScene.getBgDependingOnPos(o.otherPlayer.position))) {
@@ -230,13 +244,19 @@ export class BattleScene extends Phaser.Scene {
         let myturn = this.combat.attackerObject.id === Websocket.io.id;
         if (myturn) {
             this.lock = true;
+
+
             console.log("was my turn switch now");
 
             let attackFile = this.selection.get(a);
             if(attackFile == null){//is disabled
                 console.log("disabled!");
+                this.lock = false;
                 return;
             }
+            //TODO: CALL RANDOM SOUND FILE
+            
+            
 
             let p1 = createPlayerCombatFromStructure(this.combat.defenderObject);
             let p2 = createPlayerCombatFromStructure(this.combat.attackerObject);

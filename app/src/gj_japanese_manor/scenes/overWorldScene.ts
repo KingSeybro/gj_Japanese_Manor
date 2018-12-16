@@ -20,6 +20,8 @@ import {SelectedPlayer} from "../selectedPlayer";
 import {debug} from "util";
 import {Helper} from "./helper";
 import {ItemFactory} from "../../shared/itemFactory";
+import {BattleSceneHelper} from "./battleScene";
+
 
 
 export class OverWorldScene extends BaseTileMapScene {
@@ -183,7 +185,7 @@ export class OverWorldScene extends BaseTileMapScene {
             Globals.data = o;
             this.wasInBattleScreen = true;
 
-            Helper.switchFromWorldScreenTo(this.game.scene, 'BattleScene', o);
+            Helper.switchFromWorldScreenTo(this.game.scene, 'BattleScene', new BattleSceneHelper(o, globalSoundarray));
         });
 
 
