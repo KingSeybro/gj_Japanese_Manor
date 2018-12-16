@@ -16,6 +16,16 @@ import {DialogBox} from "../dialogbox";
 import {Helper} from "./helper";
 import SceneManager = Phaser.Scenes.SceneManager;
 
+export class BattleSceneHelper {
+    public combatWrap: CombatData;
+    public globalSoundarray: Map<string, string[]>;
+
+    constructor(combatWrap: CombatData, globalSoundarray: Map<string, string[]>) {
+        this.combatWrap = combatWrap;
+        this.globalSoundarray = globalSoundarray;
+    }
+}
+
 export class BattleScene extends Phaser.Scene {
 
     public meObject: PlayerCombat;
@@ -27,6 +37,8 @@ export class BattleScene extends Phaser.Scene {
     public hudBG: Map<String, Phaser.GameObjects.Graphics>;
     private selection: Map<String, AttackFile>;
     private combat: CombatWrapper;
+    private globalsoundArray: Map<string, string[]>;
+
     constructor() {
         //TODO SET PLAYER OBJECTS
         super({
@@ -56,7 +68,9 @@ export class BattleScene extends Phaser.Scene {
     }
 
 
-    create(o: CombatData): void {
+    create(battleSceneHelper: BattleSceneHelper): void {
+        let o=battleSceneHelper.combatWrap;
+        this.globalsoundArray = battleSceneHelper.globalSoundarray;
         this.combat=o.combat;
 
         switch (Math.floor(BattleScene.getBgDependingOnPos(o.otherPlayer.position))) {
@@ -230,19 +244,92 @@ export class BattleScene extends Phaser.Scene {
         let myturn = this.combat.attackerObject.id === Websocket.io.id;
         if (myturn) {
             this.lock = true;
+
+
             console.log("was my turn switch now");
 
             let attackFile = this.selection.get(a);
             if(attackFile == null){//is disabled
                 console.log("disabled!");
+                this.lock = false;
                 return;
             }
+
+
+            
 
             let p1 = createPlayerCombatFromStructure(this.combat.defenderObject);
             let p2 = createPlayerCombatFromStructure(this.combat.attackerObject);
             let combat: CombatWrapper = attackFile.combatFunction.call(p2, p1);//actual attack
 
+            //TODO: CALL RANDOM SOUND FILE
+            switch (p2.type){
+                case The_Fool.TYPE:
+                    switch(Math.floor(1+Math.random()*3)) {
+                        case 1:
+                            this.sound.play(this.globalsoundArray.get("generalInsultsDaisy")[Math.floor(Math.random() * this.globalsoundArray.get("generalInsultsDaisy").length)]);
+                            break;
+                        case 2:
+                            this.sound.play(this.globalsoundArray.get("complimentsDaisy")[Math.floor(Math.random() * this.globalsoundArray.get("complimentsDaisy").length)]);
+                            break;
+                        case 3:
+                            this.sound.play(this.globalsoundArray.get("generalDefensiveDaisy")[Math.floor(Math.random() * this.globalsoundArray.get("generalDefensiveDaisy").length)]);
+                            break;
+                        case 4:
+                            this.sound.play(this.globalsoundArray.get("exclamationDaisy")[Math.floor(Math.random() * this.globalsoundArray.get("exclamationDaisy").length)]);
+                            break;
+                    }
+                break;
+                case The_Sexy_Samurai.TYPE:
+                    switch(Math.floor(1+Math.random()*3)) {
+                        case 1:
+                            this.sound.play(this.globalsoundArray.get("generalInsultsFranzi")[Math.floor(Math.random() * this.globalsoundArray.get("generalInsultsFranzi").length)]);
+                            break;
+                        case 2:
+                            this.sound.play(this.globalsoundArray.get("complimentsFranzi")[Math.floor(Math.random() * this.globalsoundArray.get("complimentsFranzi").length)]);
+                            break;
+                        case 3:
+                            this.sound.play(this.globalsoundArray.get("generalDefensiveFranzi")[Math.floor(Math.random() * this.globalsoundArray.get("generalDefensiveFranzi").length)]);
+                            break;
+                        case 4:
+                            this.sound.play(this.globalsoundArray.get("exclamationFranzi")[Math.floor(Math.random() * this.globalsoundArray.get("exclamationFranzi").length)]);
+                            break;
+                    }
+                    break;
+                case The_Naughty_Nerd.TYPE:
+                    switch(Math.floor(1+Math.random()*3)) {
+                        case 1:
+                            this.sound.play(this.globalsoundArray.get("generalInsultsKlara")[Math.floor(Math.random() * this.globalsoundArray.get("generalInsultsKlara").length)]);
+                            break;
+                        case 2:
+                            this.sound.play(this.globalsoundArray.get("complimentsKlara")[Math.floor(Math.random() * this.globalsoundArray.get("complimentsKlara").length)]);
+                            break;
+                        case 3:
+                            this.sound.play(this.globalsoundArray.get("generalDefensiveKlara")[Math.floor(Math.random() * this.globalsoundArray.get("generalDefensiveKlara").length)]);
+                            break;
+                        case 4:
+                            this.sound.play(this.globalsoundArray.get("exclamationKlara")[Math.floor(Math.random() * this.globalsoundArray.get("exclamationKlara").length)]);
+                            break;
+                    }
+                    break;
+                case The_Jailbait.TYPE:
+                    switch(Math.floor(1+Math.random()*2)) {
+                        case 1:
+                            this.sound.play(this.globalsoundArray.get("generalInsultsNanni")[Math.floor(Math.random() * this.globalsoundArray.get("generalInsultsNanni").length)]);
+                            break;
+                        case 2:
+                            this.sound.play(this.globalsoundArray.get("complimentsNanni")[Math.floor(Math.random() * this.globalsoundArray.get("complimentsNanni").length)]);
+                            break;
+                        case 3:
+                            this.sound.play(this.globalsoundArray.get("generalDefensiveNanni")[Math.floor(Math.random() * this.globalsoundArray.get("generalDefensiveNanni").length)]);
+                            break;
+                        case 4:
+                            this.sound.play(this.globalsoundArray.get("exclamationNanni")[Math.floor(Math.random() * this.globalsoundArray.get("exclamationNanni").length)]);
+                            break;
+                    }
+                    break;
 
+            }
 
             let summaryString = attackFile.dialogForAttack;
             let attackString = attackFile.name;

@@ -49,6 +49,7 @@ export class ConversationScene extends Phaser.Scene {
         this.load.audio('ButlerNeutralEnding', Assets.url('sound/Conversations', 'ButlerNeutralEnding.wav'));
         this.load.audio('GrafBad01', Assets.url('sound/Conversations', 'GrafBad01.wav'));
         this.load.audio('GrafBad02', Assets.url('sound/Conversations', 'GrafBad02.wav'));
+        this.load.audio('GrafBadEnding', Assets.url('sound/Conversations', 'GrafBadEnding.wav'));
         this.load.audio('GrafGood01', Assets.url('sound/Conversations', 'GrafGood01.wav'));
         this.load.audio('GrafGoodEnding', Assets.url('sound/Conversations', 'GrafGoodEnding.wav'));
         this.load.audio('GrafNeutral02', Assets.url('sound/Conversations', 'GrafNeutral02.wav'));
@@ -103,17 +104,22 @@ export class ConversationScene extends Phaser.Scene {
         switch(sh._char){
             case 1:  npcChar = this.add.sprite(this.game.renderer.width*(2/3), this.game.renderer.height*(3/5), "char_mother");
                      this.conversation = new Conversation(this.cache.json.get('conversation_mother'));
-                     break;
+                npcChar.displayWidth = 400;
+
+                break;
             case 2:  npcChar = this.add.sprite(this.game.renderer.width*(2/3), this.game.renderer.height*(3/5), "char_butler");
                     this.conversation = new Conversation(this.cache.json.get('conversation_butler'));
-                    break;
+                npcChar.displayWidth = 270;
+
+                break;
             case 3:  npcChar = this.add.sprite(this.game.renderer.width*(2/3), this.game.renderer.height*(3/5), "char_darcy");
                     this.conversation = new Conversation(this.cache.json.get('conversation_darcy'));
-                    break;
+                npcChar.displayWidth = 400;
+
+                break;
         }
 
         //set the width of the sprite
-        npcChar.displayWidth = 430;
         //scale evenly
         npcChar.scaleY = npcChar.scaleX;
 
@@ -140,7 +146,7 @@ export class ConversationScene extends Phaser.Scene {
 
             //this.audio = new Audio(this.cache.audio.get(this.node.title));
             //this.audio = this.sound.add(this.cache.audio.get(this.node.title));
-
+            this.sound.stopAll();
             this.sound.play(this.node.title);
 
              if(this.dbox!==undefined){
