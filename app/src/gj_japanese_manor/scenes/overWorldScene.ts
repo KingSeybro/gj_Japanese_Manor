@@ -54,7 +54,6 @@ export class OverWorldScene extends BaseTileMapScene {
     preload(): void {
         super.preload();
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'newmap.json'));
-        this.load.image('player', Assets.url('game', 'phaser.png'));
         this.load.image('char_the_jailbait_small', Assets.url('characters', 'small', 'Jailbait Sprite Front.png'));
         this.load.image('char_the_naughty_nerd_small', Assets.url('characters', 'small', 'Nerd Sprite Front.png'));
         this.load.image('char_the_sexy_samurai_small', Assets.url('characters', 'small', 'Sporty Sprite Front.png'));
@@ -134,7 +133,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
         this.player
             .setOrigin(0.5, 0.5)
-            .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
+            .setDisplaySize(Constants.TILE_SIZE-20, Constants.TILE_SIZE-20)
             .setCollideWorldBounds(true)
             .setDrag(500, 500);
         this.player.body.stopVelocityOnCollide = true;
@@ -252,7 +251,7 @@ export class OverWorldScene extends BaseTileMapScene {
                 }
             }
         }
-        if (this.gracePeriod <= 0)
+        if (this.gracePeriod <= 0 && !this.wasInBattleScreen)
             this.hitPlayer(value);
     }
 
