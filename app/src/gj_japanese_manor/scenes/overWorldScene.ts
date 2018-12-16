@@ -316,9 +316,9 @@ export class OverWorldScene extends BaseTileMapScene {
         this.constrainVelocity(this.player, 400);
         let y = this.player.body.velocity.y * 100;
         let x = this.player.body.velocity.x * 100;
-        if (x != 0 && y != 0) {
-            this.player.rotation = Math.atan2(y, x);
-        }
+        // if (x != 0 && y != 0) {
+        //     this.player.rotation = Math.atan2(y, x);
+        // }
         if (this.player.body.speed !== 0) {
             this.sendPlayerMoved();
         }
