@@ -97,7 +97,7 @@ export class ConversationScene extends Phaser.Scene {
             case 6: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'kitchenBG'); break;
             case 7: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'libraryBG'); break;
             case 8: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'luftschiffBG'); break;
-            case 9: this.add.image(this.game.rendearer.width/2,this.game.renderer.height/2,'salonBG'); break;
+            case 9: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'salonBG'); break;
         }
 
         let npcChar:any;
