@@ -7,6 +7,10 @@ export class ItemFactory {
 
 
     constructor() {
+        this.itemArrayNegative = [];
+        this.itemArrayPositive = [];
+
+
         this.itemArrayPositive.push(new Item("Tea Set of the forgotten Monk", "1", "", 2, 0, 0, 0, 0, 0));
         this.itemArrayPositive.push(new Item("Fan of the Imperial Concubine", "2", "", 2, 0, 0, 0, 0, 0));
         this.itemArrayPositive.push(new Item("Hakama of the lost sword Saint", "3", "", 2, 0, 0, 0, 0, 0));
