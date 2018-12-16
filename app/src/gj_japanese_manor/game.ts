@@ -12,6 +12,8 @@ import {BattleScene} from "./scenes/battleScene";
 import {StartScene} from "./scenes/startScene";
 import {ConversationScene} from "./scenes/conversationSampleScene";
 import {DialogueScene} from "./scenes/dialogueScene";
+import {SoundTemplate} from "./scenes/soundTemplate";
+import {LoadingScene} from "./scenes/loadingScene";
 
 
 // main game configuration
@@ -24,7 +26,7 @@ const config: GameConfig = {
     pixelArt: false,
     parent: "game",
 
-    scene: [StartScene, OverWorldScene, BattleScene, ConversationScene, DialogueScene],
+    scene: [LoadingScene, StartScene, OverWorldScene, BattleScene, ConversationScene, DialogueScene, SoundTemplate],
     physics: {
         default: "arcade",
         arcade: {

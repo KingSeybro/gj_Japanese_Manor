@@ -35,6 +35,7 @@ export class OverWorldScene extends BaseTileMapScene {
     private static DEFAULT_GRACE_PERIOD: number = 2000;
     private wasInBattleScreen: boolean;
     private selectedPlayer: PlayerCombat;
+    private globalSoundArray: Map<string, string[]>;
 
     constructor() {
         super({
@@ -65,6 +66,7 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     create(playerObject:SelectedPlayer): void {
+        this.globalSoundArray = playerObject.soundMap;
         console.log('OverWorldScene created called');
         //this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'player');
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
@@ -291,6 +293,12 @@ export class OverWorldScene extends BaseTileMapScene {
             player.setAcceleration(0, 0);
             player.setVelocity(0, 0);
             scene.switch('DialogueScene'); // Start the battle scene
+        });
+
+        this.input.keyboard.on('keydown_M', function (event) {
+            player.setAcceleration(0, 0);
+            player.setVelocity(0, 0);
+            self.sound.play(self.globalSoundArray.get("complimentsDaisy")[0]);
         });
     }
 
