@@ -430,6 +430,34 @@ export function createPlayerCombatFromStructure(obj: any): PlayerCombat {
     return instance;
 }
 
+/**
+ * Factory method for creating an instance of player combat out of type
+ *
+ * @returns {PlayerCombat} instance out of the json obj
+ * @param id
+ * @param type
+ */
+export function instanciatePlayerCombat(id: string, type: string): PlayerCombat {
+    let instance = null;
+    switch (type) {
+        case The_Fool.TYPE:
+            instance = new The_Fool(id);
+            break;
+        case The_Jailbait.TYPE:
+            instance = new The_Jailbait(id);
+            break;
+        case The_Naughty_Nerd.TYPE:
+            instance = new The_Naughty_Nerd(id);
+            break;
+        case The_Sexy_Samurai.TYPE:
+            instance = new The_Sexy_Samurai(id);
+            break;
+        default:
+            console.log('could not read property type')
+    }
+    return instance;
+}
+
 
 
     export class AttackFile{

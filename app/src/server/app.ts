@@ -9,7 +9,12 @@ import {Log} from "./log";
 import {SharedConstants} from "../shared/sharedConstants";
 import {PlayerInfo, Position} from "../shared/playerInfo";
 import {CombatWrapper} from "../gj_japanese_manor/combatWrapper";
-import {createPlayerCombatFromStructure, The_Fool, The_Naughty_Nerd} from "../shared/playerCombat";
+import {
+    createPlayerCombatFromStructure,
+    instanciatePlayerCombat,
+    The_Fool,
+    The_Naughty_Nerd
+} from "../shared/playerCombat";
 import {CombatData} from "../shared/data";
 import apply = Reflect.apply;
 
@@ -143,8 +148,8 @@ export class App {
                 this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, player);
                 this.io.emit(SharedConstants.EVENT_PLAYER_UPDATE, otherPlayer);
 
-                let player1Obj = new The_Naughty_Nerd(player.id);
-                let player2Obj = new The_Fool(otherPlayer.id);
+                let player1Obj = instanciatePlayerCombat(player.id, player._type);
+                let player2Obj = instanciatePlayerCombat(otherPlayer.id, otherPlayer._type);
 
                 let combat = new CombatWrapper(player1Obj, player2Obj, "You are first", "", false, 0);
                 let data1 = new CombatData();
