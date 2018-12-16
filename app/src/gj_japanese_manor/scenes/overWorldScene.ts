@@ -153,6 +153,7 @@ export class OverWorldScene extends BaseTileMapScene {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
             Globals.data = o;
             this.scene.pause('OverWorldScene');
+            wasInBattleScreen = true;
             this.scene.launch('BattleScene',o); // Start the convo scene
         });
 
