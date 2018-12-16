@@ -33,7 +33,6 @@ export class OverWorldScene extends BaseTileMapScene {
     private static DEFAULT_GRACE_PERIOD: number = 2000;
     private wasInBattleScreen: boolean;
     private selectedPlayer: PlayerCombat;
-    public skipLoading: false;
 
     constructor() {
         super({
@@ -138,6 +137,7 @@ export class OverWorldScene extends BaseTileMapScene {
         Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: CombatData) => {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
             Globals.data = o;
+            this.wasInBattleScreen = true;
             this.scene.pause('OverWorldScene');
             this.scene.start('BattleScene',o); // Start the convo scene
         });
