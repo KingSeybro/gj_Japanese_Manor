@@ -17,6 +17,7 @@ export class ConversationScene extends Phaser.Scene {
     public dbox : DialogBox;
     private finished : boolean;
     public schelp : SceneHelper;
+    private audio: any;
 
 
     constructor() {
@@ -37,6 +38,33 @@ export class ConversationScene extends Phaser.Scene {
         this.load.image('luftschiffBG', Assets.url('backgrounds','JM_Back_LS.png'));
         this.load.image('salonBG', Assets.url('backgrounds','JM_Back_S.png'));
 
+        this.load.audio('ButlerBad01', Assets.url('sound/Conversations', 'ButlerBad01.wav'));
+        this.load.audio('ButlerBad02', Assets.url('sound/Conversations', 'ButlerBad02.wav'));
+        this.load.audio('ButlerBadEnding', Assets.url('sound/Conversations', 'ButlerBadEnding.wav'));
+        this.load.audio('ButlerGood01', Assets.url('sound/Conversations', 'ButlerGood01.wav'));
+        this.load.audio('ButlerGood02', Assets.url('sound/Conversations', 'ButlerGood02.wav'));
+        this.load.audio('ButlerGoodEnding', Assets.url('sound/Conversations', 'ButlerGoodEnding.wav'));
+        this.load.audio('ButlerNeutral01', Assets.url('sound/Conversations', 'ButlerNeutral01.wav'));
+        this.load.audio('ButlerNeutral02', Assets.url('sound/Conversations', 'ButlerNeutral02.wav'));
+        this.load.audio('ButlerNeutralEnding', Assets.url('sound/Conversations', 'ButlerNeutralEnding.wav'));
+        this.load.audio('GrafBad01', Assets.url('sound/Conversations', 'GrafBad01.wav'));
+        this.load.audio('GrafBad02', Assets.url('sound/Conversations', 'GrafBad02.wav'));
+        this.load.audio('GrafGood01', Assets.url('sound/Conversations', 'GrafGood01.wav'));
+        this.load.audio('GrafGoodEnding', Assets.url('sound/Conversations', 'GrafGoodEnding.wav'));
+        this.load.audio('GrafNeutral02', Assets.url('sound/Conversations', 'GrafNeutral02.wav'));
+        this.load.audio('GrafNeutralEnding', Assets.url('sound/Conversations', 'GrafNeutralEnding.wav'));
+        this.load.audio('MotherBad01', Assets.url('sound/Conversations', 'MotherBad01.wav'));
+        this.load.audio('MotherBad02', Assets.url('sound/Conversations', 'MotherBad02.wav'));
+        this.load.audio('MotherBadEnding', Assets.url('sound/Conversations', 'MotherBadEnding.wav'));
+        this.load.audio('MotherGood01', Assets.url('sound/Conversations', 'MotherGood01.wav'));
+        this.load.audio('MotherGood02', Assets.url('sound/Conversations', 'MotherGood02.wav'));
+        this.load.audio('MotherGoodEnding', Assets.url('sound/Conversations', 'MotherGoodEnding.wav'));
+        this.load.audio('MotherNeutral01', Assets.url('sound/Conversations', 'MotherNeutral01.wav'));
+        this.load.audio('MotherNeutral02', Assets.url('sound/Conversations', 'MotherNeutral02.wav'));
+        this.load.audio('MotherNeutralEnding', Assets.url('sound/Conversations', 'MotherNeutralEnding.wav'));
+        this.load.audio('StartButler', Assets.url('sound/Conversations', 'StartButler.wav'));
+        this.load.audio('StartGraf', Assets.url('sound/Conversations', 'StartGraf.wav'));
+        this.load.audio('StartMother', Assets.url('sound/Conversations', 'StartMother.wav'));
 
         this.load.image('char_butler', Assets.url('characters','Butler Sketch.png'));
         this.load.image('char_mother', Assets.url('characters','Mother Sketch.png'));
@@ -109,6 +137,11 @@ export class ConversationScene extends Phaser.Scene {
         this.node = value;
              let optionstext = "";
              let options = ["A","B","C","D"];
+
+            //this.audio = new Audio(this.cache.audio.get(this.node.title));
+            //this.audio = this.sound.add(this.cache.audio.get(this.node.title));
+
+            this.sound.play(this.node.title);
 
              if(this.dbox!==undefined){
                  this.dbox.toggleWindow();
