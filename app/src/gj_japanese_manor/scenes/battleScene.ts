@@ -126,6 +126,7 @@ export class BattleScene extends Phaser.Scene {
                hitText += "You have been missed by the enemy attack. Your social standing remains unchanged."
            }
             self.renderActionText(p.summaryString+"\n"+hitText+"\n Hit 'X' key to continue.");
+            attacker = createPlayerCombatFromStructure(p.attackerObject);
             this.combat = p;
             self.renderHudText(p);
             self.lock = false;
