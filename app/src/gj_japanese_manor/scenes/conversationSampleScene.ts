@@ -96,24 +96,29 @@ export class ConversationScene extends Phaser.Scene {
             case 6: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'kitchenBG'); break;
             case 7: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'libraryBG'); break;
             case 8: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'luftschiffBG'); break;
-            case 9: this.add.image(this.game.renderer.width/2,this.game.renderer.height/2,'salonBG'); break;
+            case 9: this.add.image(this.game.rendearer.width/2,this.game.renderer.height/2,'salonBG'); break;
         }
 
         let npcChar:any;
         switch(sh._char){
             case 1:  npcChar = this.add.sprite(this.game.renderer.width*(2/3), this.game.renderer.height*(3/5), "char_mother");
                      this.conversation = new Conversation(this.cache.json.get('conversation_mother'));
-                     break;
+                npcChar.displayWidth = 400;
+
+                break;
             case 2:  npcChar = this.add.sprite(this.game.renderer.width*(2/3), this.game.renderer.height*(3/5), "char_butler");
                     this.conversation = new Conversation(this.cache.json.get('conversation_butler'));
-                    break;
+                npcChar.displayWidth = 270;
+
+                break;
             case 3:  npcChar = this.add.sprite(this.game.renderer.width*(2/3), this.game.renderer.height*(3/5), "char_darcy");
                     this.conversation = new Conversation(this.cache.json.get('conversation_darcy'));
-                    break;
+                npcChar.displayWidth = 400;
+
+                break;
         }
 
         //set the width of the sprite
-        npcChar.displayWidth = 430;
         //scale evenly
         npcChar.scaleY = npcChar.scaleX;
 
