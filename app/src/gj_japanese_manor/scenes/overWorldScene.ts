@@ -333,7 +333,8 @@ export class OverWorldScene extends BaseTileMapScene {
         });
 
         this.input.keyboard.on('keydown_C', function (event) {
-            self.switchToConversationScreen();
+            console.log("Player Position: " + player.body.x + " " + player.body.y);
+
         });
 
         this.input.keyboard.on('keydown_N', function (event) {
