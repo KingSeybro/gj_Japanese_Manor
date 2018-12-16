@@ -35,7 +35,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
     public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
     private gracePeriod: number;
-    private static DEFAULT_GRACE_PERIOD: number = 2000;
+    private static DEFAULT_GRACE_PERIOD: number = 10000;
     private wasInBattleScreen: boolean;
     private selectedPlayer: PlayerCombat;
 
@@ -358,6 +358,7 @@ export class OverWorldScene extends BaseTileMapScene {
             this.player.setAcceleration(0, 0);
             console.log("reset was in screen");
         }
+        console.log(this.gracePeriod);
         this.gracePeriod -= delta;
         // Camera follows player ( can be set in create )
         if(this.cameras.main) {

@@ -234,8 +234,8 @@ export class BattleScene extends Phaser.Scene {
 
 
     renderHudText(o: CombatWrapper){
-        this.hudText.get('soc_standing'+o.attackerObject.id).text = BattleScene.socialStandingText(o.attackerObject.finalSocialStanding);
-        this.hudText.get('soc_standing'+o.defenderObject.id).text = BattleScene.socialStandingText(o.defenderObject.finalSocialStanding);
+        this.hudText.get('soc_standing'+o.attackerObject.id).text = BattleScene.hudInfoText(o.attackerObject);
+        this.hudText.get('soc_standing'+o.defenderObject.id).text = BattleScene.hudInfoText(o.defenderObject);
     }
 
     createHudText(o: CombatData) {
@@ -243,23 +243,23 @@ export class BattleScene extends Phaser.Scene {
         let alphaHud = 0.9;
         let leftBG = this.add.graphics();
 
-        let leftSocialStanding = this.add.text(10, 10, BattleScene.socialStandingText(o.combat.attackerObject.finalSocialStanding), {
+        let leftSocialStanding = this.add.text(10, 10, BattleScene.hudInfoText(o.combat.attackerObject), {
             color: 'white',
             font: 'bold 14px Arial',
         });
         leftBG.fillStyle(colorHud, alphaHud);
-        let withBox = 180;
-        leftBG.fillRect(0, 0, withBox, 50);
+        let withBox = 300;
+        leftBG.fillRect(0, 0, withBox, 80);
 
 
         let rightBG = this.add.graphics();
-        let rightX = this.game.renderer.width-140;
-        let rightSocialStanding = this.add.text(rightX, 10, BattleScene.socialStandingText(o.combat.defenderObject.finalSocialStanding), {
+        let rightX = this.game.renderer.width-withBox   ;
+        let rightSocialStanding = this.add.text(rightX+10, 10, BattleScene.hudInfoText(o.combat.defenderObject), {
             color: 'white',
             font: 'bold 14px Arial',
         });
         rightBG.fillStyle(colorHud, alphaHud);
-        rightBG.fillRect(rightX-40, 0, withBox, 50);
+        rightBG.fillRect(rightX, 0, withBox, 80);
 
 
         this.hudText.set('soc_standing' + o.combat.attackerObject.id, leftSocialStanding);
@@ -268,8 +268,10 @@ export class BattleScene extends Phaser.Scene {
         this.hudBG.set('soc_standing' + o.combat.defenderObject.id, leftBG);
     }
 
-    private static socialStandingText(points: number){
-        return 'Social standing: ' + points.toString();
+    private static hudInfoText(points: PlayerCombat){
+        return points.name +
+            '\nSocial standing: ' + points.finalSocialStanding+'\n' +
+            'Focus: '+points.currentFocus;
     }
 
     update(time: number, delta: number): void {

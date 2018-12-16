@@ -246,7 +246,7 @@ export class The_Fool extends PlayerCombat{
         super("Daisy Washington III Esq.", id, 12, 19, 11, 6, 16, 6, The_Fool.TYPE);
         this.attacksAndSpells.push(new AttackFile("Faux Pas", this.basicAttack, "A basic attack", "Oh, I’m terribly sorry for spoiling your ensemble.", 1 ));
         this.attacksAndSpells.push(new AttackFile("Honorable Gent", this.powerfulAttack, "A powerful attack dealing more damage", "Reginald, please take care of this goose”; Reginald: “I is honored m’lady", 2));
-        this.attacksAndSpells.push(new AttackFile("Most Powerful Southern Bloodline!", this.combinedAttack, "An expensive attack that is both powerful and accurate", "", 3));
+        this.attacksAndSpells.push(new AttackFile("Most Powerful Southern Bloodline!", this.combinedAttack, "An expensive attack that is both powerful and accurate", "Ya'll is just like little pinprick from jesus", 3));
         this.attacksAndSpells.push(new AttackFile("Swoon", this.debuffArmSpell, "Daisy disarms her opponent with her charm and reduces their Armor.", "I feel featherbrained – thank ye for catchin’ me, doll" , 2));
         this.attacksAndSpells.push(new AttackFile("Monkey Army", this.ultimateAttack, "Daisy unleashes her Army of Monkeys from the Bathhouse", "Let’s see how y’all like my spirit animal.", 0));
     }
@@ -286,7 +286,7 @@ export class The_Jailbait extends PlayerCombat{
         this.attacksAndSpells.push(new AttackFile("Curse of Despair", this.fixedDamageSpell, "A curse that deals fixed damage", "See that doll I made? It looks just like you.", 3));
         this.attacksAndSpells.push(new AttackFile("Obsidian Curse of the Butterfly", this.debuffArmSpell, "A spell that reduces your opponents Armor", "I felt a butterfly flap its wings in Argentina. The Doom of Damocles hangs over you now!", 2));
         this.attacksAndSpells.push(new AttackFile("Aegis of the Oni", this.debuffArmSpell, "Nanni calls upon the Oni to increase her Defense and Armor", "The Oni protect us!" ,2 ));
-        this.attacksAndSpells.push(new AttackFile("Tempest of the Last Witch of Azabu ", this.ultimateAttack, "Calling upon her Ultimate Power Nanni reveals her true self!", "Tremble before the power of the last Witch, as my power saps your strength!", 0));
+        this.attacksAndSpells.push(new AttackFile("Tempest of the Last Witch of Azabu", this.ultimateAttack, "Calling upon her Ultimate Power Nanni reveals her true self!", "Tremble before the power of the last Witch, as my power saps your strength!", 0));
     }
 
     //this is a powerful spell, that does fixed damage
@@ -335,8 +335,8 @@ export class The_Naughty_Nerd extends PlayerCombat {
         this.attacksAndSpells.push(new AttackFile("Shroud of Haiku", this.defBuffSpell, "Hidden behind weaves of knowledge and words, Kalaranette raises her Defense", "“You and Ben Franklin – share some similarities – namely syphilis.” \n" +
             "“Early in the day – right when dawn kisses the sky – you should give me tongue.” \n" +
             "“I’m a lusty wench – put your hand up my skirt and – pinch my bottom, hoss.” \n",2 ));
-        this.attacksAndSpells.push(new AttackFile("Uncanny Knowledge", this.damageBuffSpell, "Words are weapons in the right hands, gain additional damage", "Don’t you know the secret of life? … 42!", 2));
-        this.attacksAndSpells.push(new AttackFile("Seven Seals Unleashed", this.ultimateAttack, "Kalaranette breaks the last seal and reveals her book's true knowledge!", "-", 0));
+        this.attacksAndSpells.push(new AttackFile("Uncanny Knowledge", this.damageBuffSpell, "Words are weapons in the right hands, they destroy. Gain additional damage", "Don’t you know the secret of life? … 42!", 2));
+        this.attacksAndSpells.push(new AttackFile("Seven Seals Unleashed", this.ultimateAttack, "Kalaranette breaks the last seal and reveals her book's true knowledge!", "Double Double Toil and Trouble, banging witches brings you trouble! \n At the cost of my own life I shall destroy thee!" , 0));
     }
 
     //this is a dot spell, fixed damage for a few rounds
