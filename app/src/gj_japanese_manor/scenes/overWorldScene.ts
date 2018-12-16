@@ -187,7 +187,7 @@ export class OverWorldScene extends BaseTileMapScene {
             Globals.data = o;
             this.wasInBattleScreen = true;
 
-            Helper.switchFromWorldScreenTo(this.game.scene, 'BattleScene', new BattleSceneHelper(o, globalSoundarray));
+            Helper.switchFromWorldScreenTo(this.game.scene, 'BattleScene', new BattleSceneHelper(o, this.globalSoundArray));
         });
 
 
