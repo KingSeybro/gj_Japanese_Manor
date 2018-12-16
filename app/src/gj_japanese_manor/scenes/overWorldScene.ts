@@ -197,18 +197,30 @@ export class OverWorldScene extends BaseTileMapScene {
 
 
     private collideCallbackMother(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
-        this.player.setAcceleration(0, 0).setVelocity(0, 0);
-        Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(1,1, this.selectedPlayer))
+        if (this.gracePeriod <= 0) {
+            this.wasInBattleScreen = true;
+
+            this.player.setAcceleration(0, 0).setVelocity(0, 0);
+            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(1, 1, this.selectedPlayer))
+        }
     }
 
     private collideCallbackButler(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
-        this.player.setAcceleration(0, 0).setVelocity(0, 0);
-        Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(2,2, this.selectedPlayer))
+        if (this.gracePeriod <= 0) {
+            this.wasInBattleScreen = true;
+
+            this.player.setAcceleration(0, 0).setVelocity(0, 0);
+            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(2,2, this.selectedPlayer))
+        }
     }
 
     private collideCallbackDarcy(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
-        this.player.setAcceleration(0, 0).setVelocity(0, 0);
-        Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(3,3, this.selectedPlayer))
+        if (this.gracePeriod <= 0) {
+            this.wasInBattleScreen = true;
+
+            this.player.setAcceleration(0, 0).setVelocity(0, 0);
+            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(3, 3, this.selectedPlayer))
+        }
     }
 
     private collideCallback(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
