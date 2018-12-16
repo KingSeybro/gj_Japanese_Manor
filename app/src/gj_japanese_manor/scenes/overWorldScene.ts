@@ -366,7 +366,6 @@ export class OverWorldScene extends BaseTileMapScene {
             this.player.setAcceleration(0, 0);
             console.log("reset was in screen");
         }
-        console.log(this.gracePeriod);
         this.gracePeriod -= delta;
         // Camera follows player ( can be set in create )
         if (this.cameras.main) {
