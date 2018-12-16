@@ -19,6 +19,7 @@ import {PlayerCombat, The_Fool, The_Jailbait, The_Naughty_Nerd, The_Sexy_Samurai
 import {SelectedPlayer} from "../selectedPlayer";
 import {debug} from "util";
 import {Helper} from "./helper";
+import {ItemFactory} from "../../shared/itemFactory";
 
 
 export class OverWorldScene extends BaseTileMapScene {
@@ -28,32 +29,44 @@ export class OverWorldScene extends BaseTileMapScene {
 
     private moveKeys: object;
     private player: Phaser.Physics.Arcade.Sprite;
+    private mother: Phaser.Physics.Arcade.Sprite;
+    private butler: Phaser.Physics.Arcade.Sprite;
+    private darcy: Phaser.Physics.Arcade.Sprite;
 
 
     public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
     private gracePeriod: number;
-    private static DEFAULT_GRACE_PERIOD: number = 2000;
+    private static DEFAULT_GRACE_PERIOD: number = 10000;
     private wasInBattleScreen: boolean;
     private selectedPlayer: PlayerCombat;
     private globalSoundArray: Map<string, string[]>;
 
+
     constructor() {
         super({
             key: "OverWorldScene"
-        }, ['background_tiles']);
+        }, ['final_tileset']);
         this.otherPlayers = new Map<string, Phaser.Physics.Arcade.Sprite>();
         this.layers = new Map<number, Phaser.Tilemaps.StaticTilemapLayer>();
         this.tilesMapping = new Map<number, string>();
+
     }
 
     preload(): void {
         super.preload();
-        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
-        this.load.image('player', Assets.url('game', 'phaser.png'));
-        this.load.image('char_the_jailbait_small', Assets.url('characters','small','Jailbait Sprite Front.png'));
-        this.load.image('char_the_naughty_nerd_small', Assets.url('characters','small','Nerd Sprite Front.png'));
-        this.load.image('char_the_sexy_samurai_small', Assets.url('characters','small','Sporty Sprite Front.png'));
-        this.load.image('char_the_fool_small', Assets.url('characters','small','Fool Sprite Front.png'));
+        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'newmap.json'));
+        this.load.image('char_the_jailbait_small', Assets.url('characters', 'small', 'Jailbait Sprite Front.png'));
+        this.load.image('char_the_naughty_nerd_small', Assets.url('characters', 'small', 'Nerd Sprite Front.png'));
+        this.load.image('char_the_sexy_samurai_small', Assets.url('characters', 'small', 'Sporty Sprite Front.png'));
+        this.load.image('char_the_fool_small', Assets.url('characters', 'small', 'Fool Sprite Front.png'));
+
+
+
+
+        this.load.image('npc_butler', Assets.url('characters','small','Butler Sprite Front.png'));
+        this.load.image('npc_darcy', Assets.url('characters','small','Darcy Sprite Front.png'));
+        this.load.image('npc_mother', Assets.url('characters','small','Mother sprite front.png'));
+
 
         console.log("preload overworld screen");
         let scene = this.scene;
@@ -73,27 +86,30 @@ export class OverWorldScene extends BaseTileMapScene {
         let id = Websocket.init(this.game.scene);
         this.initMap(Assets.TILES_OVERWORLD_MAP);
 
+
+        let x = 11255+Math.random() * 2000;
+        let y = 9705+Math.random() * 1000;
         switch (playerObject.type) {
             case The_Fool.TYPE:
                 this.selectedPlayer = new The_Fool(id);
-                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_the_fool_small');
+                this.player = this.physics.add.sprite(x, y, 'char_the_fool_small');
                 console.log("Fool");
                 break;
             case The_Sexy_Samurai.TYPE:
                 this.selectedPlayer = new The_Sexy_Samurai(id);
-                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_the_sexy_samurai_small');
+                this.player = this.physics.add.sprite(x, y, 'char_the_sexy_samurai_small');
                 console.log("Samurai");
 
                 break;
             case The_Naughty_Nerd.TYPE:
                 this.selectedPlayer = new The_Naughty_Nerd(id);
-                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_the_naughty_nerd_small');
+                this.player = this.physics.add.sprite(x, y, 'char_the_naughty_nerd_small');
                 console.log("Nerd");
 
                 break;
             case The_Jailbait.TYPE:
                 this.selectedPlayer = new The_Jailbait(id);
-                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_the_jailbait_small');
+                this.player = this.physics.add.sprite(x, y, 'char_the_jailbait_small');
                 console.log("The_Jailbait");
                 break;
             default:
@@ -101,6 +117,16 @@ export class OverWorldScene extends BaseTileMapScene {
                 console.log("Default Jailbait");
                 break;
         }
+        this.mother = this.physics.add.sprite(4300, 1987, 'npc_mother');
+        this.physics.add.overlap(this.player, this.mother, this.collideCallbackMother, null, this);
+
+        this.butler = this.physics.add.sprite(11037, 1486, 'npc_butler');
+        this.physics.add.overlap(this.player, this.butler, this.collideCallbackButler, null, this);
+
+        this.darcy = this.physics.add.sprite(7808, 5595, 'npc_darcy');
+        this.physics.add.overlap(this.player, this.darcy, this.collideCallbackDarcy, null, this);
+
+
 
         this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
 
@@ -109,12 +135,12 @@ export class OverWorldScene extends BaseTileMapScene {
 
         this.player
             .setOrigin(0.5, 0.5)
-            .setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
+            .setDisplaySize(Constants.TILE_SIZE-20, Constants.TILE_SIZE-20)
             .setCollideWorldBounds(true)
             .setDrag(500, 500);
         this.player.body.stopVelocityOnCollide = true;
 
-        this.setUpCollisionLayer([1], this.player);
+        this.setUpCollisionLayer([1,2,0], this.player);
 
         this.initializeInput();
         this.cameras.main.setZoom(Constants.DEFAULT_ZOOM);
@@ -126,7 +152,7 @@ export class OverWorldScene extends BaseTileMapScene {
             if (p.id !== Websocket.io.id) {
                 // console.log("player update" + JSON.stringify(p));
                 if (!self.otherPlayers.get(p.id)) {
-                    let otherPlayer = this.physics.add.sprite(p.position.x, p.position.y, 'char_'+p._type.toLocaleLowerCase()+'_small');
+                    let otherPlayer = this.physics.add.sprite(p.position.x, p.position.y, 'char_' + p._type.toLocaleLowerCase() + '_small');
                     console.log(p);
                     otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
                         .setCollideWorldBounds(true)
@@ -152,14 +178,14 @@ export class OverWorldScene extends BaseTileMapScene {
                 otherPlayer.destroy();
                 self.otherPlayers.delete(p);
             }
-        });+
+        });
 
         Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: CombatData) => {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
             Globals.data = o;
             this.wasInBattleScreen = true;
 
-            Helper.switchFromWorldScreenTo(this.game.scene, 'BattleScene',o);
+            Helper.switchFromWorldScreenTo(this.game.scene, 'BattleScene', o);
         });
 
 
@@ -174,6 +200,36 @@ export class OverWorldScene extends BaseTileMapScene {
         this.sendPlayerMoved();
 
 
+
+
+    }
+
+
+    private collideCallbackMother(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
+        if (this.gracePeriod <= 0) {
+            this.wasInBattleScreen = true;
+
+            this.player.setAcceleration(0, 0).setVelocity(0, 0);
+            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(1, 1, this.selectedPlayer))
+        }
+    }
+
+    private collideCallbackButler(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
+        if (this.gracePeriod <= 0) {
+            this.wasInBattleScreen = true;
+
+            this.player.setAcceleration(0, 0).setVelocity(0, 0);
+            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(2,6, this.selectedPlayer))
+        }
+    }
+
+    private collideCallbackDarcy(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
+        if (this.gracePeriod <= 0) {
+            this.wasInBattleScreen = true;
+
+            this.player.setAcceleration(0, 0).setVelocity(0, 0);
+            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(3, 4, this.selectedPlayer))
+        }
     }
 
     private collideCallback(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
@@ -197,7 +253,7 @@ export class OverWorldScene extends BaseTileMapScene {
                 }
             }
         }
-        if (this.gracePeriod <= 0)
+        if (this.gracePeriod <= 0 && !this.wasInBattleScreen)
             this.hitPlayer(value);
     }
 
@@ -286,7 +342,8 @@ export class OverWorldScene extends BaseTileMapScene {
         });
 
         this.input.keyboard.on('keydown_C', function (event) {
-            self.switchToConversationScreen();
+            console.log("Player Position: " + player.body.x + " " + player.body.y);
+
         });
 
         this.input.keyboard.on('keydown_N', function (event) {
@@ -304,7 +361,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
     public switchToConversationScreen() {
         this.player.setAcceleration(0, 0).setVelocity(0, 0);
-        Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(1,1))
+        Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(1, 1, this.selectedPlayer))
     }
 
     update(time: number, delta: number): void {
@@ -318,7 +375,7 @@ export class OverWorldScene extends BaseTileMapScene {
         }
         this.gracePeriod -= delta;
         // Camera follows player ( can be set in create )
-        if(this.cameras.main) {
+        if (this.cameras.main) {
             this.cameras.main.startFollow(this.player);
         } else {
             console.log("this.cameras was undefined");
@@ -332,7 +389,6 @@ export class OverWorldScene extends BaseTileMapScene {
         if (this.player.body.speed !== 0) {
             this.sendPlayerMoved();
         }
-
     }
 
     private hitPlayer(key: string): void {
@@ -341,11 +397,11 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     private sendPlayerMoved(): void {
-       // console.log("send player moved");
+        // console.log("send player moved");
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_MOVED, this.getCurrentPlayerData());
     }
 
     private getCurrentPlayerData(): PlayerInfo {
-        return new PlayerInfo(Websocket.io.id, new Position(this.player.x, this.player.y),this.selectedPlayer.type);
+        return new PlayerInfo(Websocket.io.id, new Position(this.player.x, this.player.y), this.selectedPlayer.type);
     }
 }

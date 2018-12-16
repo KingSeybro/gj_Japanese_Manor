@@ -24,6 +24,7 @@ export class BattleScene extends Phaser.Scene {
     public text: Phaser.GameObjects.Text;
     public dbox: DialogBox;
     public hudText: Map<String, Phaser.GameObjects.Text>;
+    public hudBG: Map<String, Phaser.GameObjects.Graphics>;
     private selection: Map<String, AttackFile>;
     private combat: CombatWrapper;
     constructor() {
@@ -32,11 +33,22 @@ export class BattleScene extends Phaser.Scene {
             key: "BattleScene"
         });
         this.hudText = new Map<String, Phaser.GameObjects.Text>();
+        this.hudBG = new Map<String, Phaser.GameObjects.Graphics>();
         this.selection = new Map<String, AttackFile>();
     }
 
     preload(): void {
-        this.load.image('bg', Assets.url('backgrounds', 'JM_Back_HS.png'));
+        this.load.image('bedroomBG', Assets.url('backgrounds','JM_Back_BR.png'));
+        this.load.image('cherryblossomBG', Assets.url('backgrounds','JM_Back_CB.png'));
+        this.load.image('diningroomBG', Assets.url('backgrounds','JM_Back_DR.png'));
+        this.load.image('fountainBG', Assets.url('backgrounds','JM_Back_F.png'));
+        this.load.image('hotspringBG', Assets.url('backgrounds','JM_Back_HS.png'));
+        this.load.image('kitchenBG', Assets.url('backgrounds','JM_Back_Kit.png'));
+        this.load.image('libraryBG', Assets.url('backgrounds','JM_Back_Lib.png'));
+        this.load.image('luftschiffBG', Assets.url('backgrounds','JM_Back_LS.png'));
+        this.load.image('salonBG', Assets.url('backgrounds','JM_Back_S.png'));
+
+
         this.load.image(The_Fool.TYPE, Assets.url('characters', 'Fool Sketch.png'));
         this.load.image(The_Jailbait.TYPE, Assets.url('characters', 'Jailbait Sketch.png'));
         this.load.image(The_Naughty_Nerd.TYPE, Assets.url('characters', 'Naughty Nerd Sketch.png'));
@@ -46,7 +58,38 @@ export class BattleScene extends Phaser.Scene {
 
     create(o: CombatData): void {
         this.combat=o.combat;
-        this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'bg');
+
+        switch (Math.floor(BattleScene.getBgDependingOnPos(o.otherPlayer.position))) {
+            case 0:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'diningroomBG');
+                break;
+            case 1:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'fountainBG');
+                break;
+            case 2:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'hotspringBG');
+                break;
+            case 3:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'kitchenBG');
+                break;
+            case 4:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'libraryBG');
+                break;
+            case 5:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'luftschiffBG');
+                break;
+            case 6:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'bedroomBG');
+                break;
+            case 7:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'cherryblossomBG');
+                break;
+            default:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'diningroomBG');
+        }
+
+
+
         let face1 = this.add.sprite(this.game.renderer.width / 5 * 4, 500, o.combat.attackerObject.type);
         face1.displayWidth = 400;
         face1.scaleY = face1.scaleX;
@@ -124,6 +167,7 @@ export class BattleScene extends Phaser.Scene {
                hitText += "You have been missed by the enemy attack. Your social standing remains unchanged."
            }
             self.renderActionText(p.summaryString+"\n"+hitText+"\n Hit 'X' key to continue.");
+            attacker = createPlayerCombatFromStructure(p.attackerObject);
             this.combat = p;
             self.renderHudText(p);
             self.lock = false;
@@ -231,18 +275,50 @@ export class BattleScene extends Phaser.Scene {
 
 
     renderHudText(o: CombatWrapper){
-        this.hudText.get('soc_standing'+o.attackerObject.id).text = o.attackerObject.finalSocialStanding.toString();
-        this.hudText.get('soc_standing'+o.defenderObject.id).text =  o.defenderObject.finalSocialStanding.toString();
+        this.hudText.get('soc_standing'+o.attackerObject.id).text = BattleScene.hudInfoText(o.attackerObject);
+        this.hudText.get('soc_standing'+o.defenderObject.id).text = BattleScene.hudInfoText(o.defenderObject);
     }
 
-    createHudText(o: CombatData){
-        let leftSocialStanding = this.add.text(40, 40, o.combat.attackerObject.finalSocialStanding.toString(), {color: 'green', 'font-size': '45px'});
-        let rightSocialStanding = this.add.text(this.game.renderer.width - 40, 40, o.combat.defenderObject.finalSocialStanding.toString(), {color: 'green', 'font-size': '45px'});
+    createHudText(o: CombatData) {
+        let colorHud = 0x1e62ce;
+        let alphaHud = 0.9;
+        let leftBG = this.add.graphics();
 
-        this.hudText.set('soc_standing'+o.combat.attackerObject.id, leftSocialStanding);
-        this.hudText.set('soc_standing'+o.combat.defenderObject.id, rightSocialStanding);
+        let leftSocialStanding = this.add.text(10, 10, BattleScene.hudInfoText(o.combat.attackerObject), {
+            color: 'white',
+            font: 'bold 14px Arial',
+        });
+        leftBG.fillStyle(colorHud, alphaHud);
+        let withBox = 300;
+        leftBG.fillRect(0, 0, withBox, 80);
+
+
+        let rightBG = this.add.graphics();
+        let rightX = this.game.renderer.width-withBox   ;
+        let rightSocialStanding = this.add.text(rightX+10, 10, BattleScene.hudInfoText(o.combat.defenderObject), {
+            color: 'white',
+            font: 'bold 14px Arial',
+        });
+        rightBG.fillStyle(colorHud, alphaHud);
+        rightBG.fillRect(rightX, 0, withBox, 80);
+
+
+        this.hudText.set('soc_standing' + o.combat.attackerObject.id, leftSocialStanding);
+        this.hudText.set('soc_standing' + o.combat.defenderObject.id, rightSocialStanding);
+        this.hudBG.set('soc_standing' + o.combat.attackerObject.id, leftBG);
+        this.hudBG.set('soc_standing' + o.combat.defenderObject.id, leftBG);
     }
 
+    private static hudInfoText(points: PlayerCombat){
+        return points.name +
+            '\nSocial standing: ' + points.finalSocialStanding+'\n' +
+            'Focus: '+points.currentFocus;
+    }
+
+    public static getBgDependingOnPos(pos){
+
+        return Math.random()*9;
+    }
 
     update(time: number, delta: number): void {
         super.update(time, delta);

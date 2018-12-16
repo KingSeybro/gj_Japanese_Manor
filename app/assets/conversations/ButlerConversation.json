@@ -62,7 +62,7 @@
 	{
 		"title": "ButlerBad02",
 		"tags": "Butler",
-		"body": "You seem very interested in the Graf. \nCount's drink/ tied up\n[[I'm interested in many things.|ButlerNeutralending]]\n[[Yes, that's why I'm here.|ButlerBadEnding]]\n[[What do you think?.|ButlerBadEnding]]",
+		"body": "You seem very interested in the Graf. \nCount's drink/ tied up\n[[I'm interested in many things.|ButlerNeutralEnding]]\n[[Yes, that's why I'm here.|ButlerBadEnding]]\n[[What do you think?.|ButlerBadEnding]]",
 		"position": {
 			"x": 1381,
 			"y": 560

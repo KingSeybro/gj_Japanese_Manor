@@ -1,6 +1,7 @@
 import {Assets} from "../assets";
 import {Constants} from "../constants";
 import {DialogBox} from "../dialogbox";
+import {Helper} from "./helper";
 
 export class DialogueScene extends Phaser.Scene {
 
@@ -17,9 +18,9 @@ export class DialogueScene extends Phaser.Scene {
 
     create(): void {
         console.log("created dialogue screen");
-        let scene = this.scene;
+        let scene = this.game.scene;
         this.input.keyboard.on('keydown_N', function (event) {
-            scene.start('OverWorldScene'); // Start the main scene
+            Helper.resumeOverWorldScene(scene, 'DialogueScene');
         });
         // var dialogMessage = new Phaser.GameObjects.Text ();
         var text = "LAlalal"
