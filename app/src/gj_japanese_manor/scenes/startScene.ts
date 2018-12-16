@@ -75,8 +75,9 @@ export class StartScene extends Phaser.Scene {
                 this.types[clickedPlayerIndex]
             );
             console.log("playbutton pressed");
+
             // you have to check if an Button beneath was chosen
-            scene.start('OverWorldScene', playerObjectClicked);
+            this.game.scene.start('OverWorldScene', playerObjectClicked);
         });
     }
 

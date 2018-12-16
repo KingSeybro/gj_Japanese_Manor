@@ -33,6 +33,7 @@ export class OverWorldScene extends BaseTileMapScene {
     private static DEFAULT_GRACE_PERIOD: number = 2000;
     private wasInBattleScreen: boolean;
     private selectedPlayer: PlayerCombat;
+    public skipLoading: false;
 
     constructor() {
         super({
@@ -100,21 +101,6 @@ export class OverWorldScene extends BaseTileMapScene {
         this.initializeInput();
         this.cameras.main.setZoom(Constants.DEFAULT_ZOOM);
 
-        if (Globals.DEBUG_ON) {
-            const debugGraphics = this.add.graphics().setAlpha(0.75);
-            // collisionLayer.renderDebug(debugGraphics, {
-            //     tileColor: null, // Color of non-colliding tiles
-            //     collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-            //     faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-            // });
-
-        }
-        if (Websocket.isConnected()) {
-            console.log("Connected to server " + Constants.SERVER_URL);
-        } else {
-            console.log("Could not connect to server " + Constants.SERVER_URL);
-        }
-
         const self = this;
 
         Websocket.io.on(SharedConstants.EVENT_PLAYER_UPDATE, (p: PlayerInfo) => {
@@ -153,7 +139,7 @@ export class OverWorldScene extends BaseTileMapScene {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
             Globals.data = o;
             this.scene.pause('OverWorldScene');
-            this.scene.launch('BattleScene',o); // Start the convo scene
+            this.scene.start('BattleScene',o); // Start the convo scene
         });
 
 

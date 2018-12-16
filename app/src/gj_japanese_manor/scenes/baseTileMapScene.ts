@@ -19,13 +19,16 @@ export class BaseTileMapScene extends Phaser.Scene {
 
     constructor(config: string | Phaser.Scenes.Settings.Config, imagesToLoad: string[]) {
         super(config);
+        this.imagesToLoad = imagesToLoad;
+        this.initVars();
+    }
+
+    private initVars(): void {
         this.layers = new Map<number, Phaser.Tilemaps.StaticTilemapLayer>();
         this.tiles = [];
         this.tilesMapping = new Map<number, string>();
-        this.imagesToLoad = imagesToLoad;
         this.collideableLayers = [];
     }
-
     /**
      * Will load all images passed from imagesToLoad array
      */
@@ -41,6 +44,8 @@ export class BaseTileMapScene extends Phaser.Scene {
      * @param keyMap
      */
     protected initMap(keyMap): void {
+
+        this.initVars();
         console.log("Init map " + keyMap + " now");
         this.map = this.make.tilemap({
             key: keyMap
@@ -59,7 +64,7 @@ export class BaseTileMapScene extends Phaser.Scene {
             const layer = this.map.layers[i];
             let keyTile = this.tilesMapping.get(i);
             // @ts-ignore
-            let staticTilemapLayer = this.map.createStaticLayer(i, this.tiles, 0, 0);
+            let staticTilemapLayer = this.map.createStaticLayer(layer.name, this.tiles, 0, 0);
             this.layers.set(i, staticTilemapLayer);
         }
     }
