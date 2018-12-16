@@ -1,7 +1,6 @@
 import {Assets} from "../assets";
 import {Constants} from "../constants";
 import {Websocket} from "../websocket";
-import {Globals} from "../globals";
 import {SharedConstants} from "../../shared/sharedConstants";
 import {CombatWrapper} from "../combatWrapper";
 import {
@@ -26,6 +25,7 @@ export class BattleScene extends Phaser.Scene {
     public dbox: DialogBox;
     public hudText: Map<String, Phaser.GameObjects.Text>;
     private selection: Map<String, AttackFile>;
+    private combat: CombatWrapper;
     constructor() {
         //TODO SET PLAYER OBJECTS
         super({
@@ -45,6 +45,7 @@ export class BattleScene extends Phaser.Scene {
 
 
     create(o: CombatData): void {
+        this.combat=o.combat;
         this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'bg');
         let face1 = this.add.sprite(this.game.renderer.width / 5 * 4, 500, o.combat.attackerObject.type);
         face1.displayWidth = 400;
@@ -61,8 +62,7 @@ export class BattleScene extends Phaser.Scene {
         const self = this;
 
         let attackChooseText = "Choose attack:\n";
-        let attacker = createPlayerCombatFromStructure(Globals.data.combat.attackerObject);
-        let defender = createPlayerCombatFromStructure(Globals.data.combat.defenderObject);
+        let attacker = createPlayerCombatFromStructure(this.combat.attackerObject);
         this.selection = new Map<String, AttackFile>();
         this.renderAttackOptions(attacker, attackChooseText);
 
@@ -80,35 +80,35 @@ export class BattleScene extends Phaser.Scene {
             if (self.lock) {
                 return;
             }
-            self.executeAttack("A",self, attacker, defender);
+            self.executeAttack("A");
         });
         this.input.keyboard.on('keydown_B', function (event) {
             //already press do nothing
             if (self.lock) {
                 return;
             }
-            self.executeAttack("B",self, attacker, defender);
+            self.executeAttack("B");
         });
         this.input.keyboard.on('keydown_C', function (event) {
             //already press do nothing
             if (self.lock) {
                 return;
             }
-            self.executeAttack("C",self, attacker, defender);
+            self.executeAttack("C");
         });
         this.input.keyboard.on('keydown_D', function (event) {
             //already press do nothing
             if (self.lock) {
                 return;
             }
-            self.executeAttack("D", self, attacker, defender);
+            self.executeAttack("D");
         });
         this.input.keyboard.on('keydown_E', function (event) {
             //already press do nothing
             if (self.lock) {
                 return;
             }
-            self.executeAttack("E", self, attacker, defender);
+            self.executeAttack("E");
         });
 
 
@@ -122,7 +122,7 @@ export class BattleScene extends Phaser.Scene {
                hitText += "You have been missed by the enemy attack. Your social standing remains unchanged."
            }
             self.renderActionText(p.summaryString+"\n"+hitText+"\n Hit 'X' key to continue.");
-            Globals.data.combat = p;
+            this.combat = p;
             self.renderHudText(p);
             self.lock = false;
         });
@@ -148,7 +148,7 @@ export class BattleScene extends Phaser.Scene {
             }
 
             this.switchToOverworld(this.game.scene);
-            Globals.data.combat = null;
+            this.combat = null;
         });
 
         this.createHudText(o);
@@ -158,7 +158,7 @@ export class BattleScene extends Phaser.Scene {
 
     private renderAttackOptions( attacker, attackChooseText: string) {
         let options = ["A", "B", "C", "D", "E"];
-        let myturn = Globals.data.combat.attackerObject.id === Websocket.io.id;
+        let myturn = this.combat.attackerObject.id === Websocket.io.id;
         if (myturn) {
             console.log("x hit and my turn");
             for (let i = 0; i < attacker.attacksAndSpells.length; i++) {
@@ -180,11 +180,10 @@ export class BattleScene extends Phaser.Scene {
         }
     }
 
-    private executeAttack(a:string, self, attacker, defender) {
-        console.log("execute attack");
-        let myturn = Globals.data.combat.attackerObject.id === Websocket.io.id;
+    private executeAttack(a:string) {
+        let myturn = this.combat.attackerObject.id === Websocket.io.id;
         if (myturn) {
-            self.lock = true;
+            this.lock = true;
             console.log("was my turn switch now");
 
             let attackFile = this.selection.get(a);
@@ -193,20 +192,19 @@ export class BattleScene extends Phaser.Scene {
                 return;
             }
 
-            let combat: CombatWrapper = attackFile.combatFunction.call(attacker, defender);//actual attack
-            console.log("teasdfsdf");
+            let p1 = createPlayerCombatFromStructure(this.combat.defenderObject);
+            let p2 = createPlayerCombatFromStructure(this.combat.attackerObject);
+            let combat: CombatWrapper = attackFile.combatFunction.call(p2, p1);//actual attack
+
 
 
             let summaryString = attackFile.dialogForAttack;
             let attackString = attackFile.name;
             combat.summaryString = attackFile.descriptionOfAttack;
-            let def = createPlayerCombatFromStructure(combat.attackerObject).createMinimumDataObj();
-            let att = createPlayerCombatFromStructure(combat.defenderObject).createMinimumDataObj();
-            combat.defenderObject = def;
-            combat.attackerObject = att;
-
-            Globals.data.combat = combat;
-            console.log('send data will wait now', combat);
+            let def = combat.defenderObject;
+            combat.defenderObject = combat.attackerObject ;
+            combat.attackerObject = def;
+            this.combat = combat;
             Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, combat);
             console.log('send data will wait now', combat);
             let hitText ="";
@@ -215,9 +213,9 @@ export class BattleScene extends Phaser.Scene {
             }else{
                 hitText += "You have missed the enemy. Her social standing remains unchanged."
             }
-            self.renderActionText('Attack: ' + attackString + ' \n' + summaryString +'\n'+hitText+ ' \n\nWait for other turn now');
+            this.renderActionText('Attack: ' + attackString + ' \n' + summaryString +'\n'+hitText+ ' \n\nWait for other turn now');
         } else {
-            self.renderActionText('Its not your turn now');
+            this.renderActionText('Its not your turn now');
         }
     }
 
