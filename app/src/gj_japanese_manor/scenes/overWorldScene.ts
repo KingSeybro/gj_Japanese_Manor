@@ -2,7 +2,7 @@
  * @author       Digitsensitive <digit.sensitivee@gmail.com>
  * @copyright    2018 Digitsensitive
  * @license      Digitsensitive
- * sdfsds
+ * sdfsdssdf
  */
 import {Assets} from "../assets";
 import {Constants} from "../constants";
@@ -20,6 +20,8 @@ import {SelectedPlayer} from "../selectedPlayer";
 import {debug} from "util";
 import {Helper} from "./helper";
 import {ItemFactory} from "../../shared/itemFactory";
+import {BattleSceneHelper} from "./battleScene";
+
 
 
 export class OverWorldScene extends BaseTileMapScene {
@@ -39,7 +41,8 @@ export class OverWorldScene extends BaseTileMapScene {
     private gracePeriod: number;
     private static DEFAULT_GRACE_PERIOD: number = 10000;
     private wasInBattleScreen: boolean;
-    public selectedPlayer: PlayerCombat;
+    private selectedPlayer: PlayerCombat;
+    private globalSoundArray: Map<string, string[]>;
 
 
     constructor() {
@@ -83,7 +86,8 @@ export class OverWorldScene extends BaseTileMapScene {
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
     }
 
-    create(playerObject: SelectedPlayer): void {
+    create(playerObject:SelectedPlayer): void {
+        this.globalSoundArray = playerObject.soundMap;
         this.playagain = true;
         console.log('OverWorldScene created called');
         //this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'player');
@@ -190,9 +194,13 @@ export class OverWorldScene extends BaseTileMapScene {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
             Globals.data = o;
             this.wasInBattleScreen = true;
+
             this.sound.stopAll();
             this.playagain = true;
-            Helper.switchFromWorldScreenTo(this.game.scene, 'BattleScene', o);
+
+
+            Helper.switchFromWorldScreenTo(this.game.scene, 'BattleScene', new BattleSceneHelper(o, this.globalSoundArray));
+
         });
 
 
@@ -375,6 +383,12 @@ export class OverWorldScene extends BaseTileMapScene {
             player.setAcceleration(0, 0);
             player.setVelocity(0, 0);
             scene.switch('DialogueScene'); // Start the battle scene
+        });
+
+        this.input.keyboard.on('keydown_M', function (event) {
+            player.setAcceleration(0, 0);
+            player.setVelocity(0, 0);
+            self.sound.play(self.globalSoundArray.get("complimentsDaisy")[0]);
         });
     }
 

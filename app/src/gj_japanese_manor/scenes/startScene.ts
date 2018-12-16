@@ -13,17 +13,12 @@ export class StartScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.image('startBackground', 'assets/game/background_startscreen.png');
         this.load.image('startBtn', 'assets/game/start_button.png');
         // how to use this?
         this.load.bitmapFont('Connection', 'assets/font/Connection.bmp');
-        this.load.image('sexySamurai', 'assets/characters/Zhe sexy samurai Portrait sketch.png');
-        this.load.image('naughtyNerd', 'assets/characters/Naughty Nerd Portrait Sketch.png');
-        this.load.image('jailbait', 'assets/characters/Jailbait Portrait Sketch.png');
-        this.load.image('fool', 'assets/characters/Fool Portrait Sketch.png');
     }
 
-    create(): void {
+    create(soundMap: Map<string, string[]>): void {
         console.log("created start screen");
         let scene = this.scene;
 
@@ -70,9 +65,10 @@ export class StartScene extends Phaser.Scene {
                 iter = iter + 1;
             }
             let playerObjectClicked = new SelectedPlayer(
-                 clickedPlayerIndex,
+                clickedPlayerIndex,
                 playerTextures[clickedPlayerIndex],
-                this.types[clickedPlayerIndex]
+                this.types[clickedPlayerIndex],
+                soundMap
             );
             console.log("playbutton pressed");
 
