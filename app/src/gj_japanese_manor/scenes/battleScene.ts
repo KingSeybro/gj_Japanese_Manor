@@ -38,7 +38,17 @@ export class BattleScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.image('bg', Assets.url('backgrounds', 'JM_Back_HS.png'));
+        this.load.image('bedroomBG', Assets.url('backgrounds','JM_Back_BR.png'));
+        this.load.image('cherryblossomBG', Assets.url('backgrounds','JM_Back_CB.png'));
+        this.load.image('diningroomBG', Assets.url('backgrounds','JM_Back_DR.png'));
+        this.load.image('fountainBG', Assets.url('backgrounds','JM_Back_F.png'));
+        this.load.image('hotspringBG', Assets.url('backgrounds','JM_Back_HS.png'));
+        this.load.image('kitchenBG', Assets.url('backgrounds','JM_Back_Kit.png'));
+        this.load.image('libraryBG', Assets.url('backgrounds','JM_Back_Lib.png'));
+        this.load.image('luftschiffBG', Assets.url('backgrounds','JM_Back_LS.png'));
+        this.load.image('salonBG', Assets.url('backgrounds','JM_Back_S.png'));
+
+
         this.load.image(The_Fool.TYPE, Assets.url('characters', 'Fool Sketch.png'));
         this.load.image(The_Jailbait.TYPE, Assets.url('characters', 'Jailbait Sketch.png'));
         this.load.image(The_Naughty_Nerd.TYPE, Assets.url('characters', 'Naughty Nerd Sketch.png'));
@@ -48,7 +58,38 @@ export class BattleScene extends Phaser.Scene {
 
     create(o: CombatData): void {
         this.combat=o.combat;
-        this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'bg');
+
+        switch (Math.floor(BattleScene.getBgDependingOnPos(o.otherPlayer.position))) {
+            case 0:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'diningroomBG');
+                break;
+            case 1:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'fountainBG');
+                break;
+            case 2:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'hotspringBG');
+                break;
+            case 3:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'kitchenBG');
+                break;
+            case 4:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'libraryBG');
+                break;
+            case 5:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'luftschiffBG');
+                break;
+            case 6:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'bedroomBG');
+                break;
+            case 7:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'cherryblossomBG');
+                break;
+            default:
+                this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'diningroomBG');
+        }
+
+
+
         let face1 = this.add.sprite(this.game.renderer.width / 5 * 4, 500, o.combat.attackerObject.type);
         face1.displayWidth = 400;
         face1.scaleY = face1.scaleX;
@@ -272,6 +313,11 @@ export class BattleScene extends Phaser.Scene {
         return points.name +
             '\nSocial standing: ' + points.finalSocialStanding+'\n' +
             'Focus: '+points.currentFocus;
+    }
+
+    public static getBgDependingOnPos(pos){
+
+        return Math.random()*9;
     }
 
     update(time: number, delta: number): void {
