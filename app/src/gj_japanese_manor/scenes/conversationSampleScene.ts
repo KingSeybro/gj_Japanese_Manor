@@ -49,6 +49,7 @@ export class ConversationScene extends Phaser.Scene {
         this.load.audio('ButlerNeutralEnding', Assets.url('sound/Conversations', 'ButlerNeutralEnding.wav'));
         this.load.audio('GrafBad01', Assets.url('sound/Conversations', 'GrafBad01.wav'));
         this.load.audio('GrafBad02', Assets.url('sound/Conversations', 'GrafBad02.wav'));
+        this.load.audio('GrafBadEnding', Assets.url('sound/Conversations', 'GrafBadEnding.wav'));
         this.load.audio('GrafGood01', Assets.url('sound/Conversations', 'GrafGood01.wav'));
         this.load.audio('GrafGoodEnding', Assets.url('sound/Conversations', 'GrafGoodEnding.wav'));
         this.load.audio('GrafNeutral02', Assets.url('sound/Conversations', 'GrafNeutral02.wav'));
