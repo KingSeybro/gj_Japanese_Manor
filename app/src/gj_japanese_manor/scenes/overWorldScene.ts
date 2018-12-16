@@ -18,6 +18,7 @@ import {SceneHelper} from "./sceneHelper";
 import {PlayerCombat, The_Fool, The_Jailbait, The_Naughty_Nerd, The_Sexy_Samurai} from "../../shared/playerCombat";
 import {SelectedPlayer} from "../selectedPlayer";
 import {debug} from "util";
+import {Helper} from "./helper";
 
 
 export class OverWorldScene extends BaseTileMapScene {
@@ -154,8 +155,8 @@ export class OverWorldScene extends BaseTileMapScene {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
             Globals.data = o;
             this.wasInBattleScreen = true;
-            this.scene.pause('OverWorldScene');
-            this.scene.start('BattleScene',o); // Start the convo scene
+
+            Helper.switchFromWorldScreenTo(this.game.scene, 'BattleScene',o);
         });
 
 
@@ -166,6 +167,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
         //actions create finished
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_JOINED, this.getCurrentPlayerData());
+        console.log('joined even');
         this.sendPlayerMoved();
 
 
@@ -293,8 +295,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
     public switchToConversationScreen() {
         this.player.setAcceleration(0, 0).setVelocity(0, 0);
-        this.scene.pause('OverWorldScene');
-        this.scene.launch('ConversationScene',new SceneHelper(1,1)); // Start the convo scene
+        Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(1,1))
     }
 
     update(time: number, delta: number): void {
@@ -331,7 +332,7 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     private sendPlayerMoved(): void {
-        // console.log("send player moved");
+       // console.log("send player moved");
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_MOVED, this.getCurrentPlayerData());
     }
 

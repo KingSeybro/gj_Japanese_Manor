@@ -104,6 +104,8 @@ export class App {
                     otherSocket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
                     newAttacker.endOfCombatHouseKeeping();
                     newDefender.endOfCombatHouseKeeping();
+                    // this.players.get(newAttacker.id).inCombat = false;
+                    // this.players.get(newDefender.id).inCombat = false;
                     return;
                 }
                 if(newDefender.finalSocialStanding <= 0 || newDefender.currentFocus <= 0){
@@ -111,6 +113,8 @@ export class App {
                     otherSocket.emit(SharedConstants.EVENT_STOP_BATTLE, o);
                     newAttacker.endOfCombatHouseKeeping();
                     newDefender.endOfCombatHouseKeeping();
+                    // this.players.get(newAttacker.id).inCombat = false;
+                    // this.players.get(newDefender.id).inCombat = false;
                     return;
                 }
                 Log.log("something weird happened we should not come to here");

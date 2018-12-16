@@ -12,7 +12,12 @@ export class Helper {
     }
 
     public static resumeOverWorldScene(scene: Phaser.Scenes.SceneManager, currentSceneName: string) {
-        scene.resume('OverWorldScene');
+        scene.wake('OverWorldScene');
         scene.stop(currentSceneName);
+    }
+
+    public static switchFromWorldScreenTo(scene: Phaser.Scenes.SceneManager, newScene:string, o: any) {
+        scene.start(newScene, o);
+        scene.sleep('OverWorldScene');
     }
 }

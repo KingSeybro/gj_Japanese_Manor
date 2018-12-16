@@ -59,6 +59,7 @@ export class BattleScene extends Phaser.Scene {
         console.log("created battle screen");
         this.lock = false;
         let scene = this.scene;
+        this.game.scene.dump();
         const self = this;
 
         let attackChooseText = "Choose attack:\n";
@@ -70,6 +71,7 @@ export class BattleScene extends Phaser.Scene {
             console.log("x hit");
             //already press do nothing
             if (self.lock) {
+                console.log('self.lock');
                 return;
             }
             self.renderAttackOptions( attacker, attackChooseText);
@@ -206,7 +208,7 @@ export class BattleScene extends Phaser.Scene {
             combat.attackerObject = def;
             this.combat = combat;
             Websocket.io.emit(SharedConstants.EVENT_PLAYER_COMBATACTION, combat);
-            console.log('send data will wait now', combat);
+            console.log('send data will wait now');
             let hitText ="";
             if(combat.attackHit){
                 hitText += "You have hit the enemy with an attack and her social standing is reduced by "+combat.damageDealt+" points.";
@@ -224,7 +226,6 @@ export class BattleScene extends Phaser.Scene {
             this.dbox = new DialogBox(this);
             this.dbox._createWindow();
         }
-        console.log(text);
         this.dbox.setText(text, false);
     }
 
