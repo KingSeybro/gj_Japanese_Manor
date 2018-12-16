@@ -19,6 +19,7 @@ import {PlayerCombat, The_Fool, The_Jailbait, The_Naughty_Nerd, The_Sexy_Samurai
 import {SelectedPlayer} from "../selectedPlayer";
 import {debug} from "util";
 import {Helper} from "./helper";
+import {ItemFactory} from "../../shared/itemFactory";
 
 
 export class OverWorldScene extends BaseTileMapScene {
@@ -37,7 +38,8 @@ export class OverWorldScene extends BaseTileMapScene {
     private gracePeriod: number;
     private static DEFAULT_GRACE_PERIOD: number = 10000;
     private wasInBattleScreen: boolean;
-    private selectedPlayer: PlayerCombat;
+    public selectedPlayer: PlayerCombat;
+
 
     constructor() {
         super({
@@ -46,16 +48,20 @@ export class OverWorldScene extends BaseTileMapScene {
         this.otherPlayers = new Map<string, Phaser.Physics.Arcade.Sprite>();
         this.layers = new Map<number, Phaser.Tilemaps.StaticTilemapLayer>();
         this.tilesMapping = new Map<number, string>();
+
     }
 
     preload(): void {
         super.preload();
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
-        this.load.image('char_the_jailbait_small', Assets.url('characters','small','Jailbait Sprite Front.png'));
-        this.load.image('char_the_naughty_nerd_small', Assets.url('characters','small','Nerd Sprite Front.png'));
-        this.load.image('char_the_sexy_samurai_small', Assets.url('characters','small','Sporty Sprite Front.png'));
-        this.load.image('char_the_fool_small', Assets.url('characters','small','Fool Sprite Front.png'));
+        this.load.image('char_the_jailbait_small', Assets.url('characters', 'small', 'Jailbait Sprite Front.png'));
+        this.load.image('char_the_naughty_nerd_small', Assets.url('characters', 'small', 'Nerd Sprite Front.png'));
+        this.load.image('char_the_sexy_samurai_small', Assets.url('characters', 'small', 'Sporty Sprite Front.png'));
+        this.load.image('char_the_fool_small', Assets.url('characters', 'small', 'Fool Sprite Front.png'));
+
+
+
 
         this.load.image('npc_butler', Assets.url('characters','small','Butler Sprite Front.png'));
         this.load.image('npc_darcy', Assets.url('characters','small','Darcy Sprite Front.png'));
@@ -72,7 +78,7 @@ export class OverWorldScene extends BaseTileMapScene {
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
     }
 
-    create(playerObject:SelectedPlayer): void {
+    create(playerObject: SelectedPlayer): void {
         console.log('OverWorldScene created called');
         //this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'player');
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
@@ -145,7 +151,7 @@ export class OverWorldScene extends BaseTileMapScene {
             if (p.id !== Websocket.io.id) {
                 // console.log("player update" + JSON.stringify(p));
                 if (!self.otherPlayers.get(p.id)) {
-                    let otherPlayer = this.physics.add.sprite(p.position.x, p.position.y, 'char_'+p._type.toLocaleLowerCase()+'_small');
+                    let otherPlayer = this.physics.add.sprite(p.position.x, p.position.y, 'char_' + p._type.toLocaleLowerCase() + '_small');
                     console.log(p);
                     otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
                         .setCollideWorldBounds(true)
@@ -171,14 +177,14 @@ export class OverWorldScene extends BaseTileMapScene {
                 otherPlayer.destroy();
                 self.otherPlayers.delete(p);
             }
-        });+
+        });
 
         Websocket.io.on(SharedConstants.EVENT_PLAYER_START_BATTLE, (o: CombatData) => {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
             Globals.data = o;
             this.wasInBattleScreen = true;
 
-            Helper.switchFromWorldScreenTo(this.game.scene, 'BattleScene',o);
+            Helper.switchFromWorldScreenTo(this.game.scene, 'BattleScene', o);
         });
 
 
@@ -191,6 +197,8 @@ export class OverWorldScene extends BaseTileMapScene {
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_JOINED, this.getCurrentPlayerData());
         console.log('joined even');
         this.sendPlayerMoved();
+
+
 
 
     }
@@ -346,7 +354,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
     public switchToConversationScreen() {
         this.player.setAcceleration(0, 0).setVelocity(0, 0);
-        Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(1,1, this.selectedPlayer))
+        Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(1, 1, this.selectedPlayer))
     }
 
     update(time: number, delta: number): void {
@@ -358,10 +366,9 @@ export class OverWorldScene extends BaseTileMapScene {
             this.player.setAcceleration(0, 0);
             console.log("reset was in screen");
         }
-        console.log(this.gracePeriod);
         this.gracePeriod -= delta;
         // Camera follows player ( can be set in create )
-        if(this.cameras.main) {
+        if (this.cameras.main) {
             this.cameras.main.startFollow(this.player);
         } else {
             console.log("this.cameras was undefined");
@@ -375,7 +382,6 @@ export class OverWorldScene extends BaseTileMapScene {
         if (this.player.body.speed !== 0) {
             this.sendPlayerMoved();
         }
-
     }
 
     private hitPlayer(key: string): void {
@@ -384,11 +390,11 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     private sendPlayerMoved(): void {
-       // console.log("send player moved");
+        // console.log("send player moved");
         Websocket.io.emit(SharedConstants.EVENT_PLAYER_MOVED, this.getCurrentPlayerData());
     }
 
     private getCurrentPlayerData(): PlayerInfo {
-        return new PlayerInfo(Websocket.io.id, new Position(this.player.x, this.player.y),this.selectedPlayer.type);
+        return new PlayerInfo(Websocket.io.id, new Position(this.player.x, this.player.y), this.selectedPlayer.type);
     }
 }
