@@ -31,6 +31,7 @@ export class OverWorldScene extends BaseTileMapScene {
     private player: Phaser.Physics.Arcade.Sprite;
     private mother: Phaser.Physics.Arcade.Sprite;
     private butler: Phaser.Physics.Arcade.Sprite;
+    private playagain: boolean;
     private darcy: Phaser.Physics.Arcade.Sprite;
 
 
@@ -67,6 +68,11 @@ export class OverWorldScene extends BaseTileMapScene {
         this.load.image('npc_mother', Assets.url('characters','small','Mother sprite front.png'));
 
 
+        this.load.audio('overworldloop_1', Assets.url('music', 'overworldloop1.wav'));
+        this.load.audio('overworldloop_2', Assets.url('music', 'overworldloop2.wav'));
+        this.load.audio('overworldloop_3', Assets.url('music', 'overworldloop3.wav'));
+
+
         console.log("preload overworld screen");
         let scene = this.scene;
         /*this.input.keyboard.on('keydown_S', function (event) {
@@ -78,12 +84,12 @@ export class OverWorldScene extends BaseTileMapScene {
     }
 
     create(playerObject: SelectedPlayer): void {
+        this.playagain = true;
         console.log('OverWorldScene created called');
         //this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'player');
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
         let id = Websocket.init(this.game.scene);
         this.initMap(Assets.TILES_OVERWORLD_MAP);
-
 
         let x = 11255+Math.random() * 2000;
         let y = 9705+Math.random() * 1000;
@@ -145,6 +151,8 @@ export class OverWorldScene extends BaseTileMapScene {
 
         const self = this;
 
+        this.playRandomMusic(self);
+
         Websocket.io.on(SharedConstants.EVENT_PLAYER_UPDATE, (p: PlayerInfo) => {
 
             if (p.id !== Websocket.io.id) {
@@ -182,7 +190,8 @@ export class OverWorldScene extends BaseTileMapScene {
             console.log('Other player ' + o.otherPlayer.id + ' wants to start a battle');
             Globals.data = o;
             this.wasInBattleScreen = true;
-
+            this.sound.stopAll();
+            this.playagain = true;
             Helper.switchFromWorldScreenTo(this.game.scene, 'BattleScene', o);
         });
 
@@ -202,21 +211,37 @@ export class OverWorldScene extends BaseTileMapScene {
 
     }
 
+    private playRandomMusic(self:any){
+        if(self.playagain){
+            switch (Math.floor(Math.random()*3)) {
+                case 0:              self.sound.play('overworldloop_1',{loop:true}); break;
+                case 1:              self.sound.play('overworldloop_2',{loop:true}); break;
+                case 2:              self.sound.play('overworldloop_3',{loop:true}); break;
+
+            }
+            self.playagain= false;
+        }
+    }
+
 
     private collideCallbackMother(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
         if (this.gracePeriod <= 0) {
             this.wasInBattleScreen = true;
-
+            this.playagain = true;
             this.player.setAcceleration(0, 0).setVelocity(0, 0);
             Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(1, 1, this.selectedPlayer))
         }
     }
 
+
+
     private collideCallbackButler(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
         if (this.gracePeriod <= 0) {
             this.wasInBattleScreen = true;
-
+            this.sound.stopAll();
             this.player.setAcceleration(0, 0).setVelocity(0, 0);
+            this.playagain = true;
+
             Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(2,6, this.selectedPlayer))
         }
     }
@@ -224,8 +249,10 @@ export class OverWorldScene extends BaseTileMapScene {
     private collideCallbackDarcy(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
         if (this.gracePeriod <= 0) {
             this.wasInBattleScreen = true;
-
+            this.sound.stopAll();
             this.player.setAcceleration(0, 0).setVelocity(0, 0);
+            this.playagain = true;
+
             Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(3, 4, this.selectedPlayer))
         }
     }
@@ -380,6 +407,8 @@ export class OverWorldScene extends BaseTileMapScene {
         // }
         if (this.player.body.speed !== 0) {
             this.sendPlayerMoved();
+            this.playRandomMusic(this);
+
         }
     }
 
