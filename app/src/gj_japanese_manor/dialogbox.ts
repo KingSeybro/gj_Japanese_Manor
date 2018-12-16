@@ -35,7 +35,7 @@ export class DialogBox {
         this.windowAlpha = 0.8;
         this.windowColor= 0x1e62ce;
         this.windowWidth = 1500;
-        this.windowHeight = 220;
+        this.windowHeight = 250;
         this.padding = 32;
         this.closeBtnColor = 'darkgoldenrod';
         this.dialogSpeed =  3;

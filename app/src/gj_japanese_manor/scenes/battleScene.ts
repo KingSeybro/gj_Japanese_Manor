@@ -24,6 +24,7 @@ export class BattleScene extends Phaser.Scene {
     public text: Phaser.GameObjects.Text;
     public dbox: DialogBox;
     public hudText: Map<String, Phaser.GameObjects.Text>;
+    public hudBG: Map<String, Phaser.GameObjects.Graphics>;
     private selection: Map<String, AttackFile>;
     private combat: CombatWrapper;
     constructor() {
@@ -32,6 +33,7 @@ export class BattleScene extends Phaser.Scene {
             key: "BattleScene"
         });
         this.hudText = new Map<String, Phaser.GameObjects.Text>();
+        this.hudBG = new Map<String, Phaser.GameObjects.Graphics>();
         this.selection = new Map<String, AttackFile>();
     }
 
@@ -231,18 +233,43 @@ export class BattleScene extends Phaser.Scene {
 
 
     renderHudText(o: CombatWrapper){
-        this.hudText.get('soc_standing'+o.attackerObject.id).text = o.attackerObject.finalSocialStanding.toString();
-        this.hudText.get('soc_standing'+o.defenderObject.id).text =  o.defenderObject.finalSocialStanding.toString();
+        this.hudText.get('soc_standing'+o.attackerObject.id).text = BattleScene.socialStandingText(o.attackerObject.finalSocialStanding);
+        this.hudText.get('soc_standing'+o.defenderObject.id).text = BattleScene.socialStandingText(o.defenderObject.finalSocialStanding);
     }
 
-    createHudText(o: CombatData){
-        let leftSocialStanding = this.add.text(40, 40, o.combat.attackerObject.finalSocialStanding.toString(), {color: 'green', 'font-size': '45px'});
-        let rightSocialStanding = this.add.text(this.game.renderer.width - 40, 40, o.combat.defenderObject.finalSocialStanding.toString(), {color: 'green', 'font-size': '45px'});
+    createHudText(o: CombatData) {
+        let colorHud = 0x1e62ce;
+        let alphaHud = 0.9;
+        let leftBG = this.add.graphics();
 
-        this.hudText.set('soc_standing'+o.combat.attackerObject.id, leftSocialStanding);
-        this.hudText.set('soc_standing'+o.combat.defenderObject.id, rightSocialStanding);
+        let leftSocialStanding = this.add.text(10, 10, BattleScene.socialStandingText(o.combat.attackerObject.finalSocialStanding), {
+            color: 'white',
+            font: 'bold 14px Arial',
+        });
+        leftBG.fillStyle(colorHud, alphaHud);
+        let withBox = 180;
+        leftBG.fillRect(0, 0, withBox, 50);
+
+
+        let rightBG = this.add.graphics();
+        let rightX = this.game.renderer.width-140;
+        let rightSocialStanding = this.add.text(rightX, 10, BattleScene.socialStandingText(o.combat.defenderObject.finalSocialStanding), {
+            color: 'white',
+            font: 'bold 14px Arial',
+        });
+        rightBG.fillStyle(colorHud, alphaHud);
+        rightBG.fillRect(rightX-40, 0, withBox, 50);
+
+
+        this.hudText.set('soc_standing' + o.combat.attackerObject.id, leftSocialStanding);
+        this.hudText.set('soc_standing' + o.combat.defenderObject.id, rightSocialStanding);
+        this.hudBG.set('soc_standing' + o.combat.attackerObject.id, leftBG);
+        this.hudBG.set('soc_standing' + o.combat.defenderObject.id, leftBG);
     }
 
+    private static socialStandingText(points: number){
+        return 'Social standing: ' + points.toString();
+    }
 
     update(time: number, delta: number): void {
         super.update(time, delta);
