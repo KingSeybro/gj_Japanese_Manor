@@ -1,3 +1,7 @@
+# Game prototype developed for the 2nd winter game jam in Klagenfurt
+This game was part of the 2nd winter game jam in Klagenfurt. You can find a link to a playable version of this game and the other
+submissions at [https://itch.io/jam/2nd-winter-game-jam](https://itch.io/jam/2nd-winter-game-jam). For the next game jams happening in 
+Klagenfurt have a look at [http://www.itec.aau.at/gamejam/](http://www.itec.aau.at/gamejam/)
 # Basic install
 Install npm on your machine. This should be possible for windows and linux (and even mac :) )
 
