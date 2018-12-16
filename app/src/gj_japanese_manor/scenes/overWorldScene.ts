@@ -44,7 +44,7 @@ export class OverWorldScene extends BaseTileMapScene {
     constructor() {
         super({
             key: "OverWorldScene"
-        }, ['background_tiles']);
+        }, ['final_tileset']);
         this.otherPlayers = new Map<string, Phaser.Physics.Arcade.Sprite>();
         this.layers = new Map<number, Phaser.Tilemaps.StaticTilemapLayer>();
         this.tilesMapping = new Map<number, string>();
@@ -53,7 +53,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
     preload(): void {
         super.preload();
-        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
+        this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'newmap.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
         this.load.image('char_the_jailbait_small', Assets.url('characters', 'small', 'Jailbait Sprite Front.png'));
         this.load.image('char_the_naughty_nerd_small', Assets.url('characters', 'small', 'Nerd Sprite Front.png'));
@@ -86,29 +86,29 @@ export class OverWorldScene extends BaseTileMapScene {
         this.initMap(Assets.TILES_OVERWORLD_MAP);
 
 
-
-
+        let x = 11255+Math.random() * 2000;
+        let y = 9705+Math.random() * 1000;
         switch (playerObject.type) {
             case The_Fool.TYPE:
                 this.selectedPlayer = new The_Fool(id);
-                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_the_fool_small');
+                this.player = this.physics.add.sprite(x, y, 'char_the_fool_small');
                 console.log("Fool");
                 break;
             case The_Sexy_Samurai.TYPE:
                 this.selectedPlayer = new The_Sexy_Samurai(id);
-                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_the_sexy_samurai_small');
+                this.player = this.physics.add.sprite(x, y, 'char_the_sexy_samurai_small');
                 console.log("Samurai");
 
                 break;
             case The_Naughty_Nerd.TYPE:
                 this.selectedPlayer = new The_Naughty_Nerd(id);
-                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_the_naughty_nerd_small');
+                this.player = this.physics.add.sprite(x, y, 'char_the_naughty_nerd_small');
                 console.log("Nerd");
 
                 break;
             case The_Jailbait.TYPE:
                 this.selectedPlayer = new The_Jailbait(id);
-                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_the_jailbait_small');
+                this.player = this.physics.add.sprite(x, y, 'char_the_jailbait_small');
                 console.log("The_Jailbait");
                 break;
             default:
@@ -116,13 +116,13 @@ export class OverWorldScene extends BaseTileMapScene {
                 console.log("Default Jailbait");
                 break;
         }
-        this.mother = this.physics.add.sprite(4000, 3000, 'npc_mother');
+        this.mother = this.physics.add.sprite(4300, 1987, 'npc_mother');
         this.physics.add.overlap(this.player, this.mother, this.collideCallbackMother, null, this);
 
-        this.butler = this.physics.add.sprite(400, 300, 'npc_butler');
+        this.butler = this.physics.add.sprite(11037, 1486, 'npc_butler');
         this.physics.add.overlap(this.player, this.butler, this.collideCallbackButler, null, this);
 
-        this.darcy = this.physics.add.sprite(40000, 30000, 'npc_darcy');
+        this.darcy = this.physics.add.sprite(7808, 5595, 'npc_darcy');
         this.physics.add.overlap(this.player, this.darcy, this.collideCallbackDarcy, null, this);
 
 
@@ -139,7 +139,7 @@ export class OverWorldScene extends BaseTileMapScene {
             .setDrag(500, 500);
         this.player.body.stopVelocityOnCollide = true;
 
-        this.setUpCollisionLayer([1], this.player);
+        this.setUpCollisionLayer([1,2,0], this.player);
 
         this.initializeInput();
         this.cameras.main.setZoom(Constants.DEFAULT_ZOOM);
@@ -218,7 +218,7 @@ export class OverWorldScene extends BaseTileMapScene {
             this.wasInBattleScreen = true;
 
             this.player.setAcceleration(0, 0).setVelocity(0, 0);
-            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(2,2, this.selectedPlayer))
+            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(2,6, this.selectedPlayer))
         }
     }
 
@@ -227,7 +227,7 @@ export class OverWorldScene extends BaseTileMapScene {
             this.wasInBattleScreen = true;
 
             this.player.setAcceleration(0, 0).setVelocity(0, 0);
-            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(3, 3, this.selectedPlayer))
+            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(3, 4, this.selectedPlayer))
         }
     }
 
