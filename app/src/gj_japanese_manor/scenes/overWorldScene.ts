@@ -296,7 +296,7 @@ export class OverWorldScene extends BaseTileMapScene {
 
     public switchToConversationScreen() {
         this.player.setAcceleration(0, 0).setVelocity(0, 0);
-        Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(1,1))
+        Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(1,1, this.selectedPlayer))
     }
 
     update(time: number, delta: number): void {

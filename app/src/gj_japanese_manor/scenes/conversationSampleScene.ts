@@ -6,6 +6,8 @@ import {SceneHelper} from "./sceneHelper";
 import {Websocket} from "../websocket";
 import SceneManager = Phaser.Scenes.SceneManager;
 import {Helper} from "./helper";
+import {ItemFactory} from "../../shared/itemFactory";
+import {Item} from "../../shared/item";
 
 export class ConversationScene extends Phaser.Scene {
     private conv: Phaser.GameObjects.Text;
@@ -14,6 +16,7 @@ export class ConversationScene extends Phaser.Scene {
     private conversation: Conversation;
     public dbox : DialogBox;
     private finished : boolean;
+    public schelp : SceneHelper;
 
 
     constructor() {
@@ -53,6 +56,7 @@ export class ConversationScene extends Phaser.Scene {
 
     create(sh:SceneHelper): void {
         console.log("created convo screen");
+        this.schelp = sh;
 
 
         switch(sh._background){
@@ -111,14 +115,18 @@ export class ConversationScene extends Phaser.Scene {
              }
 
         if(this.node.options.length==0){
+            let itfa: ItemFactory = new ItemFactory();
             if(this.node.outcome==undefined){
 
             }
             else if(this.node.outcome==true){
-                //TODO GIVE POSITIVE ITEM TO PLAYER (not yet here)
+                this.schelp._player.receiveItem(itfa.getRandomPositiveItem());
+                console.log("Should have received a positive Item")
             }
             else{
-                //TODO GIVE NEGATIVE ITEM TO PLAYER (not yet here)
+                this.schelp._player.receiveItem(itfa.getRandomNegativeItem());
+                console.log("Should have received a negative Item")
+
             }
             this.dbox._createCloseModalButton();
             this.finished = true;
