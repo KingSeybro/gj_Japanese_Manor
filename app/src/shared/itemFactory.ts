@@ -28,22 +28,22 @@ export class ItemFactory {
         this.itemArrayPositive.push(new Item("Sanctified sake set of the Monkey King", "15", "sake set", 0, 0, 2, 0, 0, 0));
         this.itemArrayPositive.push(new Item("Bamboo Brush of the beauty fountain", "16", "brush", 0, 0, 2, 0, 0, 0));
 
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "17", "hakama", -2, 0, 0, 0, 0, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "18", "hakama", -2, 0, 0, 0, 0, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "19", "hakama", -2, 0, 0, 0, 0, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "20", "hakama", 0, -2, 0, 0, 0, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "21", "hakama", 0, -2, 0, 0, 0, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "22", "hakama", 0, 0, -2, 0, 0, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "23", "hakama", 0, 0, 0, 2, 0, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "24", "hakama", 0, 0, 0, 2, 0, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "25", "hakama", 0, 0, 0, 2, 0, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "26", "hakama", 0, 0, 0, 0, -6, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "27", "hakama", 0, 0, 0, 0, -6, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "28", "hakama", 0, 0, 0, 0, 0, -1));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "29", "hakama", 0, 0, 0, 0, 0, -1));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "30", "hakama", 0, 0, -2, 0, 0, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "31", "hakama", 0, 0, -2, 0, 0, 0));
-        this.itemArrayNegative.push(new Item("Shameful Reproach", "32", "hakama", 0, 0, -2, 0, 0, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "17", "badrep", -2, 0, 0, 0, 0, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "18", "badrep", -2, 0, 0, 0, 0, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "19", "badrep", -2, 0, 0, 0, 0, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "20", "badrep", 0, -2, 0, 0, 0, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "21", "badrep", 0, -2, 0, 0, 0, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "22", "badrep", 0, 0, -2, 0, 0, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "23", "badrep", 0, 0, 0, 2, 0, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "24", "badrep", 0, 0, 0, 2, 0, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "25", "badrep", 0, 0, 0, 2, 0, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "26", "badrep", 0, 0, 0, 0, -6, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "27", "badrep", 0, 0, 0, 0, -6, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "28", "badrep", 0, 0, 0, 0, 0, -1));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "29", "badrep", 0, 0, 0, 0, 0, -1));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "30", "badrep", 0, 0, -2, 0, 0, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "31", "badrep", 0, 0, -2, 0, 0, 0));
+        this.itemArrayNegative.push(new Item("Shameful Reproach", "32", "badrep", 0, 0, -2, 0, 0, 0));
 
 
     }
