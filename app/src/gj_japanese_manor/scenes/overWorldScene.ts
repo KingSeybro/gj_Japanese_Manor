@@ -29,11 +29,14 @@ export class OverWorldScene extends BaseTileMapScene {
 
     private moveKeys: object;
     private player: Phaser.Physics.Arcade.Sprite;
+    private mother: Phaser.Physics.Arcade.Sprite;
+    private butler: Phaser.Physics.Arcade.Sprite;
+    private darcy: Phaser.Physics.Arcade.Sprite;
 
 
     public otherPlayers: Map<string, Phaser.Physics.Arcade.Sprite>;
     private gracePeriod: number;
-    private static DEFAULT_GRACE_PERIOD: number = 2000;
+    private static DEFAULT_GRACE_PERIOD: number = 10000;
     private wasInBattleScreen: boolean;
     public selectedPlayer: PlayerCombat;
 
@@ -60,6 +63,11 @@ export class OverWorldScene extends BaseTileMapScene {
 
 
 
+        this.load.image('npc_butler', Assets.url('characters','small','Butler Sprite Front.png'));
+        this.load.image('npc_darcy', Assets.url('characters','small','Darcy Sprite Front.png'));
+        this.load.image('npc_mother', Assets.url('characters','small','Mother sprite front.png'));
+
+
         console.log("preload overworld screen");
         let scene = this.scene;
         /*this.input.keyboard.on('keydown_S', function (event) {
@@ -76,6 +84,9 @@ export class OverWorldScene extends BaseTileMapScene {
         this.physics.world.setBounds(0, 0, 500 * Constants.TILE_SIZE, 500 * Constants.TILE_SIZE);
         let id = Websocket.init(this.game.scene);
         this.initMap(Assets.TILES_OVERWORLD_MAP);
+
+
+
 
         switch (playerObject.type) {
             case The_Fool.TYPE:
@@ -105,6 +116,16 @@ export class OverWorldScene extends BaseTileMapScene {
                 console.log("Default Jailbait");
                 break;
         }
+        this.mother = this.physics.add.sprite(4000, 3000, 'npc_mother');
+        this.physics.add.overlap(this.player, this.mother, this.collideCallbackMother, null, this);
+
+        this.butler = this.physics.add.sprite(400, 300, 'npc_butler');
+        this.physics.add.overlap(this.player, this.butler, this.collideCallbackButler, null, this);
+
+        this.darcy = this.physics.add.sprite(40000, 30000, 'npc_darcy');
+        this.physics.add.overlap(this.player, this.darcy, this.collideCallbackDarcy, null, this);
+
+
 
         this.gracePeriod = OverWorldScene.DEFAULT_GRACE_PERIOD;
 
@@ -180,6 +201,34 @@ export class OverWorldScene extends BaseTileMapScene {
 
 
 
+    }
+
+
+    private collideCallbackMother(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
+        if (this.gracePeriod <= 0) {
+            this.wasInBattleScreen = true;
+
+            this.player.setAcceleration(0, 0).setVelocity(0, 0);
+            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(1, 1, this.selectedPlayer))
+        }
+    }
+
+    private collideCallbackButler(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
+        if (this.gracePeriod <= 0) {
+            this.wasInBattleScreen = true;
+
+            this.player.setAcceleration(0, 0).setVelocity(0, 0);
+            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(2,2, this.selectedPlayer))
+        }
+    }
+
+    private collideCallbackDarcy(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
+        if (this.gracePeriod <= 0) {
+            this.wasInBattleScreen = true;
+
+            this.player.setAcceleration(0, 0).setVelocity(0, 0);
+            Helper.switchFromWorldScreenTo(this.game.scene, 'ConversationScene', new SceneHelper(3, 3, this.selectedPlayer))
+        }
     }
 
     private collideCallback(object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) {
@@ -292,7 +341,8 @@ export class OverWorldScene extends BaseTileMapScene {
         });
 
         this.input.keyboard.on('keydown_C', function (event) {
-            self.switchToConversationScreen();
+            console.log("Player Position: " + player.body.x + " " + player.body.y);
+
         });
 
         this.input.keyboard.on('keydown_N', function (event) {
@@ -316,6 +366,7 @@ export class OverWorldScene extends BaseTileMapScene {
             this.player.setAcceleration(0, 0);
             console.log("reset was in screen");
         }
+        console.log(this.gracePeriod);
         this.gracePeriod -= delta;
         // Camera follows player ( can be set in create )
         if (this.cameras.main) {
