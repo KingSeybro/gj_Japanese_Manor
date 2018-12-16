@@ -123,9 +123,9 @@ export class ConversationScene extends Phaser.Scene {
         let scene = this.game.scene;
         let self=this;
         this.setConversationNode(this.conversation.getNextNode()); //initial node
-        this.input.keyboard.on('keydown_A', eventHandler(self, scene));
-        this.input.keyboard.on('keydown_B', eventHandler(self, scene));
-        this.input.keyboard.on('keydown_C', eventHandler(self, scene));
+        this.input.keyboard.on('keydown_A', eventHandler(self, scene, 0));
+        this.input.keyboard.on('keydown_B', eventHandler(self, scene,1));
+        this.input.keyboard.on('keydown_C', eventHandler(self, scene,2));
     }
 
     private switchToOverworld(scene: SceneManager){
@@ -184,10 +184,10 @@ export class ConversationScene extends Phaser.Scene {
     }
 }
 
-function eventHandler(self, scene) {
+function eventHandler(self, scene, button) {
     return function (event) {
         if(!self.finished) {
-            self.setConversationNode(self.conversation.getNextNode(self.node.options[2].value));
+            self.setConversationNode(self.conversation.getNextNode(self.node.options[button].value));
         }
         else{
             self.switchToOverworld(scene)
