@@ -67,6 +67,7 @@ export class App {
                 Log.log('Received player joined ' + JSON.stringify(m));
                 player.position.x = m.position.x;
                 player.position.y = m.position.y;
+                player._type = m._type;
                 for (const otherPlayerEntry of this.players.keys()) {
                     let otherPlayer = this.players.get(otherPlayerEntry);
                     Log.log('Update socket ' + connId + ' with info of other player ' + otherPlayer);

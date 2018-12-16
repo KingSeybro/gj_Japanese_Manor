@@ -49,10 +49,10 @@ export class OverWorldScene extends BaseTileMapScene {
         super.preload();
         this.load.tilemapTiledJSON(Assets.TILES_OVERWORLD_MAP, Assets.url('tilemap', 'map.json'));
         this.load.image('player', Assets.url('game', 'phaser.png'));
-        this.load.image('char_jailbait_small', Assets.url('characters','small','Jailbait Sprite Front.png'));
-        this.load.image('char_nerd_small', Assets.url('characters','small','Nerd Sprite Front.png'));
-        this.load.image('char_samurai_small', Assets.url('characters','small','Sporty Sprite Front.png'));
-        this.load.image('char_fool_small', Assets.url('characters','small','Fool Sprite Front.png'));
+        this.load.image('char_the_jailbait_small', Assets.url('characters','small','Jailbait Sprite Front.png'));
+        this.load.image('char_the_naughty_nerd_small', Assets.url('characters','small','Nerd Sprite Front.png'));
+        this.load.image('char_the_sexy_samurai_small', Assets.url('characters','small','Sporty Sprite Front.png'));
+        this.load.image('char_the_fool_small', Assets.url('characters','small','Fool Sprite Front.png'));
 
         console.log("preload overworld screen");
         let scene = this.scene;
@@ -74,24 +74,24 @@ export class OverWorldScene extends BaseTileMapScene {
         switch (playerObject.type) {
             case The_Fool.TYPE:
                 this.selectedPlayer = new The_Fool(id);
-                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_fool_small');
+                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_the_fool_small');
                 console.log("Fool");
                 break;
             case The_Sexy_Samurai.TYPE:
                 this.selectedPlayer = new The_Sexy_Samurai(id);
-                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_samurai_small');
+                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_the_sexy_samurai_small');
                 console.log("Samurai");
 
                 break;
             case The_Naughty_Nerd.TYPE:
                 this.selectedPlayer = new The_Naughty_Nerd(id);
-                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_nerd_small');
+                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_the_naughty_nerd_small');
                 console.log("Nerd");
 
                 break;
             case The_Jailbait.TYPE:
                 this.selectedPlayer = new The_Jailbait(id);
-                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_jailbait_small');
+                this.player = this.physics.add.sprite(Math.random() * 4000, Math.random() * 3000, 'char_the_jailbait_small');
                 console.log("The_Jailbait");
                 break;
             default:
@@ -124,7 +124,8 @@ export class OverWorldScene extends BaseTileMapScene {
             if (p.id !== Websocket.io.id) {
                 // console.log("player update" + JSON.stringify(p));
                 if (!self.otherPlayers.get(p.id)) {
-                    let otherPlayer = this.physics.add.sprite(p.position.x, p.position.y, 'player');
+                    let otherPlayer = this.physics.add.sprite(p.position.x, p.position.y, 'char_'+p._type.toLocaleLowerCase()+'_small');
+                    console.log(p);
                     otherPlayer.setDisplaySize(Constants.TILE_SIZE, Constants.TILE_SIZE)
                         .setCollideWorldBounds(true)
                         .setDrag(500, 500);
