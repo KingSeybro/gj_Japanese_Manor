@@ -353,10 +353,11 @@ export class BattleScene extends Phaser.Scene {
     }
 
     renderActionText(text: string) {
-        if(!this.dbox){
+        if(this.dbox){
+        this.dbox.toggleWindow();
+        }
             this.dbox = new DialogBox(this);
             this.dbox._createWindow();
-        }
         this.dbox.setText(text, false);
     }
 
